@@ -144,7 +144,7 @@
   @keyframes shimmer { 0%{transform:translateX(-100%)} 100%{transform:translateX(100%)} }
 
   .gen-progress-track { height: 8px; background: var(--border); border-radius: 99px; overflow: hidden; margin-bottom: 10px; }
-  .gen-progress-bar { height: 100%; background: linear-gradient(90deg, #0F4C81, #2a8def); border-radius: 99px; width: 0%; transition: width 0.6s cubic-bezier(0.4,0,0.2,1); }
+  .gen-progress-bar { height: 100%; background: linear-gradient(90deg, #0F4C81, #2a8def); border-radius: 99px; width: 0%; transition: width 0.4s ease-out; }
   .gen-progress-row { display: flex; justify-content: center; align-items: center; margin-bottom: 6px; }
   .gen-pct { font-size: 13.5px; font-weight: 800; color: var(--blue-primary); }
   .gen-status-text { font-size: 13px; font-weight: 600; color: var(--text-secondary); text-align: center; margin-bottom: 22px; min-height: 18px; transition: opacity 0.25s ease; }
@@ -232,8 +232,10 @@
     .queue-status-badge.queued-other { background: #FEE2E2; color: #B91C1C; }
     .queue-status-badge.queued-mine { background: #E0E7FF; color: #4338CA; }
     .queue-status-badge.done { background: #DCFCE7; color: #15803D; }
-    .queue-item-progress-track { height: 6px; background: var(--border); border-radius: 99px; overflow: hidden; margin-top: 8px; }
-    .queue-item-progress-bar { height: 100%; background: linear-gradient(90deg, #0F4C81, #2a8def); border-radius: 99px; transition: width 0.5s ease; }
+    .queue-item-progress-row { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+    .queue-item-progress-track { flex: 1; height: 6px; background: var(--border); border-radius: 99px; overflow: hidden; }
+    .queue-item-progress-bar { height: 100%; background: linear-gradient(90deg, #0F4C81, #2a8def); border-radius: 99px; width: 0%; transition: width 0.4s ease-out; }
+    .queue-item-progress-pct { font-size: 11px; font-weight: 800; color: var(--blue-primary); min-width: 36px; text-align: right; flex-shrink: 0; }
     .queue-item-note { font-size: 11.5px; color: var(--text-secondary); margin-top: 8px; display: flex; align-items: center; gap: 6px; }
     .queue-item-note i { color: var(--blue-secondary); }
     .queue-owner-tag { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 6px; margin-top: 4px; }
@@ -445,7 +447,10 @@
         <div class="gen-queue-info-row"><span class="gen-queue-info-label">Dokumen</span><span class="gen-queue-info-val" id="genQueueDocTitle">-</span></div>
         <div class="gen-queue-info-row"><span class="gen-queue-info-label">Posisi Antrian</span><span class="gen-queue-info-val" id="genQueuePos">-</span></div>
         <div class="gen-queue-info-row"><span class="gen-queue-info-label">Total Antrian</span><span class="gen-queue-info-val" id="genQueueTotal">-</span></div>
+        <div class="gen-queue-info-row"><span class="gen-queue-info-label">Status</span><span class="gen-queue-info-val" id="genQueueStatus">-</span></div>
+        <div class="gen-queue-info-row"><span class="gen-queue-info-label">Progress</span><span class="gen-queue-info-val" id="genQueueProgress">0%</span></div>
       </div>
+      <div class="gen-progress-track" style="margin-bottom:20px;"><div class="gen-progress-bar" id="genQueueProgressBar"></div></div>
 
       <div class="gen-queue-list-wrap">
         <div class="gen-queue-list-label"><i class="bi bi-list-ol"></i> Urutan Antrian Saat Ini</div>
@@ -535,8 +540,8 @@
    CONFIG
 ================================================================ */
 const API_BASE_URL      = 'https://api-bapl.qcdefect.online';
-const POLL_INTERVAL_MS  = 2000;
-const GLOBAL_QUEUE_POLL_MS = 3000;
+const POLL_INTERVAL_MS  = 1000;
+const GLOBAL_QUEUE_POLL_MS = 1000;
 const UPLOAD_TIMEOUT_MS = 60000;
 const POLL_TIMEOUT_MS   = 300000;
 const MAX_RETRY         = 3;
@@ -560,62 +565,25 @@ let currentModalJobId = null;
 let globalQueue = [];   // [{ job_id, position, status, is_mine, progress, displayProgress, _animTimer }]
 
 /* ================================================================
-   PROGRESS ANIMATOR
-   Gerak bertahap dari displayProgress → target, per-job.
+   PROGRESS UPDATER (REALTIME)
+   Progress % langsung diset sesuai data terbaru dari endpoint
+   status (tanpa menunggu status "completed", tanpa cap/animasi
+   bertahap di JS). Pergerakan lebar bar 40% -> 41% -> 42% -> 43%
+   dibuat halus oleh CSS transition pada width (lihat .queue-item-
+   progress-bar / .gen-progress-bar), bukan oleh interval JS.
 ================================================================ */
-/* ================================================================
-   GLOBAL QUEUE PROGRESS ANIMATOR (untuk user lain)
-================================================================ */
-function animateGlobalQueueItem(q, target) {
-  if (q._animTimer) { clearInterval(q._animTimer); q._animTimer = null; }
-  if (target <= (q.displayProgress || 0)) {
-    q.displayProgress = target;
-    renderQueueSidebar();
-    return;
-  }
-  q._animTimer = setInterval(() => {
-    const diff = target - (q.displayProgress || 0);
-    const step = Math.max(1, Math.round(diff * 0.07));
-    q.displayProgress = Math.min(target, (q.displayProgress || 0) + step);
-    renderQueueSidebar();
-    if (q.displayProgress >= target) {
-      clearInterval(q._animTimer);
-      q._animTimer = null;
-    }
-  }, 60);
-}
-
-function animateProgressTo(job, target, onDone) {
+function setJobProgress(job, target) {
   if (job.progressAnimTimer) {
     clearInterval(job.progressAnimTimer);
     job.progressAnimTimer = null;
   }
-  // Jangan turun
-  if (target <= job.displayProgress) {
-    job.displayProgress = target;
-    _flushProgressUI(job);
-    if (onDone) onDone();
-    return;
-  }
-
-  job.progressAnimTimer = setInterval(() => {
-    // Kecepatan: lambat di awal & menjelang akhir, cepat di tengah
-    const diff = target - job.displayProgress;
-    const step = Math.max(1, Math.round(diff * 0.07));
-    job.displayProgress = Math.min(target, job.displayProgress + step);
-    _flushProgressUI(job);
-
-    if (job.displayProgress >= target) {
-      clearInterval(job.progressAnimTimer);
-      job.progressAnimTimer = null;
-      if (onDone) onDone();
-    }
-  }, 60);
+  job.displayProgress = Math.max(0, Math.min(100, target));
+  _flushProgressUI(job);
 }
 
 function _flushProgressUI(job) {
   const pct = Math.round(job.displayProgress);
-  // Update sidebar item
+  // Update sidebar item (realtime)
   renderQueueSidebar();
   updateQueueBadge();
   // Update modal jika terbuka untuk job ini
@@ -623,6 +591,10 @@ function _flushProgressUI(job) {
       document.getElementById('genOverlay').classList.contains('active')) {
     document.getElementById('genBar').style.width  = pct + '%';
     document.getElementById('genPct').textContent  = pct + '%';
+    const qProg = document.getElementById('genQueueProgress');
+    const qBar  = document.getElementById('genQueueProgressBar');
+    if (qProg) qProg.textContent = pct + '%';
+    if (qBar)  qBar.style.width  = pct + '%';
   }
 }
 
@@ -967,28 +939,13 @@ function startGlobalQueuePolling() {
         const data = await resp.json();
         if (Array.isArray(data.queue_info)) {
           const myJobIds = new Set(jobs.map(j => j.jobId));
-          const prevMap = new Map(globalQueue.map(q => [q.job_id, q]));
           globalQueue = data.queue_info
             .filter(q => q.status === 'queued' || q.status === 'processing')
-            .map(q => {
-              const prev = prevMap.get(q.job_id);
-              const isMine = myJobIds.has(q.job_id);
-              const entry = {
-                ...q,
-                is_mine: isMine,
-                displayProgress: prev ? (prev.displayProgress || 0) : 0,
-                _animTimer: prev ? prev._animTimer : null,
-              };
-              // Animate progress untuk user lain (user sendiri ditangani polling job)
-              if (!isMine) {
-                const serverPct = q.progress || 0;
-                const targetPct = q.status === 'processing'
-                  ? Math.min(90, Math.max(entry.displayProgress, serverPct))
-                  : Math.min(15, serverPct || 5);
-                animateGlobalQueueItem(entry, targetPct);
-              }
-              return entry;
-            });
+            .map(q => ({
+              ...q,
+              is_mine: myJobIds.has(q.job_id),
+              displayProgress: q.progress || 0,
+            }));
           renderQueueSidebar();
           updateQueueBadge();
           if (document.getElementById('genOverlay').classList.contains('active')) {
@@ -1059,27 +1016,13 @@ function applyStatusUpdate(job, data) {
   if (Array.isArray(data.queue_info)) {
     // Tandai mana yg milik user ini
     const myJobIds = new Set(jobs.map(j => j.jobId));
-    const prevMap = new Map(globalQueue.map(q => [q.job_id, q]));
     globalQueue = data.queue_info
       .filter(q => q.status === 'queued' || q.status === 'processing')
-      .map(q => {
-        const prev = prevMap.get(q.job_id);
-        const isMine = myJobIds.has(q.job_id);
-        const entry = {
-          ...q,
-          is_mine: isMine,
-          displayProgress: prev ? (prev.displayProgress || 0) : 0,
-          _animTimer: prev ? prev._animTimer : null,
-        };
-        if (!isMine) {
-          const serverPct = q.progress || 0;
-          const targetPct = q.status === 'processing'
-            ? Math.min(90, Math.max(entry.displayProgress, serverPct))
-            : Math.min(15, serverPct || 5);
-          animateGlobalQueueItem(entry, targetPct);
-        }
-        return entry;
-      });
+      .map(q => ({
+        ...q,
+        is_mine: myJobIds.has(q.job_id),
+        displayProgress: q.progress || 0,
+      }));
   }
 
   switch (data.status) {
@@ -1087,33 +1030,33 @@ function applyStatusUpdate(job, data) {
       job.status   = 'queued';
       job.message  = data.message  || 'Menunggu antrian';
       job.position = data.position || null;
-      // Gerak perlahan ke max 15% saat masih antri
-      animateProgressTo(job, Math.min(15, data.progress || 5));
+      // Progress diset langsung dari server (realtime), CSS transition
+      // pada width yang membuat perubahan terlihat halus.
+      setJobProgress(job, data.progress || 0);
       break;
 
     case 'processing': {
       job.status   = 'processing';
       job.message  = data.message  || 'Sedang diproses';
-      job.position = null;
+      job.position = data.position || null;
       if (prevStatus !== 'processing') {
         showToast('BA Mulai Diproses', job.title, 'info', 'bi-gear-wide-connected');
       }
-      // Server kirim progress 0–100; kita animasikan ke max 90
-      // (100 hanya saat completed) agar tidak melompat
-      const serverPct = data.progress || 0;
-      const targetPct = Math.min(90, Math.max(job.displayProgress, serverPct));
-      animateProgressTo(job, targetPct);
+      // Server kirim progress 0-100 realtime, langsung dipakai tanpa cap
+      // agar progress bar selalu mengikuti angka terbaru (40->41->42->...)
+      setJobProgress(job, data.progress || 0);
       break;
     }
 
     case 'completed':
       job.status    = 'completed';
       job.message   = 'Selesai';
+      job.position  = null;
       job.excel_url = data.excel_url || null;
       job.pdf_url   = data.pdf_url   || null;
-      // Animasikan dari posisi sekarang → 100 lalu tampilkan hasil
-      animateProgressTo(job, 100, () => onJobCompleted(job));
-      return; // return lebih awal, onJobCompleted dipanggil dari callback
+      setJobProgress(job, 100);
+      onJobCompleted(job);
+      return;
 
     case 'failed':
       job.status  = 'failed';
@@ -1215,9 +1158,13 @@ function renderModalForJob(localId) {
 
   if (job.status === 'queued') {
     queuePanel.style.display = '';
+    const pct = Math.round(job.displayProgress || 0);
     document.getElementById('genQueueDocTitle').textContent = job.title;
     document.getElementById('genQueuePos').textContent      = job.position != null ? `Antrian ke-${job.position}` : 'Menunggu...';
     document.getElementById('genQueueTotal').textContent    = globalQueue.length > 0 ? `${globalQueue.length} job` : '-';
+    document.getElementById('genQueueStatus').textContent   = 'Menunggu Antrian';
+    document.getElementById('genQueueProgress').textContent = pct + '%';
+    document.getElementById('genQueueProgressBar').style.width = pct + '%';
     document.getElementById('genQueueTitle').textContent    = 'Menunggu Antrian';
     document.getElementById('genQueueMsg').textContent      = job.message || 'BA Anda sedang menunggu giliran untuk diproses.';
     renderGenQueueList(localId);
@@ -1302,9 +1249,13 @@ function renderGenQueueList(currentLocalId) {
       ? `<span class="gen-queue-list-badge processing">Diproses</span>`
       : `<span class="gen-queue-list-badge waiting">Menunggu</span>`;
     const pct = Math.round(q.displayProgress || 0);
-    const miniBar = pct > 0
-      ? `<div style="margin-top:6px;height:4px;background:var(--border);border-radius:99px;overflow:hidden;"><div style="height:100%;width:${pct}%;background:linear-gradient(90deg,#0F4C81,#2a8def);border-radius:99px;transition:width 0.5s ease;"></div></div>`
-      : '';
+    const miniBar = `
+      <div style="margin-top:6px;display:flex;align-items:center;gap:6px;">
+        <div style="flex:1;height:4px;background:var(--border);border-radius:99px;overflow:hidden;">
+          <div style="height:100%;width:${pct}%;background:linear-gradient(90deg,#0F4C81,#2a8def);border-radius:99px;transition:width 0.4s ease-out;"></div>
+        </div>
+        <span style="font-size:10px;font-weight:800;color:var(--blue-primary);min-width:30px;text-align:right;">${pct}%</span>
+      </div>`;
 
     html += `
       <div class="${itemClasses.join(' ')}">
@@ -1430,7 +1381,10 @@ function renderQueueItem(job, isMine, queuePosition) {
         </div>
         <span class="queue-status-badge ${badgeClass}">${badgeText}</span>
       </div>
-      <div class="queue-item-progress-track"><div class="queue-item-progress-bar" style="width:${pct}%"></div></div>
+      <div class="queue-item-progress-row">
+        <div class="queue-item-progress-track"><div class="queue-item-progress-bar" style="width:${pct}%"></div></div>
+        <span class="queue-item-progress-pct">${pct}%</span>
+      </div>
       ${note}
     </div>`;
 }
@@ -1454,12 +1408,15 @@ function renderQueueItemOther(q, idx, isMineWithoutLocalData) {
         <div class="queue-item-icon" style="${iconStyle}"><i class="bi ${iconClass}"></i></div>
         <div style="flex:1;">
           <div class="queue-item-title">Job #${pos} - Antrian</div>
-          <div class="queue-item-sub">Posisi ${pos} dalam antrian${pct > 0 ? ` • ${pct}%` : ''}</div>
+          <div class="queue-item-sub">Posisi ${pos} dalam antrian</div>
           ${ownerTag}
         </div>
         <span class="queue-status-badge ${badgeClass}">${badgeText}</span>
       </div>
-      <div class="queue-item-progress-track"><div class="queue-item-progress-bar" style="width:${pct}%"></div></div>
+      <div class="queue-item-progress-row">
+        <div class="queue-item-progress-track"><div class="queue-item-progress-bar" style="width:${pct}%"></div></div>
+        <span class="queue-item-progress-pct">${pct}%</span>
+      </div>
     </div>`;
 }
 
