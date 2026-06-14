@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Berita Acara Pekerjaan — PT Nusa Raya Cipta | Elevee Penthouse Alam Sutera</title>
+  <title>Berita Acara Pekerjaan - PT Nusa Raya Cipta | Elevee Penthouse Alam Sutera</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -305,7 +305,7 @@
     <div class="header-logo"><i class="bi bi-file-earmark-check-fill"></i></div>
     <div class="header-titles">
       <h1>Berita Acara Pekerjaan</h1>
-      <p>PT Nusa Raya Cipta — Elevee Penthouse Alam Sutera</p>
+      <p>PT Nusa Raya Cipta - Elevee Penthouse Alam Sutera</p>
     </div>
     <span class="header-badge status-checking" id="backendStatusBadge"><span id="backendStatusDot"></span><span id="backendStatusText">Checking...</span></span>
   </div>
@@ -319,7 +319,7 @@
   </div>
 
   <div class="rekap-card">
-    <div class="rekap-label"><span class="rekap-pulse"></span>Preview Berita Acara — Update otomatis</div>
+    <div class="rekap-label"><span class="rekap-pulse"></span>Preview Berita Acara - Update otomatis</div>
     <div class="rekap-judul empty" id="rekapJudul">Judul BA akan muncul di sini...</div>
     <div class="rekap-divider"></div>
     <div class="rekap-isi-label">Isi Berita Acara</div>
@@ -442,9 +442,9 @@
       <div class="gen-queue-title" id="genQueueTitle">Menunggu Antrian</div>
       <div class="gen-queue-msg" id="genQueueMsg">BA Anda sedang menunggu giliran untuk diproses.</div>
       <div class="gen-queue-info">
-        <div class="gen-queue-info-row"><span class="gen-queue-info-label">Dokumen</span><span class="gen-queue-info-val" id="genQueueDocTitle">—</span></div>
-        <div class="gen-queue-info-row"><span class="gen-queue-info-label">Posisi Antrian</span><span class="gen-queue-info-val" id="genQueuePos">—</span></div>
-        <div class="gen-queue-info-row"><span class="gen-queue-info-label">Total Antrian</span><span class="gen-queue-info-val" id="genQueueTotal">—</span></div>
+        <div class="gen-queue-info-row"><span class="gen-queue-info-label">Dokumen</span><span class="gen-queue-info-val" id="genQueueDocTitle">-</span></div>
+        <div class="gen-queue-info-row"><span class="gen-queue-info-label">Posisi Antrian</span><span class="gen-queue-info-val" id="genQueuePos">-</span></div>
+        <div class="gen-queue-info-row"><span class="gen-queue-info-label">Total Antrian</span><span class="gen-queue-info-val" id="genQueueTotal">-</span></div>
       </div>
 
       <div class="gen-queue-list-wrap">
@@ -477,7 +477,7 @@
       <div class="gen-result-sub">Berita Acara telah selesai disusun.<br>Silakan unduh dokumen di bawah ini.</div>
       <div class="gen-result-meta">
         <div class="gen-result-meta-row"><span class="gen-result-meta-label">Jenis Dokumen</span><span class="gen-result-meta-val">Berita Acara Pekerjaan</span></div>
-        <div class="gen-result-meta-row"><span class="gen-result-meta-label">Tanggal Dibuat</span><span class="gen-result-meta-val" id="resultTanggal">—</span></div>
+        <div class="gen-result-meta-row"><span class="gen-result-meta-label">Tanggal Dibuat</span><span class="gen-result-meta-val" id="resultTanggal">-</span></div>
         <div class="gen-result-meta-row"><span class="gen-result-meta-label">Foto Terlampir</span><span class="gen-result-meta-val" id="resultFoto">0 foto</span></div>
         <div class="gen-result-meta-row"><span class="gen-result-meta-label">Status</span><span class="gen-result-meta-val" style="color:var(--success)"><i class="bi bi-check-circle-fill" style="font-size:11px;margin-right:4px;"></i>Selesai</span></div>
       </div>
@@ -843,7 +843,7 @@ function friendlyError(err) {
 }
 
 /* ================================================================
-   GENERATE BA — SUBMIT
+   GENERATE BA - SUBMIT
 ================================================================ */
 async function handleGenerate() {
   if (!validate()) return;
@@ -932,7 +932,7 @@ async function submitBAJob() {
 }
 
 /* ================================================================
-   GLOBAL QUEUE POLLING (realtime, untuk semua user — termasuk yang
+   GLOBAL QUEUE POLLING (realtime, untuk semua user - termasuk yang
    tidak punya pekerjaan sendiri, agar tetap bisa melihat antrian
    umum & progres user lain)
 ================================================================ */
@@ -1161,7 +1161,7 @@ function renderModalForJob(localId) {
     queuePanel.style.display = '';
     document.getElementById('genQueueDocTitle').textContent = job.title;
     document.getElementById('genQueuePos').textContent      = job.position != null ? `Antrian ke-${job.position}` : 'Menunggu...';
-    document.getElementById('genQueueTotal').textContent    = globalQueue.length > 0 ? `${globalQueue.length} job` : '—';
+    document.getElementById('genQueueTotal').textContent    = globalQueue.length > 0 ? `${globalQueue.length} job` : '-';
     document.getElementById('genQueueTitle').textContent    = 'Menunggu Antrian';
     document.getElementById('genQueueMsg').textContent      = job.message || 'BA Anda sedang menunggu giliran untuk diproses.';
     renderGenQueueList(localId);
@@ -1175,7 +1175,7 @@ function renderModalForJob(localId) {
 
   } else if (job.status === 'completed') {
     resultPanel.classList.add('show');
-    document.getElementById('resultTanggal').textContent = job.tanggal || '—';
+    document.getElementById('resultTanggal').textContent = job.tanggal || '-';
     document.getElementById('resultFoto').textContent    = job.fotoCount + ' foto';
 
   } else if (job.status === 'failed') {
@@ -1187,7 +1187,7 @@ function renderModalForJob(localId) {
 }
 
 /* ================================================================
-   ANTRIAN LIST DALAM MODAL — includes user lain
+   ANTRIAN LIST DALAM MODAL - includes user lain
 ================================================================ */
 function renderGenQueueList(currentLocalId) {
   const listEl = document.getElementById('genQueueList');
@@ -1237,7 +1237,7 @@ function renderGenQueueList(currentLocalId) {
     if (isProcessing) itemClasses.push('is-processing');
 
     const ownerLine = q.isMine
-      ? `<span class="gen-queue-list-owner mine"><i class="bi bi-person-check-fill"></i>${isCurrent ? 'Pekerjaan Anda — BA ini' : 'Pekerjaan Anda'}</span>`
+      ? `<span class="gen-queue-list-owner mine"><i class="bi bi-person-check-fill"></i>${isCurrent ? 'Pekerjaan Anda - BA ini' : 'Pekerjaan Anda'}</span>`
       : `<span class="gen-queue-list-owner"><i class="bi bi-person"></i>User Lain</span>`;
     const statusBadge = isProcessing
       ? `<span class="gen-queue-list-badge processing">Diproses</span>`
@@ -1258,7 +1258,7 @@ function renderGenQueueList(currentLocalId) {
 }
 
 /* ================================================================
-   SIDEBAR ANTRIAN — includes global queue
+   SIDEBAR ANTRIAN - includes global queue
 ================================================================ */
 function openQueueSidebar() {
   renderQueueSidebar();
@@ -1388,7 +1388,7 @@ function renderQueueItemOther(q, idx, isMineWithoutLocalData) {
         <div class="queue-item-pos">${pos}</div>
         <div class="queue-item-icon" style="${iconStyle}"><i class="bi ${iconClass}"></i></div>
         <div style="flex:1;">
-          <div class="queue-item-title">Job #${pos} — Antrian</div>
+          <div class="queue-item-title">Job #${pos} - Antrian</div>
           <div class="queue-item-sub">Posisi ${pos} dalam antrian</div>
           ${ownerTag}
         </div>
@@ -1473,7 +1473,7 @@ document.getElementById('fieldDeskripsi').addEventListener('blur', () => setTime
 document.getElementById('fieldLokasi').addEventListener('blur',    () => setTimeout(() => acClose('lokasi'),    150));
 
 /* ================================================================
-   MODAL OVERLAY — KLIK BACKDROP
+   MODAL OVERLAY - KLIK BACKDROP
 ================================================================ */
 document.getElementById('genOverlay').addEventListener('click', function (e) {
   if (e.target === this) closeGenModal();
