@@ -55,7 +55,6 @@
     input[readonly] { background: var(--blue-light); color: var(--blue-primary); font-weight: 600; cursor: default; }
     textarea { resize: vertical; }
 
-    /* Tanggal row */
     .tanggal-row { display: flex; gap: 10px; align-items: flex-start; }
     .tanggal-row input { flex: 1; }
     .btn-tanggal-toggle { flex-shrink: 0; display: flex; align-items: center; gap: 6px; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: var(--radius-input); background: var(--white); color: var(--text-secondary); font-size: 13px; font-weight: 600; cursor: pointer; transition: var(--transition); white-space: nowrap; height: 43px; }
@@ -70,7 +69,6 @@
     .input-icon-wrap i.icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); font-size: 15px; pointer-events: none; }
     .input-icon-wrap input { padding-left: 36px; }
 
-    /* Upload */
     .upload-drop-zone { border: 2px dashed var(--border); border-radius: 14px; padding: 32px 20px; text-align: center; cursor: pointer; transition: var(--transition); background: var(--bg); position: relative; }
     .upload-drop-zone:hover, .upload-drop-zone.drag-over { border-color: var(--blue-secondary); background: var(--blue-light); }
     .upload-drop-zone input[type="file"] { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
@@ -105,7 +103,6 @@
     .btn-remove { background: rgba(220,38,38,0.88); color: #fff; }
     .photo-thumb-label { position: absolute; bottom: 0; left: 0; right: 0; font-size: 10px; color: rgba(255,255,255,0.9); background: linear-gradient(transparent, rgba(0,0,0,0.5)); padding: 14px 6px 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-    /* REKAP CARD */
     .rekap-card { background: linear-gradient(135deg, #0F4C81 0%, #1E6FB9 100%); border-radius: var(--radius-card); padding: 24px 28px; margin-bottom: 20px; color: #fff; box-shadow: 0 6px 28px rgba(15,76,129,0.22); position: relative; overflow: hidden; }
     .rekap-card::before { content: ''; position: absolute; top: -40px; right: -40px; width: 160px; height: 160px; border-radius: 50%; background: rgba(255,255,255,0.06); }
     .rekap-card::after { content: ''; position: absolute; bottom: -60px; right: 60px; width: 200px; height: 200px; border-radius: 50%; background: rgba(255,255,255,0.04); }
@@ -120,14 +117,12 @@
     .rekap-pulse { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #4ade80; margin-right: 5px; animation: pulse 2s infinite; vertical-align: middle; }
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
-    /* Lightbox */
     .lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.88); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.2s ease; }
     .lightbox.active { opacity: 1; pointer-events: all; }
     .lightbox img { max-width: 90vw; max-height: 85vh; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.6); object-fit: contain; }
     .lightbox-close { position: absolute; top: 20px; right: 20px; width: 40px; height: 40px; background: rgba(255,255,255,0.15); border: none; border-radius: 10px; color: #fff; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: var(--transition); }
     .lightbox-close:hover { background: rgba(255,255,255,0.28); }
 
-    /* Buttons */
     .action-bar { display: flex; gap: 12px; flex-wrap: wrap; }
     .btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; border-radius: 10px; border: none; font-size: 14px; font-weight: 700; cursor: pointer; transition: var(--transition); white-space: nowrap; }
     .btn-primary { background: var(--blue-primary); color: #fff; box-shadow: 0 4px 14px rgba(15,76,129,0.28); flex: 1; justify-content: center; }
@@ -139,13 +134,11 @@
     .btn.loading .btn-label, .btn.loading i { display: none; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ===== GENERATE MODAL ===== */
   .gen-overlay { position: fixed; inset: 0; background: rgba(10,30,60,0.72); z-index: 5000; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.28s ease; backdrop-filter: blur(4px); }
   .gen-overlay.active { opacity: 1; pointer-events: all; }
   .gen-modal { background: var(--white); border-radius: 22px; padding: 36px 32px 32px; width: 100%; max-width: 440px; box-shadow: 0 24px 80px rgba(15,76,129,0.28); transform: translateY(16px) scale(0.97); transition: transform 0.28s cubic-bezier(0.4,0,0.2,1); }
   .gen-overlay.active .gen-modal { transform: translateY(0) scale(1); }
 
-  /* -- proses panel -- */
   .gen-title { font-size: 16px; font-weight: 800; color: var(--blue-primary); margin-bottom: 6px; display: flex; align-items: center; gap: 9px; }
   .gen-title i { font-size: 19px; }
   .gen-sub { font-size: 12.5px; color: var(--text-secondary); margin-bottom: 26px; }
@@ -160,7 +153,6 @@
   .gen-pct { font-size: 13.5px; font-weight: 800; color: var(--blue-primary); }
   .gen-status-text { font-size: 13px; font-weight: 600; color: var(--text-secondary); text-align: center; margin-bottom: 22px; min-height: 18px; transition: opacity 0.25s ease; }
 
-  /* -- hasil panel -- */
   .gen-result { display: none; text-align: center; }
   .gen-result.show { display: block; animation: fadeUp 0.4s ease; }
   @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
@@ -180,7 +172,6 @@
   .btn-close-result { width:100%; margin-top:12px; padding:11px; border-radius:10px; border:1.5px solid var(--border); background:var(--white); color:var(--text-secondary); font-size:13.5px; font-weight:700; cursor:pointer; transition:var(--transition); }
   .btn-close-result:hover { background:var(--bg); color:var(--text-dark); }
 
-  /* ===== REFRESH CONFIRM MODAL ===== */
   .refresh-overlay { position: fixed; inset: 0; background: rgba(10,30,60,0.72); z-index: 99999; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.25s ease; backdrop-filter: blur(4px); }
   .refresh-overlay.active { opacity: 1; pointer-events: all; }
   .refresh-modal { background: var(--white); border-radius: 22px; padding: 32px 28px 28px; width: 100%; max-width: 400px; box-shadow: 0 24px 80px rgba(15,76,129,0.30); transform: translateY(16px) scale(0.97); transition: transform 0.28s cubic-bezier(0.4,0,0.2,1); }
@@ -213,7 +204,6 @@
     .status-bar { display: flex; align-items: center; gap: 8px; padding: 8px 14px; background: var(--blue-light); border-radius: 8px; margin-bottom: 20px; font-size: 12px; color: var(--blue-primary); font-weight: 600; border: 1px solid var(--border); }
     .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--success); animation: pulse 2s infinite; }
 
-    /* ===== QUEUE FAB & SIDEBAR ===== */
     .queue-fab { position: fixed; left: 18px; bottom: 22px; z-index: 4000; width: 56px; height: 56px; border-radius: 50%; background: var(--blue-primary); color: #fff; border: none; box-shadow: 0 8px 24px rgba(15,76,129,0.35); font-size: 22px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: var(--transition); }
     .queue-fab:hover { background: var(--blue-secondary); transform: translateY(-2px); }
     .queue-fab .queue-badge { position: absolute; top: -4px; right: -4px; background: var(--danger); color: #fff; font-size: 11px; font-weight: 800; min-width: 20px; height: 20px; border-radius: 10px; display: none; align-items: center; justify-content: center; padding: 0 5px; border: 2px solid var(--white); }
@@ -236,7 +226,7 @@
     .queue-item.clickable { cursor: pointer; }
     .queue-item.clickable:hover { border-color: var(--blue-secondary); box-shadow: 0 4px 14px rgba(15,76,129,0.10); }
     .queue-item.is-mine-processing { border-color: var(--blue-primary); background: var(--blue-light); }
-    .queue-item.is-other { opacity: 0.85; }
+    .queue-item.is-other { opacity: 0.75; }
     .queue-item-top { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
     .queue-item-icon { width: 34px; height: 34px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; }
     .queue-item-title { font-size: 12.5px; font-weight: 700; color: var(--text-dark); line-height: 1.3; }
@@ -250,8 +240,10 @@
     .queue-item-progress-bar { height: 100%; background: linear-gradient(90deg, #0F4C81, #2a8def); border-radius: 99px; transition: width 0.5s ease; }
     .queue-item-note { font-size: 11.5px; color: var(--text-secondary); margin-top: 8px; display: flex; align-items: center; gap: 6px; }
     .queue-item-note i { color: var(--blue-secondary); }
+    .queue-owner-tag { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 6px; margin-top: 4px; }
+    .queue-owner-tag.mine { background: #EFF6FF; color: #1D4ED8; }
+    .queue-owner-tag.other { background: #F3F4F6; color: #6B7280; }
 
-    /* queue panel inside generate modal */
     .gen-queue-panel { text-align: center; }
     .gen-queue-icon { width: 70px; height: 70px; background: #FEF3C7; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #B45309; font-size: 30px; margin: 0 auto 18px; animation: pulse 2s infinite; }
     .gen-queue-title { font-size: 16px; font-weight: 800; color: var(--text-dark); margin-bottom: 8px; }
@@ -281,6 +273,19 @@
     .gen-back-btn { width: 100%; margin-top: 16px; padding: 11px; border-radius: 10px; border: 1.5px solid var(--border); background: var(--white); color: var(--text-secondary); font-size: 13.5px; font-weight: 700; cursor: pointer; transition: var(--transition); }
     .gen-back-btn:hover { background: var(--bg); color: var(--text-dark); }
     .gen-process-hint { font-size: 11.5px; color: var(--text-secondary); text-align: center; margin-top: 10px; line-height: 1.5; }
+
+    /* ── AUTOCOMPLETE HISTORY ── */
+    .ac-wrap { position: relative; }
+    .ac-dropdown { position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: var(--white); border: 1.5px solid var(--blue-secondary); border-radius: var(--radius-input); box-shadow: 0 8px 24px rgba(15,76,129,0.14); z-index: 500; overflow: hidden; display: none; }
+    .ac-dropdown.open { display: block; }
+    .ac-item { display: flex; align-items: center; gap: 9px; padding: 9px 14px; font-size: 13px; color: var(--text-dark); cursor: pointer; transition: background 0.15s; border-bottom: 1px solid var(--border); }
+    .ac-item:last-child { border-bottom: none; }
+    .ac-item:hover, .ac-item.focused { background: var(--blue-light); }
+    .ac-item i { color: var(--text-secondary); font-size: 13px; flex-shrink: 0; }
+    .ac-item-text { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .ac-item-del { color: var(--text-secondary); font-size: 12px; padding: 2px 4px; border-radius: 4px; opacity: 0; transition: opacity 0.15s; }
+    .ac-item:hover .ac-item-del { opacity: 1; }
+    .ac-item-del:hover { color: var(--danger); background: #fee2e2; }
 
     @media (max-width: 600px) {
       .card { padding: 20px 16px; }
@@ -312,7 +317,6 @@
     <p>Isi formulir di bawah, lampirkan foto dokumentasi, lalu generate BA.</p>
   </div>
 
-  <!-- ===================== REKAP REALTIME ===================== -->
   <div class="rekap-card">
     <div class="rekap-label"><span class="rekap-pulse"></span>Preview Berita Acara — Update otomatis</div>
     <div class="rekap-judul empty" id="rekapJudul">Judul BA akan muncul di sini...</div>
@@ -321,7 +325,6 @@
     <div class="rekap-isi empty" id="rekapIsi">Isi BA akan muncul setelah data diisi...</div>
   </div>
 
-  <!-- ===================== INFORMASI PEKERJAAN ===================== -->
   <div class="card">
     <div class="card-header">
       <div class="card-icon"><i class="bi bi-info-circle-fill"></i></div>
@@ -331,7 +334,6 @@
       </div>
     </div>
 
-    <!-- Tanggal -->
     <div class="form-group">
       <label><i class="bi bi-calendar3" style="margin-right:5px;color:var(--blue-secondary)"></i>Tanggal</label>
       <div class="tanggal-row">
@@ -345,25 +347,30 @@
       </div>
     </div>
 
-    <!-- Pekerjaan Utama -->
+    <!-- Pekerjaan Utama + autocomplete -->
     <div class="form-group">
       <label><i class="bi bi-text-paragraph" style="margin-right:5px;color:var(--blue-secondary)"></i>Pekerjaan Utama <span class="required">*</span></label>
-      <div class="input-icon-wrap">
+      <div class="input-icon-wrap ac-wrap" id="acWrapDeskripsi">
         <i class="icon bi bi-briefcase"></i>
-        <input type="text" id="fieldDeskripsi" placeholder="cth: Pemasangan Keramik Lantai" oninput="updateRekap()" />
+        <input type="text" id="fieldDeskripsi" placeholder="cth: Pemasangan Keramik Lantai"
+               autocomplete="off" oninput="updateRekap(); acShow('deskripsi')"
+               onfocus="acShow('deskripsi')" />
+        <div class="ac-dropdown" id="acDropDeskripsi"></div>
       </div>
     </div>
 
-    <!-- Lokasi -->
+    <!-- Lokasi Pekerjaan + autocomplete -->
     <div class="form-group">
       <label><i class="bi bi-geo-alt-fill" style="margin-right:5px;color:var(--blue-secondary)"></i>Lokasi Pekerjaan <span class="required">*</span></label>
-      <div class="input-icon-wrap">
+      <div class="input-icon-wrap ac-wrap" id="acWrapLokasi">
         <i class="icon bi bi-geo-alt"></i>
-        <input type="text" id="fieldLokasi" placeholder="cth: Unit 12A Tower 2" oninput="updateRekap()" />
+        <input type="text" id="fieldLokasi" placeholder="cth: Unit 12A Tower 2"
+               autocomplete="off" oninput="updateRekap(); acShow('lokasi')"
+               onfocus="acShow('lokasi')" />
+        <div class="ac-dropdown" id="acDropLokasi"></div>
       </div>
     </div>
 
-    <!-- Deskripsi Pekerjaan -->
     <div class="form-group">
       <label><i class="bi bi-chat-square-text" style="margin-right:5px;color:var(--blue-secondary)"></i>Deskripsi Pekerjaan</label>
       <textarea id="fieldKeterangan" rows="4" placeholder="Uraian pekerjaan (opsional)" oninput="updateRekap()"></textarea>
@@ -371,7 +378,6 @@
 
   </div>
 
-  <!-- ===================== FOTO ===================== -->
   <div class="card">
     <div class="card-header">
       <div class="card-icon"><i class="bi bi-camera-fill"></i></div>
@@ -381,7 +387,6 @@
       </div>
     </div>
 
-    <!-- Hidden file inputs -->
     <input type="file" id="fileInput" accept="image/*" multiple style="display:none" />
     <input type="file" id="fileInputCamera" accept="image/*" multiple capture="environment" style="display:none" />
 
@@ -392,12 +397,10 @@
       <p style="font-size:11.5px;color:var(--text-secondary);margin-top:6px;"><i class="bi bi-arrow-down-circle" style="margin-right:4px;color:var(--blue-secondary);"></i>Atau seret &amp; jatuhkan foto ke sini</p>
       <div class="upload-source-btns" onclick="event.stopPropagation()">
         <button type="button" class="btn-source" onclick="document.getElementById('fileInputCamera').click()">
-          <i class="bi bi-camera-fill"></i>
-          <span>Kamera</span>
+          <i class="bi bi-camera-fill"></i><span>Kamera</span>
         </button>
         <button type="button" class="btn-source" onclick="document.getElementById('fileInput').click()">
-          <i class="bi bi-images"></i>
-          <span>Galeri</span>
+          <i class="bi bi-images"></i><span>Galeri</span>
         </button>
       </div>
     </div>
@@ -410,7 +413,6 @@
     <div class="photo-grid" id="photoGrid"></div>
   </div>
 
-  <!-- ===================== ACTION ===================== -->
   <div class="card" style="margin-bottom:0">
     <div class="action-bar">
       <button class="btn btn-primary" id="btnGenerate" onclick="handleGenerate()">
@@ -434,7 +436,6 @@
 <div class="gen-overlay" id="genOverlay">
   <div class="gen-modal" id="genModal">
 
-    <!-- PANEL ANTRIAN -->
     <div id="genQueuePanel" class="gen-queue-panel" style="display:none;">
       <div class="gen-queue-icon"><i class="bi bi-hourglass-split"></i></div>
       <div class="gen-queue-title" id="genQueueTitle">Menunggu Antrian</div>
@@ -442,6 +443,7 @@
       <div class="gen-queue-info">
         <div class="gen-queue-info-row"><span class="gen-queue-info-label">Dokumen</span><span class="gen-queue-info-val" id="genQueueDocTitle">—</span></div>
         <div class="gen-queue-info-row"><span class="gen-queue-info-label">Posisi Antrian</span><span class="gen-queue-info-val" id="genQueuePos">—</span></div>
+        <div class="gen-queue-info-row"><span class="gen-queue-info-label">Total Antrian</span><span class="gen-queue-info-val" id="genQueueTotal">—</span></div>
       </div>
 
       <div class="gen-queue-list-wrap">
@@ -453,7 +455,6 @@
       <div class="gen-process-hint">BA Anda tetap diproses di latar belakang. Pantau progresnya lewat menu Antrian.</div>
     </div>
 
-    <!-- PANEL PROSES -->
     <div id="genProcessPanel">
       <div class="gen-icon-anim"><i class="bi bi-file-earmark-text-fill" id="genModalIcon"></i></div>
       <div class="gen-title"><i class="bi bi-gear-wide-connected"></i> Memproses Berita Acara</div>
@@ -469,7 +470,6 @@
       <div class="gen-process-hint">Proses tetap berjalan di latar belakang. Anda bisa membuat BA lain atau memantau progres lewat menu Antrian.</div>
     </div>
 
-    <!-- PANEL HASIL -->
     <div class="gen-result" id="genResultPanel">
       <div class="gen-result-icon"><i class="bi bi-check-circle-fill"></i></div>
       <div class="gen-result-title">Dokumen Berhasil Dibuat!</div>
@@ -495,13 +495,11 @@
   <button class="lightbox-close" onclick="closeLightbox()"><i class="bi bi-x-lg"></i></button>
 </div>
 
-<!-- ===== QUEUE FAB ===== -->
 <button class="queue-fab" id="queueFab" onclick="openQueueSidebar()" title="Antrian & Proses BA">
   <i class="bi bi-list-task"></i>
   <span class="queue-badge" id="queueBadge">0</span>
 </button>
 
-<!-- ===== QUEUE SIDEBAR ===== -->
 <div class="queue-overlay" id="queueOverlay" onclick="if(event.target===this) closeQueueSidebar()">
   <div class="queue-sidebar">
     <div class="queue-sidebar-header">
@@ -513,7 +511,6 @@
   </div>
 </div>
 
-<!-- ===== REFRESH CONFIRM MODAL ===== -->
 <div class="refresh-overlay" id="refreshOverlay">
   <div class="refresh-modal">
     <div class="refresh-modal-icon"><i class="bi bi-arrow-clockwise"></i></div>
@@ -533,878 +530,964 @@
 <div id="toast-container"></div>
 
 <script>
-  /* ================================================================
-     CONFIG
-  ================================================================ */
-  const API_BASE_URL = 'https://api-bapl.qcdefect.online';
-  const POLL_INTERVAL_MS = 2000;
-  const UPLOAD_TIMEOUT_MS = 60000;
-  const POLL_TIMEOUT_MS = 300000; // 5 min max total poll time
-  const MAX_RETRY = 3;
-  const RETRY_DELAY_MS = 2000;
+/* ================================================================
+   CONFIG
+================================================================ */
+const API_BASE_URL      = 'https://api-bapl.qcdefect.online';
+const POLL_INTERVAL_MS  = 2000;
+const UPLOAD_TIMEOUT_MS = 60000;
+const POLL_TIMEOUT_MS   = 300000;
+const MAX_RETRY         = 3;
+const RETRY_DELAY_MS    = 2000;
 
-  /* ================================================================
-     STATE
-  ================================================================ */
-  let photos = [];
-  let manualDateActive = false;
-  let currentDateDisplay = '';
-  let currentHari = '';
+/* ================================================================
+   STATE
+================================================================ */
+let photos = [];
+let manualDateActive  = false;
+let currentDateDisplay = '';
+let currentHari       = '';
 
-  // jobs[]: { id, jobId, title, status, progress, message, fotoCount,
-  //           tanggal, excel_url, pdf_url, pollController, pollTimer }
-  let jobs = [];
-  let currentModalJobId = null;
+// jobs[]: { id, jobId, title, status, progress, displayProgress,
+//           message, position, fotoCount, tanggal,
+//           excel_url, pdf_url, pollTimer, progressAnimTimer }
+let jobs = [];
+let currentModalJobId = null;
 
-  /* ================================================================
-     DATE HELPERS
-  ================================================================ */
-  const HARI  = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
-  const BULAN = ['Januari','Februari','Maret','April','Mei','Juni','Juli',
-                 'Agustus','September','Oktober','November','Desember'];
+// Global queue dari server (semua user)
+let globalQueue = [];   // [{ job_id, position, status, is_mine }]
 
-  function formatTanggalBA(d) {
-    return `${HARI[d.getDay()]}, ${d.getDate()} ${BULAN[d.getMonth()]} ${d.getFullYear()}`;
+/* ================================================================
+   PROGRESS ANIMATOR
+   Gerak bertahap dari displayProgress → target, per-job.
+================================================================ */
+function animateProgressTo(job, target, onDone) {
+  if (job.progressAnimTimer) {
+    clearInterval(job.progressAnimTimer);
+    job.progressAnimTimer = null;
+  }
+  // Jangan turun
+  if (target <= job.displayProgress) {
+    job.displayProgress = target;
+    _flushProgressUI(job);
+    if (onDone) onDone();
+    return;
   }
 
-  function updateDateDisplay() {
-    if (manualDateActive) return;
-    const now = new Date();
-    currentHari        = HARI[now.getDay()];
-    currentDateDisplay = formatTanggalBA(now);
-    document.getElementById('fieldTanggal').value = currentDateDisplay;
-    updateRekap();
-  }
+  job.progressAnimTimer = setInterval(() => {
+    // Kecepatan: lambat di awal & menjelang akhir, cepat di tengah
+    const diff = target - job.displayProgress;
+    const step = Math.max(1, Math.round(diff * 0.07));
+    job.displayProgress = Math.min(target, job.displayProgress + step);
+    _flushProgressUI(job);
 
-  function toggleManualDate() {
-    manualDateActive = !manualDateActive;
-    const wrap = document.getElementById('manualDateWrap');
-    const btn  = document.getElementById('btnTanggalToggle');
-    wrap.classList.toggle('show', manualDateActive);
-    btn.classList.toggle('active', manualDateActive);
-    if (!manualDateActive) {
-      updateDateDisplay();
-      showToast('Tanggal otomatis', 'Kembali ke tanggal & waktu sekarang', 'info', 'bi-clock');
-    } else {
-      const today = new Date();
-      const yyyy  = today.getFullYear();
-      const mm    = String(today.getMonth() + 1).padStart(2, '0');
-      const dd    = String(today.getDate()).padStart(2, '0');
-      document.getElementById('fieldTanggalManual').value = `${yyyy}-${mm}-${dd}`;
-      showToast('Mode tanggal manual', 'Pilih tanggal sesuai kebutuhan', 'info', 'bi-pencil-square');
+    if (job.displayProgress >= target) {
+      clearInterval(job.progressAnimTimer);
+      job.progressAnimTimer = null;
+      if (onDone) onDone();
     }
+  }, 60);
+}
+
+function _flushProgressUI(job) {
+  const pct = Math.round(job.displayProgress);
+  // Update sidebar item
+  renderQueueSidebar();
+  updateQueueBadge();
+  // Update modal jika terbuka untuk job ini
+  if (currentModalJobId === job.id &&
+      document.getElementById('genOverlay').classList.contains('active')) {
+    document.getElementById('genBar').style.width  = pct + '%';
+    document.getElementById('genPct').textContent  = pct + '%';
+  }
+}
+
+/* ================================================================
+   DATE HELPERS
+================================================================ */
+const HARI  = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+const BULAN = ['Januari','Februari','Maret','April','Mei','Juni','Juli',
+               'Agustus','September','Oktober','November','Desember'];
+
+function formatTanggalBA(d) {
+  return `${HARI[d.getDay()]}, ${d.getDate()} ${BULAN[d.getMonth()]} ${d.getFullYear()}`;
+}
+
+function updateDateDisplay() {
+  if (manualDateActive) return;
+  const now = new Date();
+  currentHari        = HARI[now.getDay()];
+  currentDateDisplay = formatTanggalBA(now);
+  document.getElementById('fieldTanggal').value = currentDateDisplay;
+  updateRekap();
+}
+
+function toggleManualDate() {
+  manualDateActive = !manualDateActive;
+  const wrap = document.getElementById('manualDateWrap');
+  const btn  = document.getElementById('btnTanggalToggle');
+  wrap.classList.toggle('show', manualDateActive);
+  btn.classList.toggle('active', manualDateActive);
+  if (!manualDateActive) {
+    updateDateDisplay();
+    showToast('Tanggal otomatis', 'Kembali ke tanggal & waktu sekarang', 'info', 'bi-clock');
+  } else {
+    const today = new Date();
+    document.getElementById('fieldTanggalManual').value =
+      `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+    showToast('Mode tanggal manual', 'Pilih tanggal sesuai kebutuhan', 'info', 'bi-pencil-square');
+  }
+}
+
+function applyManualDate() {
+  const val = document.getElementById('fieldTanggalManual').value;
+  if (!val) return;
+  const d = new Date(val + 'T00:00:00');
+  currentHari        = HARI[d.getDay()];
+  currentDateDisplay = formatTanggalBA(d);
+  document.getElementById('fieldTanggal').value = currentDateDisplay;
+  updateRekap();
+}
+
+updateDateDisplay();
+setInterval(() => { if (!manualDateActive) updateDateDisplay(); }, 30000);
+
+/* ================================================================
+   REKAP REALTIME
+================================================================ */
+function updateRekap() {
+  const deskripsi  = document.getElementById('fieldDeskripsi').value.trim();
+  const lokasi     = document.getElementById('fieldLokasi').value.trim();
+  const keterangan = document.getElementById('fieldKeterangan').value.trim();
+  const tanggal    = currentDateDisplay;
+  const judulEl    = document.getElementById('rekapJudul');
+  const isiEl      = document.getElementById('rekapIsi');
+
+  if (deskripsi || lokasi) {
+    judulEl.textContent = [deskripsi, lokasi].filter(Boolean).join(' ').toUpperCase();
+    judulEl.classList.remove('empty');
+  } else {
+    judulEl.textContent = 'Judul BA akan muncul di sini...';
+    judulEl.classList.add('empty');
   }
 
-  function applyManualDate() {
-    const val = document.getElementById('fieldTanggalManual').value;
-    if (!val) return;
-    const d = new Date(val + 'T00:00:00');
-    currentHari        = HARI[d.getDay()];
-    currentDateDisplay = formatTanggalBA(d);
-    document.getElementById('fieldTanggal').value = currentDateDisplay;
-    updateRekap();
+  if (deskripsi && lokasi) {
+    let kalimat = `Pada hari ${tanggal} telah dilakukan pekerjaan ${deskripsi} pada area ${lokasi}`;
+    if (keterangan) kalimat += `, ${keterangan}`;
+    kalimat += '.';
+    isiEl.textContent = kalimat;
+    isiEl.classList.remove('empty');
+  } else {
+    isiEl.textContent = 'Isi BA akan muncul setelah Deskripsi Pekerjaan dan Lokasi diisi...';
+    isiEl.classList.add('empty');
   }
+}
 
-  updateDateDisplay();
-  setInterval(() => { if (!manualDateActive) updateDateDisplay(); }, 30000);
+function resetFormAfterSubmit() {
+  document.getElementById('fieldLokasi').value     = '';
+  document.getElementById('fieldDeskripsi').value  = '';
+  document.getElementById('fieldKeterangan').value = '';
+  photos.forEach(p => URL.revokeObjectURL(p.url));
+  photos.length = 0;
+  renderGrid();
+  updateCounter();
+  updateRekap();
+}
 
-  /* ================================================================
-     REKAP REALTIME
-  ================================================================ */
-  function updateRekap() {
-    const deskripsi  = document.getElementById('fieldDeskripsi').value.trim();
-    const lokasi     = document.getElementById('fieldLokasi').value.trim();
-    const keterangan = document.getElementById('fieldKeterangan').value.trim();
-    const tanggal    = currentDateDisplay;
-    const judulEl    = document.getElementById('rekapJudul');
-    const isiEl      = document.getElementById('rekapIsi');
+function handleResetForm() {
+  const lokasi     = document.getElementById('fieldLokasi').value.trim();
+  const deskripsi  = document.getElementById('fieldDeskripsi').value.trim();
+  const keterangan = document.getElementById('fieldKeterangan').value.trim();
+  const hasPhotos  = photos.length > 0;
 
-    if (deskripsi || lokasi) {
-      judulEl.textContent = [deskripsi, lokasi].filter(Boolean).join(' ').toUpperCase();
-      judulEl.classList.remove('empty');
-    } else {
-      judulEl.textContent = 'Judul BA akan muncul di sini...';
-      judulEl.classList.add('empty');
-    }
-
-    if (deskripsi && lokasi) {
-      let kalimat = `Pada hari ${tanggal} telah dilakukan pekerjaan ${deskripsi} pada area ${lokasi}`;
-      if (keterangan) kalimat += `, ${keterangan}`;
-      kalimat += '.';
-      isiEl.textContent = kalimat;
-      isiEl.classList.remove('empty');
-    } else {
-      isiEl.textContent = 'Isi BA akan muncul setelah Deskripsi Pekerjaan dan Lokasi diisi...';
-      isiEl.classList.add('empty');
-    }
+  if (!lokasi && !deskripsi && !keterangan && !hasPhotos) {
+    showToast('Form sudah kosong', '', 'info', 'bi-info-circle-fill');
+    return;
   }
-
-  function resetFormAfterSubmit() {
-    // Kosongkan field input
-    document.getElementById('fieldLokasi').value     = '';
-    document.getElementById('fieldDeskripsi').value  = '';
-    document.getElementById('fieldKeterangan').value = '';
-
-    // Bersihkan semua foto + revoke object URL
-    photos.forEach(p => URL.revokeObjectURL(p.url));
-    photos.length = 0;
-    renderGrid();
-    updateCounter();
-
-    // Refresh rekap realtime ke state kosong
-    updateRekap();
+  if (manualDateActive) {
+    manualDateActive = false;
+    document.getElementById('manualDateWrap').classList.remove('show');
+    document.getElementById('btnTanggalToggle').classList.remove('active');
+    updateDateDisplay();
   }
+  resetFormAfterSubmit();
+  showToast('Form direset', 'Semua isian dan foto telah dihapus', 'success', 'bi-arrow-counterclockwise');
+}
 
-  function handleResetForm() {
-    const lokasi     = document.getElementById('fieldLokasi').value.trim();
-    const deskripsi  = document.getElementById('fieldDeskripsi').value.trim();
-    const keterangan = document.getElementById('fieldKeterangan').value.trim();
-    const hasPhotos  = photos.length > 0;
+/* ================================================================
+   UPLOAD / PHOTO
+================================================================ */
+const fileInput = document.getElementById('fileInput');
+const dropZone  = document.getElementById('dropZone');
 
-    if (!lokasi && !deskripsi && !keterangan && !hasPhotos) {
-      showToast('Form sudah kosong', '', 'info', 'bi-info-circle-fill');
-      return;
-    }
+fileInput.addEventListener('change', () => addFiles(fileInput.files));
+document.getElementById('fileInputCamera').addEventListener('change', function () { addFiles(this.files); });
+dropZone.addEventListener('dragover',  e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', ()  => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault(); dropZone.classList.remove('drag-over'); addFiles(e.dataTransfer.files);
+});
 
-    // Reset tanggal manual kembali ke mode otomatis
-    if (manualDateActive) {
-      manualDateActive = false;
-      document.getElementById('manualDateWrap').classList.remove('show');
-      document.getElementById('btnTanggalToggle').classList.remove('active');
-      updateDateDisplay();
-    }
-
-    // Tidak menyentuh jobs[] / antrian — hanya form & foto
-    resetFormAfterSubmit();
-    showToast('Form direset', 'Semua isian dan foto telah dihapus', 'success', 'bi-arrow-counterclockwise');
-  }
-
-  /* ================================================================
-     UPLOAD / PHOTO
-  ================================================================ */
-  const fileInput = document.getElementById('fileInput');
-  const dropZone  = document.getElementById('dropZone');
-
-  fileInput.addEventListener('change', () => addFiles(fileInput.files));
-  document.getElementById('fileInputCamera').addEventListener('change', function () { addFiles(this.files); });
-  dropZone.addEventListener('dragover',  e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
-  dropZone.addEventListener('dragleave', ()  => dropZone.classList.remove('drag-over'));
-  dropZone.addEventListener('drop', e => {
-    e.preventDefault();
-    dropZone.classList.remove('drag-over');
-    addFiles(e.dataTransfer.files);
+function addFiles(fileList) {
+  const newFiles = Array.from(fileList).filter(f => f.type.startsWith('image/'));
+  if (!newFiles.length) return;
+  newFiles.forEach(file => {
+    const id  = Date.now() + Math.random().toString(36).slice(2);
+    const url = URL.createObjectURL(file);
+    photos.push({ id, file, url, name: file.name });
   });
+  fileInput.value = '';
+  renderGrid(); updateCounter();
+  showToast(`${newFiles.length} foto ditambahkan`, `Total ${photos.length} foto siap dilampirkan`, 'success', 'bi-check-circle-fill');
+}
 
-  function addFiles(fileList) {
-    const newFiles = Array.from(fileList).filter(f => f.type.startsWith('image/'));
-    if (!newFiles.length) return;
-    newFiles.forEach(file => {
-      const id  = Date.now() + Math.random().toString(36).slice(2);
-      const url = URL.createObjectURL(file);
-      photos.push({ id, file, url, name: file.name });
-    });
-    fileInput.value = '';
-    renderGrid();
-    updateCounter();
-    showToast(`${newFiles.length} foto ditambahkan`, `Total ${photos.length} foto siap dilampirkan`, 'success', 'bi-check-circle-fill');
+function renderGrid() {
+  const grid = document.getElementById('photoGrid');
+  grid.innerHTML = '';
+  photos.forEach(photo => {
+    const thumb = document.createElement('div');
+    thumb.className = 'photo-thumb';
+    thumb.innerHTML = `
+      <img src="${photo.url}" alt="${photo.name}" loading="lazy" />
+      <div class="photo-thumb-overlay">
+        <button class="photo-thumb-btn btn-preview" onclick="openLightbox('${photo.url}')"><i class="bi bi-zoom-in"></i></button>
+        <button class="photo-thumb-btn btn-remove" onclick="removePhoto('${photo.id}')"><i class="bi bi-trash3-fill"></i></button>
+      </div>
+      <div class="photo-thumb-label">${photo.name}</div>`;
+    grid.appendChild(thumb);
+  });
+}
+
+function removePhoto(id) {
+  const idx = photos.findIndex(p => p.id === id);
+  if (idx === -1) return;
+  URL.revokeObjectURL(photos[idx].url);
+  photos.splice(idx, 1);
+  renderGrid(); updateCounter();
+  showToast('Foto dihapus', `Sisa ${photos.length} foto`, 'info', 'bi-trash3');
+}
+
+function updateCounter() {
+  const counter = document.getElementById('photoCounter');
+  const text    = document.getElementById('photoCountText');
+  const sub     = document.getElementById('photoCountSub');
+  const n       = photos.length;
+  counter.dataset.count = n;
+  if (n === 0) { text.textContent = 'Belum ada foto'; sub.textContent = ''; }
+  else {
+    text.textContent = `${n} Foto Dipilih`;
+    sub.textContent  = `±${(photos.reduce((s,p) => s+(p.file.size||0), 0)/1048576).toFixed(1)} MB`;
+  }
+}
+
+/* ================================================================
+   LIGHTBOX
+================================================================ */
+function openLightbox(url) {
+  document.getElementById('lightboxImg').src = url;
+  document.getElementById('lightbox').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('active');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeLightbox(); acCloseAll(); } });
+
+/* ================================================================
+   VALIDATION
+================================================================ */
+function validate() {
+  const lokasi    = document.getElementById('fieldLokasi').value.trim();
+  const deskripsi = document.getElementById('fieldDeskripsi').value.trim();
+  if (!lokasi) {
+    showToast('Lokasi wajib diisi', '', 'danger', 'bi-exclamation-triangle-fill');
+    document.getElementById('fieldLokasi').focus(); return false;
+  }
+  if (!deskripsi) {
+    showToast('Deskripsi wajib diisi', '', 'danger', 'bi-exclamation-triangle-fill');
+    document.getElementById('fieldDeskripsi').focus(); return false;
+  }
+  return true;
+}
+
+/* ================================================================
+   NETWORK HELPERS
+================================================================ */
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+async function fetchWithTimeout(url, options = {}, timeoutMs = UPLOAD_TIMEOUT_MS) {
+  const ctrl  = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+  try {
+    const resp = await fetch(url, { ...options, signal: ctrl.signal });
+    clearTimeout(timer); return resp;
+  } catch (err) { clearTimeout(timer); throw err; }
+}
+
+async function fetchWithRetry(url, options = {}, timeoutMs = UPLOAD_TIMEOUT_MS, maxRetry = MAX_RETRY) {
+  let lastErr;
+  for (let i = 1; i <= maxRetry; i++) {
+    try { return await fetchWithTimeout(url, options, timeoutMs); }
+    catch (err) { lastErr = err; if (i < maxRetry) await sleep(RETRY_DELAY_MS * i); }
+  }
+  throw lastErr;
+}
+
+function friendlyError(err) {
+  if (err && err.name === 'AbortError') return 'Request timeout. Periksa koneksi internet Anda.';
+  if (err instanceof TypeError)          return 'Tidak dapat terhubung ke server. Periksa koneksi internet.';
+  return err && err.message ? err.message : 'Terjadi kesalahan yang tidak diketahui.';
+}
+
+/* ================================================================
+   GENERATE BA — SUBMIT
+================================================================ */
+async function handleGenerate() {
+  if (!validate()) return;
+  const btn = document.getElementById('btnGenerate');
+  setLoading(btn, true);
+  try { await submitBAJob(); } catch (_) { setLoading(btn, false); }
+}
+
+function setLoading(btn, state) {
+  btn.classList.toggle('loading', state);
+  btn.disabled = state;
+}
+
+async function submitBAJob() {
+  const tanggal    = currentDateDisplay;
+  const lokasi     = document.getElementById('fieldLokasi').value.trim();
+  const deskripsi  = document.getElementById('fieldDeskripsi').value.trim();
+  const keterangan = document.getElementById('fieldKeterangan').value.trim();
+  const title      = [deskripsi, lokasi].filter(Boolean).join(' ').toUpperCase() || 'BERITA ACARA PEKERJAAN';
+
+  // Simpan riwayat sebelum reset
+  if (deskripsi) acSave('deskripsi', deskripsi);
+  if (lokasi)    acSave('lokasi', lokasi);
+
+  const formData = new FormData();
+  formData.append('tanggal',    tanggal);
+  formData.append('lokasi',     lokasi);
+  formData.append('deskripsi',  deskripsi);
+  formData.append('keterangan', keterangan);
+  photos.forEach(p => formData.append('photos[]', p.file, p.name));
+
+  let resp;
+  try {
+    resp = await fetchWithRetry(`${API_BASE_URL}/ba/generate`, { method: 'POST', body: formData }, UPLOAD_TIMEOUT_MS, MAX_RETRY);
+  } catch (err) {
+    showToast('Upload gagal', friendlyError(err), 'danger', 'bi-wifi-off');
+    setLoading(document.getElementById('btnGenerate'), false); return;
   }
 
-  function renderGrid() {
-    const grid = document.getElementById('photoGrid');
-    grid.innerHTML = '';
-    photos.forEach(photo => {
-      const thumb = document.createElement('div');
-      thumb.className = 'photo-thumb';
-      thumb.innerHTML = `
-        <img src="${photo.url}" alt="${photo.name}" loading="lazy" />
-        <div class="photo-thumb-overlay">
-          <button class="photo-thumb-btn btn-preview" onclick="openLightbox('${photo.url}')"><i class="bi bi-zoom-in"></i></button>
-          <button class="photo-thumb-btn btn-remove" onclick="removePhoto('${photo.id}')"><i class="bi bi-trash3-fill"></i></button>
-        </div>
-        <div class="photo-thumb-label">${photo.name}</div>`;
-      grid.appendChild(thumb);
-    });
+  if (!resp.ok) {
+    let msg = `Server error ${resp.status}`;
+    try { const d = await resp.json(); msg = d.message || msg; } catch (_) {}
+    showToast('Generate gagal', msg, 'danger', 'bi-exclamation-triangle-fill');
+    setLoading(document.getElementById('btnGenerate'), false); return;
   }
 
-  function removePhoto(id) {
-    const idx = photos.findIndex(p => p.id === id);
-    if (idx === -1) return;
-    URL.revokeObjectURL(photos[idx].url);
-    photos.splice(idx, 1);
-    renderGrid();
-    updateCounter();
-    showToast('Foto dihapus', `Sisa ${photos.length} foto`, 'info', 'bi-trash3');
+  let data;
+  try { data = await resp.json(); } catch (_) {
+    showToast('Response tidak valid', 'Server mengembalikan data yang tidak dapat dibaca.', 'danger', 'bi-exclamation-triangle-fill');
+    setLoading(document.getElementById('btnGenerate'), false); return;
   }
 
-  function updateCounter() {
-    const counter  = document.getElementById('photoCounter');
-    const text     = document.getElementById('photoCountText');
-    const sub      = document.getElementById('photoCountSub');
-    const n        = photos.length;
-    counter.dataset.count = n;
-    if (n === 0) {
-      text.textContent = 'Belum ada foto';
-      sub.textContent  = '';
-    } else {
-      text.textContent = `${n} Foto Dipilih`;
-      const totalMB    = (photos.reduce((s, p) => s + (p.file.size || 0), 0) / 1048576).toFixed(1);
-      sub.textContent  = `±${totalMB} MB`;
+  if (!data.job_id) {
+    showToast('Response tidak valid', 'job_id tidak ditemukan dalam response server.', 'danger', 'bi-exclamation-triangle-fill');
+    setLoading(document.getElementById('btnGenerate'), false); return;
+  }
+
+  const job = {
+    id:              'local_' + Date.now(),
+    jobId:           data.job_id,
+    title,
+    status:          'queued',
+    progress:        0,
+    displayProgress: 0,
+    message:         'Menunggu antrian',
+    position:        null,
+    fotoCount:       photos.length,
+    tanggal,
+    excel_url:       null,
+    pdf_url:         null,
+    pollTimer:       null,
+    progressAnimTimer: null,
+  };
+  jobs.push(job);
+
+  setLoading(document.getElementById('btnGenerate'), false);
+  showToast('BA Ditambahkan ke Antrian', title, 'info', 'bi-clock-history');
+  resetFormAfterSubmit();
+
+  currentModalJobId = job.id;
+  openGenModal();
+  renderModalForJob(job.id);
+  renderQueueSidebar();
+  updateQueueBadge();
+  startPolling(job.id);
+}
+
+/* ================================================================
+   POLLING
+================================================================ */
+function startPolling(localId) {
+  const job = jobs.find(j => j.id === localId);
+  if (!job) return;
+  stopPolling(localId);
+  const startTime = Date.now();
+
+  async function doPoll() {
+    if (!job || job.status === 'completed' || job.status === 'failed') return;
+    if (Date.now() - startTime > POLL_TIMEOUT_MS) {
+      job.status  = 'failed';
+      job.message = 'Waktu tunggu habis. Silakan coba lagi.';
+      onJobFailed(job); return;
     }
-  }
-
-  /* ================================================================
-     LIGHTBOX
-  ================================================================ */
-  function openLightbox(url) {
-    document.getElementById('lightboxImg').src = url;
-    document.getElementById('lightbox').classList.add('active');
-    document.body.style.overflow = 'hidden';
-  }
-  function closeLightbox() {
-    document.getElementById('lightbox').classList.remove('active');
-    document.body.style.overflow = '';
-  }
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
-
-  /* ================================================================
-     VALIDATION
-  ================================================================ */
-  function validate() {
-    const lokasi    = document.getElementById('fieldLokasi').value.trim();
-    const deskripsi = document.getElementById('fieldDeskripsi').value.trim();
-    if (!lokasi) {
-      showToast('Lokasi wajib diisi', '', 'danger', 'bi-exclamation-triangle-fill');
-      document.getElementById('fieldLokasi').focus();
-      return false;
-    }
-    if (!deskripsi) {
-      showToast('Deskripsi wajib diisi', '', 'danger', 'bi-exclamation-triangle-fill');
-      document.getElementById('fieldDeskripsi').focus();
-      return false;
-    }
-    return true;
-  }
-
-  /* ================================================================
-     NETWORK HELPERS
-  ================================================================ */
-  function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
-
-  async function fetchWithTimeout(url, options = {}, timeoutMs = UPLOAD_TIMEOUT_MS) {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), timeoutMs);
-    try {
-      const resp = await fetch(url, { ...options, signal: controller.signal });
-      clearTimeout(timer);
-      return resp;
-    } catch (err) {
-      clearTimeout(timer);
-      throw err;
-    }
-  }
-
-  async function fetchWithRetry(url, options = {}, timeoutMs = UPLOAD_TIMEOUT_MS, maxRetry = MAX_RETRY) {
-    let lastErr;
-    for (let attempt = 1; attempt <= maxRetry; attempt++) {
-      try {
-        const resp = await fetchWithTimeout(url, options, timeoutMs);
-        return resp;
-      } catch (err) {
-        lastErr = err;
-        if (attempt < maxRetry) await sleep(RETRY_DELAY_MS * attempt);
-      }
-    }
-    throw lastErr;
-  }
-
-  function isNetworkError(err) {
-    return err instanceof TypeError || err.name === 'AbortError' || err.name === 'TypeError';
-  }
-
-  function friendlyError(err) {
-    if (err && err.name === 'AbortError') return 'Request timeout. Periksa koneksi internet Anda.';
-    if (isNetworkError(err))              return 'Tidak dapat terhubung ke server. Periksa koneksi internet.';
-    return err && err.message ? err.message : 'Terjadi kesalahan yang tidak diketahui.';
-  }
-
-  /* ================================================================
-     GENERATE BA — SUBMIT
-  ================================================================ */
-  async function handleGenerate() {
-    if (!validate()) return;
-    const btn = document.getElementById('btnGenerate');
-    setLoading(btn, true);
-    try {
-      await submitBAJob();
-    } catch (err) {
-      setLoading(btn, false);
-    }
-  }
-
-  function setLoading(btn, state) {
-    btn.classList.toggle('loading', state);
-    btn.disabled = state;
-  }
-
-  async function submitBAJob() {
-    const tanggal    = currentDateDisplay;
-    const lokasi     = document.getElementById('fieldLokasi').value.trim();
-    const deskripsi  = document.getElementById('fieldDeskripsi').value.trim();
-    const keterangan = document.getElementById('fieldKeterangan').value.trim();
-    const title      = [deskripsi, lokasi].filter(Boolean).join(' ').toUpperCase() || 'BERITA ACARA PEKERJAAN';
-
-    const formData = new FormData();
-    formData.append('tanggal',    tanggal);
-    formData.append('lokasi',     lokasi);
-    formData.append('deskripsi',  deskripsi);
-    formData.append('keterangan', keterangan);
-    photos.forEach(p => formData.append('photos[]', p.file, p.name));
 
     let resp;
     try {
-      resp = await fetchWithRetry(
-        `${API_BASE_URL}/ba/generate`,
-        { method: 'POST', body: formData },
-        UPLOAD_TIMEOUT_MS,
-        MAX_RETRY
-      );
-    } catch (err) {
-      showToast('Upload gagal', friendlyError(err), 'danger', 'bi-wifi-off');
-      setLoading(document.getElementById('btnGenerate'), false);
-      return;
+      resp = await fetchWithTimeout(`${API_BASE_URL}/ba/status/${job.jobId}`, { method: 'GET' }, 10000);
+    } catch (_) {
+      showToast('Koneksi terputus', 'Mencoba menghubungi server kembali...', 'danger', 'bi-wifi-off');
+      job.pollTimer = setTimeout(doPoll, POLL_INTERVAL_MS * 3); return;
     }
 
-    if (!resp.ok) {
-      let msg = `Server error ${resp.status}`;
-      try { const d = await resp.json(); msg = d.message || msg; } catch (_) {}
-      showToast('Generate gagal', msg, 'danger', 'bi-exclamation-triangle-fill');
-      setLoading(document.getElementById('btnGenerate'), false);
-      return;
-    }
+    if (!resp.ok) { job.pollTimer = setTimeout(doPoll, POLL_INTERVAL_MS * 2); return; }
 
     let data;
-    try {
-      data = await resp.json();
-    } catch (_) {
-      showToast('Response tidak valid', 'Server mengembalikan data yang tidak dapat dibaca.', 'danger', 'bi-exclamation-triangle-fill');
-      setLoading(document.getElementById('btnGenerate'), false);
-      return;
+    try { data = await resp.json(); } catch (_) { job.pollTimer = setTimeout(doPoll, POLL_INTERVAL_MS); return; }
+
+    applyStatusUpdate(job, data);
+    if (job.status !== 'completed' && job.status !== 'failed') {
+      job.pollTimer = setTimeout(doPoll, POLL_INTERVAL_MS);
     }
-
-    if (!data.job_id) {
-      showToast('Response tidak valid', 'job_id tidak ditemukan dalam response server.', 'danger', 'bi-exclamation-triangle-fill');
-      setLoading(document.getElementById('btnGenerate'), false);
-      return;
-    }
-
-    // Job berhasil dibuat — buat entry lokal
-    const job = {
-      id:         'local_' + Date.now(),
-      jobId:      data.job_id,
-      title:      title,
-      status:     'queued',
-      progress:   0,
-      message:    'Menunggu antrian',
-      position:   null,
-      fotoCount:  photos.length,
-      tanggal:    tanggal,
-      excel_url:  null,
-      pdf_url:    null,
-      pollTimer:  null,
-    };
-    jobs.push(job);
-
-    setLoading(document.getElementById('btnGenerate'), false);
-    showToast('BA Ditambahkan ke Antrian', title, 'info', 'bi-clock-history');
-    resetFormAfterSubmit();
-
-    currentModalJobId = job.id;
-    openGenModal();
-    renderModalForJob(job.id);
-    renderQueueSidebar();
-    updateQueueBadge();
-
-    startPolling(job.id);
   }
 
-  /* ================================================================
-     POLLING
-  ================================================================ */
-  function startPolling(localId) {
-    const job = jobs.find(j => j.id === localId);
-    if (!job) return;
-    stopPolling(localId); // reset jika sudah ada
+  job.pollTimer = setTimeout(doPoll, POLL_INTERVAL_MS);
+}
 
-    const startTime = Date.now();
+function stopPolling(localId) {
+  const job = jobs.find(j => j.id === localId);
+  if (!job) return;
+  if (job.pollTimer) { clearTimeout(job.pollTimer); job.pollTimer = null; }
+  if (job.progressAnimTimer) { clearInterval(job.progressAnimTimer); job.progressAnimTimer = null; }
+}
 
-    async function doPoll() {
-      if (!job || job.status === 'completed' || job.status === 'failed') return;
+/* ================================================================
+   STATUS UPDATE + NATURAL PROGRESS
+================================================================ */
+function applyStatusUpdate(job, data) {
+  const prevStatus = job.status;
 
-      // Timeout total polling
-      if (Date.now() - startTime > POLL_TIMEOUT_MS) {
-        job.status  = 'failed';
-        job.message = 'Waktu tunggu habis. Silakan coba lagi.';
-        onJobFailed(job);
-        return;
+  // ── Update global queue dari server (queue_info bisa berupa array semua job aktif)
+  if (Array.isArray(data.queue_info)) {
+    // Tandai mana yg milik user ini
+    const myJobIds = new Set(jobs.map(j => j.jobId));
+    globalQueue = data.queue_info
+      .filter(q => q.status === 'queued' || q.status === 'processing')
+      .map(q => ({ ...q, is_mine: myJobIds.has(q.job_id) }));
+  }
+
+  switch (data.status) {
+    case 'queued':
+      job.status   = 'queued';
+      job.message  = data.message  || 'Menunggu antrian';
+      job.position = data.position || null;
+      // Gerak perlahan ke max 15% saat masih antri
+      animateProgressTo(job, Math.min(15, data.progress || 5));
+      break;
+
+    case 'processing': {
+      job.status   = 'processing';
+      job.message  = data.message  || 'Sedang diproses';
+      job.position = null;
+      if (prevStatus !== 'processing') {
+        showToast('BA Mulai Diproses', job.title, 'info', 'bi-gear-wide-connected');
       }
-
-      let resp;
-      try {
-        resp = await fetchWithTimeout(
-          `${API_BASE_URL}/ba/status/${job.jobId}`,
-          { method: 'GET' },
-          10000
-        );
-      } catch (err) {
-        // Jaringan putus — coba lagi di polling berikutnya
-        showToast('Koneksi terputus', 'Mencoba menghubungi server kembali...', 'danger', 'bi-wifi-off');
-        job.pollTimer = setTimeout(doPoll, POLL_INTERVAL_MS * 3);
-        return;
-      }
-
-      if (!resp.ok) {
-        // Server error transien — retry
-        job.pollTimer = setTimeout(doPoll, POLL_INTERVAL_MS * 2);
-        return;
-      }
-
-      let data;
-      try {
-        data = await resp.json();
-      } catch (_) {
-        job.pollTimer = setTimeout(doPoll, POLL_INTERVAL_MS);
-        return;
-      }
-
-      applyStatusUpdate(job, data);
-
-      if (job.status !== 'completed' && job.status !== 'failed') {
-        job.pollTimer = setTimeout(doPoll, POLL_INTERVAL_MS);
-      }
+      // Server kirim progress 0–100; kita animasikan ke max 90
+      // (100 hanya saat completed) agar tidak melompat
+      const serverPct = data.progress || 0;
+      const targetPct = Math.min(90, Math.max(job.displayProgress, serverPct));
+      animateProgressTo(job, targetPct);
+      break;
     }
 
-    job.pollTimer = setTimeout(doPoll, POLL_INTERVAL_MS);
+    case 'completed':
+      job.status    = 'completed';
+      job.message   = 'Selesai';
+      job.excel_url = data.excel_url || null;
+      job.pdf_url   = data.pdf_url   || null;
+      // Animasikan dari posisi sekarang → 100 lalu tampilkan hasil
+      animateProgressTo(job, 100, () => onJobCompleted(job));
+      return; // return lebih awal, onJobCompleted dipanggil dari callback
+
+    case 'failed':
+      job.status  = 'failed';
+      job.message = data.message || 'Terjadi kesalahan pada server';
+      onJobFailed(job); return;
+
+    default: break;
   }
 
-  function stopPolling(localId) {
-    const job = jobs.find(j => j.id === localId);
-    if (!job) return;
-    if (job.pollTimer) { clearTimeout(job.pollTimer); job.pollTimer = null; }
-  }
-
-  function applyStatusUpdate(job, data) {
-    const prevStatus = job.status;
-
-    switch (data.status) {
-      case 'queued':
-        job.status   = 'queued';
-        job.progress = data.progress || 0;
-        job.message  = data.message  || 'Menunggu antrian';
-        job.position = data.position || null;
-        break;
-
-      case 'processing':
-        job.status   = 'processing';
-        job.progress = data.progress || 0;
-        job.message  = data.message  || 'Sedang diproses';
-        job.position = null;
-        if (prevStatus !== 'processing') {
-          showToast('BA Mulai Diproses', job.title, 'info', 'bi-gear-wide-connected');
-        }
-        break;
-
-      case 'completed':
-        job.status    = 'completed';
-        job.progress  = 100;
-        job.message   = 'Selesai';
-        job.excel_url = data.excel_url || null;
-        job.pdf_url   = data.pdf_url   || null;
-        onJobCompleted(job);
-        break;
-
-      case 'failed':
-        job.status  = 'failed';
-        job.message = data.message || 'Terjadi kesalahan pada server';
-        onJobFailed(job);
-        break;
-
-      default:
-        break;
-    }
-
-    renderQueueSidebar();
-    updateQueueBadge();
-    if (currentModalJobId === job.id && document.getElementById('genOverlay').classList.contains('active')) {
-      renderModalForJob(job.id);
-    }
-  }
-
-  function onJobCompleted(job) {
-    stopPolling(job.id);
-    showToast('BA Selesai Dibuat!', job.title, 'success', 'bi-check-circle-fill');
-    renderQueueSidebar();
-    updateQueueBadge();
-    if (currentModalJobId === job.id) renderModalForJob(job.id);
-  }
-
-  function onJobFailed(job) {
-    stopPolling(job.id);
-    showToast('Generate Gagal', job.message, 'danger', 'bi-x-circle-fill');
-    renderQueueSidebar();
-    updateQueueBadge();
-    if (currentModalJobId === job.id) {
-      // Kembalikan ke panel proses dengan error state
-      setGenProgress(0, `Gagal: ${job.message}`);
-    }
-  }
-
-  /* ================================================================
-     DOWNLOAD
-  ================================================================ */
-  async function downloadFile(type) {
-    const job = jobs.find(j => j.id === currentModalJobId);
-    if (!job) return;
-    const url = type === 'excel' ? job.excel_url : job.pdf_url;
-    if (!url) {
-      showToast('URL tidak tersedia', 'File belum siap untuk diunduh.', 'danger', 'bi-exclamation-triangle-fill');
-      return;
-    }
-
-    const ext = type === 'excel' ? 'xlsx' : 'pdf';
-    const baseName = (job.title || job.tanggal || type)
-      .toString()
-      .replace(/[\\/:*?"<>|]/g, '-')
-      .trim();
-    const filename = baseName + '.' + ext;
-
-    // Cegah dialog "Leave site?" saat proses download memicu beforeunload
-    _allowRefresh = true;
-    setTimeout(() => { _allowRefresh = false; }, 1500);
-
-    try {
-      const resp = await fetch(url);
-      if (!resp.ok) throw new Error('HTTP ' + resp.status);
-      const blob = await resp.blob();
-      const blobUrl = URL.createObjectURL(blob);
-
-      const a = document.createElement('a');
-      a.href     = blobUrl;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-
-      setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
-    } catch (err) {
-      // Fallback: jika fetch gagal (mis. CORS), buka langsung di tab saat ini
-      window.location.href = url;
-    }
-  }
-
-  /* ================================================================
-     MODAL GENERATE
-  ================================================================ */
-  function openGenModal() {
-    document.getElementById('genOverlay').classList.add('active');
-  }
-
-  function closeGenModal() {
-    document.getElementById('genOverlay').classList.remove('active');
-    // Polling tetap berjalan di background
-  }
-
-  function setGenProgress(pct, label) {
-    document.getElementById('genBar').style.width = pct + '%';
-    document.getElementById('genPct').textContent = pct + '%';
-    document.getElementById('genStepLabel').textContent = label;
-  }
-
-  function openModalForJob(localId) {
-    currentModalJobId = localId;
-    renderModalForJob(localId);
-    openGenModal();
-    closeQueueSidebar();
-  }
-
-  function renderModalForJob(localId) {
-    const job = jobs.find(j => j.id === localId);
-    if (!job) return;
-
-    const queuePanel   = document.getElementById('genQueuePanel');
-    const processPanel = document.getElementById('genProcessPanel');
-    const resultPanel  = document.getElementById('genResultPanel');
-
-    queuePanel.style.display = 'none';
-    processPanel.style.display = 'none';
-    resultPanel.classList.remove('show');
-
-    if (job.status === 'queued') {
-      queuePanel.style.display = '';
-      document.getElementById('genQueueDocTitle').textContent = job.title;
-      const posText = job.position != null ? `Antrian ke-${job.position}` : 'Menunggu...';
-      document.getElementById('genQueuePos').textContent = posText;
-      document.getElementById('genQueueTitle').textContent = 'Menunggu Antrian';
-      document.getElementById('genQueueMsg').textContent   = job.message || 'BA Anda sedang menunggu giliran untuk diproses.';
-      renderGenQueueList(localId);
-
-    } else if (job.status === 'processing') {
-      processPanel.style.display = '';
-      setGenProgress(job.progress, job.message || 'Memproses...');
-
-    } else if (job.status === 'completed') {
-      resultPanel.classList.add('show');
-      document.getElementById('resultTanggal').textContent = job.tanggal || '—';
-      document.getElementById('resultFoto').textContent    = job.fotoCount + ' foto';
-
-    } else if (job.status === 'failed') {
-      // tampilkan panel proses dengan info gagal
-      processPanel.style.display = '';
-      setGenProgress(0, `Gagal: ${job.message}`);
-    }
-  }
-
-  /* ================================================================
-     ANTRIAN LIST DALAM MODAL
-  ================================================================ */
-  function renderGenQueueList(currentLocalId) {
-    const listEl = document.getElementById('genQueueList');
-    if (!listEl) return;
-
-    const active = jobs.filter(j => j.status === 'queued' || j.status === 'processing');
-
-    if (!active.length) {
-      listEl.innerHTML = `<div class="gen-queue-list-item"><div class="gen-queue-list-body"><div class="gen-queue-list-title">Tidak ada antrian aktif</div></div></div>`;
-      return;
-    }
-
-    let html = '';
-    active.forEach((j, idx) => {
-      const pos           = idx + 1;
-      const isCurrent     = j.id === currentLocalId;
-      const isProcessing  = j.status === 'processing';
-      const itemClasses   = ['gen-queue-list-item'];
-      if (isCurrent)    itemClasses.push('is-current');
-      if (isProcessing) itemClasses.push('is-processing');
-
-      const ownerLine  = `<span class="gen-queue-list-owner mine"><i class="bi bi-person-check-fill"></i>${isCurrent ? 'Milik Anda — BA ini' : 'Milik Anda'}</span>`;
-      const statusBadge = isProcessing
-        ? `<span class="gen-queue-list-badge processing">Diproses</span>`
-        : `<span class="gen-queue-list-badge waiting">Menunggu</span>`;
-
-      html += `
-        <div class="${itemClasses.join(' ')}">
-          <div class="gen-queue-list-pos">${pos}</div>
-          <div class="gen-queue-list-body">
-            <div class="gen-queue-list-title">${j.title}</div>
-            ${ownerLine}
-          </div>
-          ${statusBadge}
-        </div>`;
-    });
-
-    listEl.innerHTML = html;
-  }
-
-  /* ================================================================
-     SIDEBAR ANTRIAN
-  ================================================================ */
-  function openQueueSidebar() {
-    renderQueueSidebar();
-    document.getElementById('queueOverlay').classList.add('active');
-  }
-
-  function closeQueueSidebar() {
-    document.getElementById('queueOverlay').classList.remove('active');
-  }
-
-  function updateQueueBadge() {
-    const badge       = document.getElementById('queueBadge');
-    const activeCount = jobs.filter(j => j.status !== 'completed' && j.status !== 'failed').length;
-    if (activeCount > 0) {
-      badge.style.display = 'flex';
-      badge.textContent   = activeCount;
-    } else {
-      badge.style.display = 'none';
-    }
-  }
-
-  function renderQueueSidebar() {
-    const list   = document.getElementById('queueList');
-    const myJobs = jobs;
-
-    if (!myJobs.length) {
-      list.innerHTML = `<div class="queue-empty"><i class="bi bi-inbox"></i>Belum ada BA dalam antrian atau proses.<br>Klik "Generate BA" untuk memulai.</div>`;
-      return;
-    }
-
-    let html = `<div class="queue-section-label">BA Saya</div>`;
-    myJobs.slice().reverse().forEach(job => { html += renderQueueItem(job); });
-    list.innerHTML = html;
-  }
-
-  function renderQueueItem(job) {
-    let badgeClass, badgeText, iconClass, iconStyle, note = '';
-
-    if (job.status === 'completed') {
-      badgeClass = 'done';        badgeText = 'Selesai';
-      iconClass  = 'bi-check-circle-fill'; iconStyle = 'background:#DCFCE7;color:#15803D;';
-    } else if (job.status === 'processing') {
-      badgeClass = 'processing';  badgeText = 'Sedang Diproses';
-      iconClass  = 'bi-gear-wide-connected'; iconStyle = 'background:#FEF3C7;color:#B45309;';
-    } else if (job.status === 'failed') {
-      badgeClass = 'queued-other'; badgeText = 'Gagal';
-      iconClass  = 'bi-x-circle-fill'; iconStyle = 'background:#FEE2E2;color:#B91C1C;';
-      note = `<div class="queue-item-note"><i class="bi bi-exclamation-triangle-fill"></i>${job.message}</div>`;
-    } else {
-      badgeClass = 'queued-mine'; badgeText = 'Menunggu';
-      iconClass  = 'bi-hourglass-split'; iconStyle = 'background:#E0E7FF;color:#4338CA;';
-      if (job.position) {
-        note = `<div class="queue-item-note"><i class="bi bi-list-ol"></i>Posisi antrian ke-${job.position}</div>`;
-      } else {
-        note = `<div class="queue-item-note"><i class="bi bi-clock-history"></i>Menunggu giliran diproses</div>`;
-      }
-    }
-
-    const canOpen   = job.status !== 'failed';
-    const itemClasses = ['queue-item'];
-    if (canOpen) itemClasses.push('clickable');
-    if (job.status === 'processing') itemClasses.push('is-mine-processing');
-
-    const subText = `${job.fotoCount} foto • ${job.tanggal}`;
-    const onClick = canOpen ? ` onclick="openModalForJob('${job.id}')"` : '';
-
-    return `
-      <div class="${itemClasses.join(' ')}"${onClick}>
-        <div class="queue-item-top">
-          <div class="queue-item-icon" style="${iconStyle}"><i class="bi ${iconClass}"></i></div>
-          <div style="flex:1;">
-            <div class="queue-item-title">${job.title}</div>
-            <div class="queue-item-sub">${subText}</div>
-          </div>
-          <span class="queue-status-badge ${badgeClass}">${badgeText}</span>
-        </div>
-        <div class="queue-item-progress-track"><div class="queue-item-progress-bar" style="width:${job.progress}%"></div></div>
-        ${note}
-      </div>`;
-  }
-
-  /* ================================================================
-     MODAL OVERLAY — TUTUP DENGAN KLIK BACKDROP
-  ================================================================ */
-  document.getElementById('genOverlay').addEventListener('click', function (e) {
-    if (e.target === this) closeGenModal();
-  });
-
-  /* ================================================================
-     REFRESH GUARD
-  ================================================================ */
-  function hasUnsavedData() {
-    const lokasi     = document.getElementById('fieldLokasi').value.trim();
-    const deskripsi  = document.getElementById('fieldDeskripsi').value.trim();
-    const keterangan = document.getElementById('fieldKeterangan').value.trim();
-    const hasPhotos  = photos.length > 0;
-    const hasJobs    = jobs.some(j => j.status !== 'completed');
-    return lokasi || deskripsi || keterangan || hasPhotos || hasJobs;
-  }
-
-  let _allowRefresh = false;
-
-  function cancelRefresh() {
-    document.getElementById('refreshOverlay').classList.remove('active');
-  }
-
-  function confirmRefresh() {
-    _allowRefresh = true;
-    // Hentikan semua polling sebelum refresh
-    jobs.forEach(j => stopPolling(j.id));
-    window.location.reload();
-  }
-
-  document.addEventListener('keydown', function (e) {
-    const isRefreshKey = e.key === 'F5' || ((e.ctrlKey || e.metaKey) && e.key === 'r');
-    if (isRefreshKey && hasUnsavedData()) {
-      e.preventDefault();
-      document.getElementById('refreshOverlay').classList.add('active');
-    }
-  });
-
-  window.addEventListener('beforeunload', function (e) {
-    if (!_allowRefresh && hasUnsavedData()) {
-      e.preventDefault();
-      e.returnValue = 'Data yang sedang Anda kerjakan akan hilang jika halaman di-refresh. Lanjutkan?';
-    }
-  });
-
-  /* ================================================================
-     TOAST
-  ================================================================ */
-  function showToast(msg, sub = '', type = 'info', icon = 'bi-info-circle-fill') {
-    const c = document.getElementById('toast-container');
-    const t = document.createElement('div');
-    t.className = `toast ${type}`;
-    t.innerHTML = `<i class="bi ${icon}"></i><div class="toast-msg">${msg}${sub ? `<div class="toast-sub">${sub}</div>` : ''}</div>`;
-    c.appendChild(t);
-    setTimeout(() => {
-      t.style.animation = 'toastOut 0.3s ease forwards';
-      setTimeout(() => t.remove(), 300);
-    }, 3500);
-  }
-
-  /* ================================================================
-     BACKEND CONNECTION STATUS CHECK
-  ================================================================ */
-  const BACKEND_URL = 'https://api-bapl.qcdefect.online';
-  const STATUS_CHECK_INTERVAL = 30000; // 30 detik
-
-  async function checkBackendStatus() {
-    const badge = document.getElementById('backendStatusBadge');
-    const text  = document.getElementById('backendStatusText');
-    badge.className = 'header-badge status-checking';
-    text.textContent = 'Checking...';
-
-    let online = false;
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 8000);
-
-    try {
-      const res = await fetch(BACKEND_URL + '/health', {
-        method: 'GET',
-        signal: controller.signal,
-        cache: 'no-store'
-      });
-      clearTimeout(timer);
-
-      if (res.ok) {
-        const data = await res.json();
-        online = data && data.status === 'ok';
-      }
-    } catch (e) {
-      clearTimeout(timer);
-      online = false;
-    }
-
-    if (online) {
-      badge.className = 'header-badge status-online';
-      text.textContent = 'ONLINE';
-    } else {
-      badge.className = 'header-badge status-offline';
-      text.textContent = 'Offline';
-    }
-  }
-
-  // Cek saat halaman pertama kali dibuka
-  checkBackendStatus();
-
-  // Ulangi setiap 30 detik
-  setInterval(checkBackendStatus, STATUS_CHECK_INTERVAL);
-
-  /* ================================================================
-     INIT
-  ================================================================ */
   renderQueueSidebar();
   updateQueueBadge();
+  if (currentModalJobId === job.id && document.getElementById('genOverlay').classList.contains('active')) {
+    renderModalForJob(job.id);
+  }
+}
+
+function onJobCompleted(job) {
+  stopPolling(job.id);
+  showToast('BA Selesai Dibuat!', job.title, 'success', 'bi-check-circle-fill');
+  renderQueueSidebar();
+  updateQueueBadge();
+  if (currentModalJobId === job.id) renderModalForJob(job.id);
+}
+
+function onJobFailed(job) {
+  stopPolling(job.id);
+  showToast('Generate Gagal', job.message, 'danger', 'bi-x-circle-fill');
+  renderQueueSidebar();
+  updateQueueBadge();
+  if (currentModalJobId === job.id) {
+    document.getElementById('genBar').style.width  = '0%';
+    document.getElementById('genPct').textContent  = '0%';
+    document.getElementById('genStepLabel').textContent = `Gagal: ${job.message}`;
+  }
+}
+
+/* ================================================================
+   DOWNLOAD
+================================================================ */
+async function downloadFile(type) {
+  const job = jobs.find(j => j.id === currentModalJobId);
+  if (!job) return;
+  const url = type === 'excel' ? job.excel_url : job.pdf_url;
+  if (!url) { showToast('URL tidak tersedia', 'File belum siap untuk diunduh.', 'danger', 'bi-exclamation-triangle-fill'); return; }
+
+  const ext      = type === 'excel' ? 'xlsx' : 'pdf';
+  const baseName = (job.title || job.tanggal || type).toString().replace(/[\\/:*?"<>|]/g, '-').trim();
+  const filename = baseName + '.' + ext;
+
+  _allowRefresh = true;
+  setTimeout(() => { _allowRefresh = false; }, 1500);
+
+  try {
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const blob    = await resp.blob();
+    const blobUrl = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = blobUrl; a.download = filename;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+  } catch (_) { window.location.href = url; }
+}
+
+/* ================================================================
+   MODAL GENERATE
+================================================================ */
+function openGenModal() {
+  document.getElementById('genOverlay').classList.add('active');
+}
+function closeGenModal() {
+  document.getElementById('genOverlay').classList.remove('active');
+}
+function openModalForJob(localId) {
+  currentModalJobId = localId;
+  renderModalForJob(localId);
+  openGenModal();
+  closeQueueSidebar();
+}
+
+function renderModalForJob(localId) {
+  const job = jobs.find(j => j.id === localId);
+  if (!job) return;
+
+  const queuePanel   = document.getElementById('genQueuePanel');
+  const processPanel = document.getElementById('genProcessPanel');
+  const resultPanel  = document.getElementById('genResultPanel');
+
+  queuePanel.style.display   = 'none';
+  processPanel.style.display = 'none';
+  resultPanel.classList.remove('show');
+
+  if (job.status === 'queued') {
+    queuePanel.style.display = '';
+    document.getElementById('genQueueDocTitle').textContent = job.title;
+    document.getElementById('genQueuePos').textContent      = job.position != null ? `Antrian ke-${job.position}` : 'Menunggu...';
+    document.getElementById('genQueueTotal').textContent    = globalQueue.length > 0 ? `${globalQueue.length} job` : '—';
+    document.getElementById('genQueueTitle').textContent    = 'Menunggu Antrian';
+    document.getElementById('genQueueMsg').textContent      = job.message || 'BA Anda sedang menunggu giliran untuk diproses.';
+    renderGenQueueList(localId);
+
+  } else if (job.status === 'processing') {
+    processPanel.style.display = '';
+    const pct = Math.round(job.displayProgress);
+    document.getElementById('genBar').style.width = pct + '%';
+    document.getElementById('genPct').textContent = pct + '%';
+    document.getElementById('genStepLabel').textContent = job.message || 'Memproses...';
+
+  } else if (job.status === 'completed') {
+    resultPanel.classList.add('show');
+    document.getElementById('resultTanggal').textContent = job.tanggal || '—';
+    document.getElementById('resultFoto').textContent    = job.fotoCount + ' foto';
+
+  } else if (job.status === 'failed') {
+    processPanel.style.display = '';
+    document.getElementById('genBar').style.width  = '0%';
+    document.getElementById('genPct').textContent  = '0%';
+    document.getElementById('genStepLabel').textContent = `Gagal: ${job.message}`;
+  }
+}
+
+/* ================================================================
+   ANTRIAN LIST DALAM MODAL — includes user lain
+================================================================ */
+function renderGenQueueList(currentLocalId) {
+  const listEl = document.getElementById('genQueueList');
+  if (!listEl) return;
+
+  // Gabung: my jobs (queued/processing) + globalQueue item yg bukan milik saya
+  const myJobIds = new Set(jobs.map(j => j.jobId));
+
+  // Bangun list tampil: prioritas globalQueue (sudah terurut dari server)
+  let displayList = [];
+
+  if (globalQueue.length > 0) {
+    displayList = globalQueue.map(q => ({
+      jobId:     q.job_id,
+      isMine:    q.is_mine,
+      status:    q.status,
+      position:  q.position,
+      title:     q.is_mine
+        ? (jobs.find(j => j.jobId === q.job_id)?.title || 'Pekerjaan Anda')
+        : 'User Lain',
+    }));
+  } else {
+    // Fallback: hanya jobs lokal jika server belum kirim queue_info
+    displayList = jobs
+      .filter(j => j.status === 'queued' || j.status === 'processing')
+      .map((j, idx) => ({ jobId: j.jobId, isMine: true, status: j.status, position: idx+1, title: j.title }));
+  }
+
+  if (!displayList.length) {
+    listEl.innerHTML = `<div class="gen-queue-list-item"><div class="gen-queue-list-body"><div class="gen-queue-list-title">Tidak ada antrian aktif</div></div></div>`;
+    return;
+  }
+
+  const currentJob = jobs.find(j => j.id === currentLocalId);
+  const currentJobId = currentJob?.jobId;
+
+  let html = '';
+  displayList.forEach((q, idx) => {
+    const pos           = q.position || (idx + 1);
+    const isCurrent     = q.jobId === currentJobId;
+    const isProcessing  = q.status === 'processing';
+    const itemClasses   = ['gen-queue-list-item'];
+    if (isCurrent)    itemClasses.push('is-current');
+    if (isProcessing) itemClasses.push('is-processing');
+
+    const ownerLine = q.isMine
+      ? `<span class="gen-queue-list-owner mine"><i class="bi bi-person-check-fill"></i>${isCurrent ? 'Pekerjaan Anda — BA ini' : 'Pekerjaan Anda'}</span>`
+      : `<span class="gen-queue-list-owner"><i class="bi bi-person"></i>User Lain</span>`;
+    const statusBadge = isProcessing
+      ? `<span class="gen-queue-list-badge processing">Diproses</span>`
+      : `<span class="gen-queue-list-badge waiting">Menunggu</span>`;
+
+    html += `
+      <div class="${itemClasses.join(' ')}">
+        <div class="gen-queue-list-pos">${pos}</div>
+        <div class="gen-queue-list-body">
+          <div class="gen-queue-list-title">${q.title}</div>
+          ${ownerLine}
+        </div>
+        ${statusBadge}
+      </div>`;
+  });
+
+  listEl.innerHTML = html;
+}
+
+/* ================================================================
+   SIDEBAR ANTRIAN — includes global queue
+================================================================ */
+function openQueueSidebar() {
+  renderQueueSidebar();
+  document.getElementById('queueOverlay').classList.add('active');
+}
+function closeQueueSidebar() {
+  document.getElementById('queueOverlay').classList.remove('active');
+}
+
+function updateQueueBadge() {
+  const badge       = document.getElementById('queueBadge');
+  const activeCount = jobs.filter(j => j.status !== 'completed' && j.status !== 'failed').length;
+  if (activeCount > 0) { badge.style.display = 'flex'; badge.textContent = activeCount; }
+  else                 { badge.style.display = 'none'; }
+}
+
+function renderQueueSidebar() {
+  const list = document.getElementById('queueList');
+
+  const myJobs        = jobs;
+  const myJobIds      = new Set(jobs.map(j => j.jobId));
+  const otherActive   = globalQueue.filter(q => !q.is_mine);
+  const hasAnything   = myJobs.length > 0 || otherActive.length > 0;
+
+  if (!hasAnything) {
+    list.innerHTML = `<div class="queue-empty"><i class="bi bi-inbox"></i>Belum ada BA dalam antrian atau proses.<br>Klik "Generate BA" untuk memulai.</div>`;
+    return;
+  }
+
+  let html = '';
+
+  // ── Bagian: pekerjaan saya
+  if (myJobs.length > 0) {
+    html += `<div class="queue-section-label">Pekerjaan Anda</div>`;
+    myJobs.slice().reverse().forEach(job => { html += renderQueueItem(job, true); });
+  }
+
+  // ── Bagian: antrian user lain yang masih aktif
+  if (otherActive.length > 0) {
+    html += `<div class="queue-section-label" style="margin-top:8px;">User Lain (Aktif)</div>`;
+    otherActive.forEach((q, idx) => {
+      html += renderQueueItemOther(q, idx);
+    });
+  }
+
+  list.innerHTML = html;
+}
+
+function renderQueueItem(job, isMine) {
+  let badgeClass, badgeText, iconClass, iconStyle, note = '';
+  const pct = Math.round(job.displayProgress);
+
+  if (job.status === 'completed') {
+    badgeClass = 'done';         badgeText = 'Selesai';
+    iconClass  = 'bi-check-circle-fill'; iconStyle = 'background:#DCFCE7;color:#15803D;';
+  } else if (job.status === 'processing') {
+    badgeClass = 'processing';   badgeText = 'Diproses';
+    iconClass  = 'bi-gear-wide-connected'; iconStyle = 'background:#FEF3C7;color:#B45309;';
+  } else if (job.status === 'failed') {
+    badgeClass = 'queued-other'; badgeText = 'Gagal';
+    iconClass  = 'bi-x-circle-fill'; iconStyle = 'background:#FEE2E2;color:#B91C1C;';
+    note = `<div class="queue-item-note"><i class="bi bi-exclamation-triangle-fill"></i>${job.message}</div>`;
+  } else {
+    badgeClass = 'queued-mine';  badgeText = 'Menunggu';
+    iconClass  = 'bi-hourglass-split'; iconStyle = 'background:#E0E7FF;color:#4338CA;';
+    note = job.position
+      ? `<div class="queue-item-note"><i class="bi bi-list-ol"></i>Posisi antrian ke-${job.position}</div>`
+      : `<div class="queue-item-note"><i class="bi bi-clock-history"></i>Menunggu giliran diproses</div>`;
+  }
+
+  const canOpen    = job.status !== 'failed';
+  const itemClass  = ['queue-item', canOpen ? 'clickable' : '', job.status === 'processing' ? 'is-mine-processing' : ''].filter(Boolean).join(' ');
+  const onClick    = canOpen ? ` onclick="openModalForJob('${job.id}')"` : '';
+  const ownerTag   = `<span class="queue-owner-tag mine"><i class="bi bi-person-check-fill"></i>Anda</span>`;
+
+  return `
+    <div class="${itemClass}"${onClick}>
+      <div class="queue-item-top">
+        <div class="queue-item-icon" style="${iconStyle}"><i class="bi ${iconClass}"></i></div>
+        <div style="flex:1;">
+          <div class="queue-item-title">${job.title}</div>
+          <div class="queue-item-sub">${job.fotoCount} foto • ${job.tanggal}</div>
+          ${ownerTag}
+        </div>
+        <span class="queue-status-badge ${badgeClass}">${badgeText}</span>
+      </div>
+      <div class="queue-item-progress-track"><div class="queue-item-progress-bar" style="width:${pct}%"></div></div>
+      ${note}
+    </div>`;
+}
+
+function renderQueueItemOther(q, idx) {
+  const isProcessing = q.status === 'processing';
+  const badgeClass   = isProcessing ? 'processing' : 'queued-other';
+  const badgeText    = isProcessing ? 'Diproses' : 'Menunggu';
+  const iconClass    = isProcessing ? 'bi-gear-wide-connected' : 'bi-hourglass-split';
+  const iconStyle    = isProcessing ? 'background:#FEF3C7;color:#B45309;' : 'background:#F3F4F6;color:#6B7280;';
+  const ownerTag     = `<span class="queue-owner-tag other"><i class="bi bi-person"></i>User Lain</span>`;
+  const pos          = q.position || (idx + 1);
+
+  return `
+    <div class="queue-item is-other">
+      <div class="queue-item-top">
+        <div class="queue-item-icon" style="${iconStyle}"><i class="bi ${iconClass}"></i></div>
+        <div style="flex:1;">
+          <div class="queue-item-title">Job #${pos} — Antrian</div>
+          <div class="queue-item-sub">Posisi ${pos} dalam antrian</div>
+          ${ownerTag}
+        </div>
+        <span class="queue-status-badge ${badgeClass}">${badgeText}</span>
+      </div>
+      <div class="queue-item-progress-track"><div class="queue-item-progress-bar" style="width:0%"></div></div>
+    </div>`;
+}
+
+/* ================================================================
+   INPUT HISTORY (localStorage autocomplete)
+================================================================ */
+const AC_KEYS = { deskripsi: 'ba_hist_deskripsi', lokasi: 'ba_hist_lokasi' };
+const AC_MAX  = 8;
+
+function acLoad(field) {
+  try { return JSON.parse(localStorage.getItem(AC_KEYS[field]) || '[]'); } catch (_) { return []; }
+}
+
+function acSave(field, value) {
+  if (!value) return;
+  let list = acLoad(field).filter(v => v.toLowerCase() !== value.toLowerCase());
+  list.unshift(value);
+  list = list.slice(0, AC_MAX);
+  try { localStorage.setItem(AC_KEYS[field], JSON.stringify(list)); } catch (_) {}
+}
+
+function acDelete(field, value) {
+  const list = acLoad(field).filter(v => v !== value);
+  try { localStorage.setItem(AC_KEYS[field], JSON.stringify(list)); } catch (_) {}
+  acShow(field); // re-render
+}
+
+function acShow(field) {
+  const inputId  = field === 'deskripsi' ? 'fieldDeskripsi' : 'fieldLokasi';
+  const dropId   = field === 'deskripsi' ? 'acDropDeskripsi' : 'acDropLokasi';
+  const input    = document.getElementById(inputId);
+  const drop     = document.getElementById(dropId);
+  const query    = input.value.trim().toLowerCase();
+  const history  = acLoad(field);
+
+  const filtered = query
+    ? history.filter(v => v.toLowerCase().includes(query))
+    : history;
+
+  if (!filtered.length) { drop.classList.remove('open'); drop.innerHTML = ''; return; }
+
+  drop.innerHTML = filtered.map(v => `
+    <div class="ac-item" onmousedown="acPick('${field}','${v.replace(/'/g,"\\'")}')">
+      <i class="bi bi-clock-history"></i>
+      <span class="ac-item-text">${v}</span>
+      <span class="ac-item-del" onmousedown="event.stopPropagation(); acDelete('${field}','${v.replace(/'/g,"\\'")}')">
+        <i class="bi bi-x"></i>
+      </span>
+    </div>`).join('');
+  drop.classList.add('open');
+}
+
+function acPick(field, value) {
+  const inputId = field === 'deskripsi' ? 'fieldDeskripsi' : 'fieldLokasi';
+  document.getElementById(inputId).value = value;
+  acClose(field);
+  updateRekap();
+}
+
+function acClose(field) {
+  const dropId = field === 'deskripsi' ? 'acDropDeskripsi' : 'acDropLokasi';
+  const drop = document.getElementById(dropId);
+  drop.classList.remove('open');
+}
+
+function acCloseAll() { acClose('deskripsi'); acClose('lokasi'); }
+
+// Tutup dropdown saat klik di luar
+document.addEventListener('click', e => {
+  if (!e.target.closest('#acWrapDeskripsi')) acClose('deskripsi');
+  if (!e.target.closest('#acWrapLokasi'))    acClose('lokasi');
+});
+
+// Tutup saat field blur (pakai setTimeout agar mousedown pada item sempat ter-handle)
+document.getElementById('fieldDeskripsi').addEventListener('blur', () => setTimeout(() => acClose('deskripsi'), 150));
+document.getElementById('fieldLokasi').addEventListener('blur',    () => setTimeout(() => acClose('lokasi'),    150));
+
+/* ================================================================
+   MODAL OVERLAY — KLIK BACKDROP
+================================================================ */
+document.getElementById('genOverlay').addEventListener('click', function (e) {
+  if (e.target === this) closeGenModal();
+});
+
+/* ================================================================
+   REFRESH GUARD
+================================================================ */
+function hasUnsavedData() {
+  const lokasi     = document.getElementById('fieldLokasi').value.trim();
+  const deskripsi  = document.getElementById('fieldDeskripsi').value.trim();
+  const keterangan = document.getElementById('fieldKeterangan').value.trim();
+  return lokasi || deskripsi || keterangan || photos.length > 0 || jobs.some(j => j.status !== 'completed');
+}
+
+let _allowRefresh = false;
+
+function cancelRefresh()  { document.getElementById('refreshOverlay').classList.remove('active'); }
+function confirmRefresh() {
+  _allowRefresh = true;
+  jobs.forEach(j => stopPolling(j.id));
+  window.location.reload();
+}
+
+document.addEventListener('keydown', function (e) {
+  const isRefreshKey = e.key === 'F5' || ((e.ctrlKey || e.metaKey) && e.key === 'r');
+  if (isRefreshKey && hasUnsavedData()) {
+    e.preventDefault();
+    document.getElementById('refreshOverlay').classList.add('active');
+  }
+});
+
+window.addEventListener('beforeunload', function (e) {
+  if (!_allowRefresh && hasUnsavedData()) {
+    e.preventDefault();
+    e.returnValue = 'Data yang sedang Anda kerjakan akan hilang jika halaman di-refresh. Lanjutkan?';
+  }
+});
+
+/* ================================================================
+   TOAST
+================================================================ */
+function showToast(msg, sub = '', type = 'info', icon = 'bi-info-circle-fill') {
+  const c = document.getElementById('toast-container');
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.innerHTML = `<i class="bi ${icon}"></i><div class="toast-msg">${msg}${sub ? `<div class="toast-sub">${sub}</div>` : ''}</div>`;
+  c.appendChild(t);
+  setTimeout(() => { t.style.animation = 'toastOut 0.3s ease forwards'; setTimeout(() => t.remove(), 300); }, 3500);
+}
+
+/* ================================================================
+   BACKEND STATUS CHECK
+================================================================ */
+const BACKEND_URL           = 'https://api-bapl.qcdefect.online';
+const STATUS_CHECK_INTERVAL = 30000;
+
+async function checkBackendStatus() {
+  const badge = document.getElementById('backendStatusBadge');
+  const text  = document.getElementById('backendStatusText');
+  badge.className = 'header-badge status-checking';
+  text.textContent = 'Checking...';
+
+  let online = false;
+  const ctrl  = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 8000);
+  try {
+    const res = await fetch(BACKEND_URL + '/health', { method: 'GET', signal: ctrl.signal, cache: 'no-store' });
+    clearTimeout(timer);
+    if (res.ok) { const d = await res.json(); online = d && d.status === 'ok'; }
+  } catch (_) { clearTimeout(timer); }
+
+  badge.className  = online ? 'header-badge status-online'  : 'header-badge status-offline';
+  text.textContent = online ? 'ONLINE' : 'Offline';
+}
+
+checkBackendStatus();
+setInterval(checkBackendStatus, STATUS_CHECK_INTERVAL);
+
+/* ================================================================
+   INIT
+================================================================ */
+renderQueueSidebar();
+updateQueueBadge();
 </script>
 </body>
 </html>
