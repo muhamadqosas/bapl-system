@@ -1524,7 +1524,7 @@ function renderQueueItemOther(q, idx, isMineWithoutLocalData) {
    INPUT HISTORY (localStorage autocomplete)
 ================================================================ */
 const AC_KEYS = { deskripsi: 'ba_hist_deskripsi', lokasi: 'ba_hist_lokasi' };
-const AC_MAX  = 8;
+const AC_MAX  = 5;
 
 function acLoad(field) {
   try { return JSON.parse(localStorage.getItem(AC_KEYS[field]) || '[]'); } catch (_) { return []; }
