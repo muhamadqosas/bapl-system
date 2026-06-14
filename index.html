@@ -594,13 +594,20 @@ function getLabelForProgress(pct) {
 // Kecepatan animasi estimasi per stage (pct/detik)
 // Stage awal lebih cepat, stage tengah lebih lambat (terasa proses berat)
 const STAGE_SPEEDS = [
-  { max: 10,  speed: 2.5 },   // 0-10: upload, relatif cepat
-  { max: 30,  speed: 1.2 },   // 10-30: drive upload, sedang
-  { max: 40,  speed: 0.8 },   // 30-40: script 1
-  { max: 60,  speed: 0.6 },   // 40-60: script 2, lebih lama
-  { max: 90,  speed: 0.4 },   // 60-90: script 3, paling berat
-  { max: 99,  speed: 0.3 },   // 90-99: finalisasi (tidak sampai 100 kecuali server konfirmasi)
+  { max: 10,  speed: 5.0 },   // 0-10: upload, relatif cepat
+  { max: 30,  speed: 2.4 },   // 10-30: drive upload, sedang
+  { max: 40,  speed: 1.6 },   // 30-40: script 1
+  { max: 60,  speed: 1.2 },   // 40-60: script 2, lebih lama
+  { max: 90,  speed: 0.8 },   // 60-90: script 3, paling berat
+  { max: 99,  speed: 0.6 },   // 90-99: finalisasi (tidak sampai 100 kecuali server konfirmasi)
 ];
+
+// Kecepatan "kejar" saat server sudah punya target lebih tinggi dari display
+// (dipakai saat displayProgress < job.progress, mis. server lompat ke 40/60/90)
+const CATCHUP_SPEED = 8.0; // pct/detik, lebih cepat dari animasi normal
+
+// Kecepatan animasi menuju 100 saat job selesai (completed)
+const FINISH_SPEED = 6.0; // pct/detik
 
 function getEstimateSpeed(pct) {
   for (const s of STAGE_SPEEDS) {
@@ -615,15 +622,43 @@ function startProgressEstimate(job) {
   if (job.progressAnimTimer) return; // sudah jalan
   const TICK_MS = 120; // update tiap 120ms → smooth
   job.progressAnimTimer = setInterval(() => {
-    if (job.status === 'completed' || job.status === 'failed') {
+    const cur = job.displayProgress;
+
+    // ── Mode finishing: job sudah completed, animasikan sampai 100
+    if (job.status === 'completed') {
+      if (cur >= 100) { _clearEstimate(job); return; }
+      const spd = FINISH_SPEED * (TICK_MS / 1000);
+      const next = Math.min(cur + spd, 100);
+      job.displayProgress = next;
+      _flushProgressUI(job);
+      if (next >= 100) {
+        _clearEstimate(job);
+        onJobCompleted(job);
+      }
+      return;
+    }
+
+    if (job.status === 'failed') {
       _clearEstimate(job); return;
     }
-    const cur = job.displayProgress;
-    const spd = getEstimateSpeed(cur) * (TICK_MS / 1000);
-    // Hitung cap: tidak melewati 99 dan tidak melewati server target
+
     const serverTarget = Math.min(99, job.progress || 0);
-    // Jika displayProgress sudah di atas server target, tunggu server
+
+    // ── Jika display masih di bawah target server (server lompat ke 40/60/90),
+    //    kejar lebih cepat agar tidak menunggu lama.
+    if (serverTarget > 0 && cur < serverTarget) {
+      const spd = CATCHUP_SPEED * (TICK_MS / 1000);
+      const next = Math.min(cur + spd, serverTarget);
+      job.displayProgress = next;
+      _flushProgressUI(job);
+      return;
+    }
+
+    // ── Jika displayProgress sudah >= target server, tunggu server (jangan jalan)
     if (cur >= serverTarget && serverTarget > 0) { return; }
+
+    // ── Mode estimasi normal (belum ada target server / masih di stage awal)
+    const spd = getEstimateSpeed(cur) * (TICK_MS / 1000);
     const next = Math.min(cur + spd, 99); // tidak pernah sampai 100 via estimasi
     if (next <= cur) return;
     job.displayProgress = next;
@@ -645,10 +680,9 @@ function setJobProgress(job, serverPct) {
   job.progress = Math.max(job.progress || 0, clamped);
 
   if (clamped === 100) {
-    // Selesai: langsung set 100, hentikan estimasi
-    _clearEstimate(job);
-    job.displayProgress = 100;
+    // Selesai: jangan langsung lompat ke 100, animasikan dari posisi saat ini
     _flushProgressUI(job);
+    startProgressEstimate(job); // akan masuk mode "finishing" karena job.status sudah 'completed'
     return;
   }
 
@@ -667,7 +701,7 @@ function _flushProgressUI(job) {
   // Label: prioritas message dari server, fallback ke mapping stage
   const label = (job.status === 'processing' && job.message && job.message !== 'Sedang diproses')
     ? job.message
-    : getLabelForProgress(pct);
+    : (job.status === 'completed' ? 'Menyelesaikan...' : getLabelForProgress(pct));
 
   // Update sidebar item (realtime)
   renderQueueSidebar();
@@ -680,7 +714,7 @@ function _flushProgressUI(job) {
     document.getElementById('genPct').textContent  = pct + '%';
     // Update step label juga (hanya panel process)
     const stepLbl = document.getElementById('genStepLabel');
-    if (stepLbl && job.status === 'processing') stepLbl.textContent = label;
+    if (stepLbl && (job.status === 'processing' || job.status === 'completed')) stepLbl.textContent = label;
     const qProg = document.getElementById('genQueueProgress');
     const qBar  = document.getElementById('genQueueProgressBar');
     if (qProg) qProg.textContent = pct + '%';
@@ -1153,8 +1187,10 @@ function applyStatusUpdate(job, data) {
       job.position  = null;
       job.excel_url = data.excel_url || null;
       job.pdf_url   = data.pdf_url   || null;
+      // Animasikan ke 100 dahulu; onJobCompleted dipanggil setelah animasi selesai
+      // (lihat startProgressEstimate mode 'finishing' & _onFinishReached)
+      if (job.pollTimer) { clearTimeout(job.pollTimer); job.pollTimer = null; }
       setJobProgress(job, 100);
-      onJobCompleted(job);
       return;
 
     case 'failed':
