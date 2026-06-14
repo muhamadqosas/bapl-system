@@ -144,7 +144,7 @@
   @keyframes shimmer { 0%{transform:translateX(-100%)} 100%{transform:translateX(100%)} }
 
   .gen-progress-track { height: 8px; background: var(--border); border-radius: 99px; overflow: hidden; margin-bottom: 10px; }
-  .gen-progress-bar { height: 100%; background: linear-gradient(90deg, #0F4C81, #2a8def); border-radius: 99px; width: 0%; transition: width 0.4s ease-out; }
+  .gen-progress-bar { height: 100%; background: linear-gradient(90deg, #0F4C81, #2a8def); border-radius: 99px; width: 0%; transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
   .gen-progress-row { display: flex; justify-content: center; align-items: center; margin-bottom: 6px; }
   .gen-pct { font-size: 13.5px; font-weight: 800; color: var(--blue-primary); }
   .gen-status-text { font-size: 13px; font-weight: 600; color: var(--text-secondary); text-align: center; margin-bottom: 22px; min-height: 18px; transition: opacity 0.25s ease; }
@@ -234,7 +234,7 @@
     .queue-status-badge.done { background: #DCFCE7; color: #15803D; }
     .queue-item-progress-row { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
     .queue-item-progress-track { flex: 1; height: 6px; background: var(--border); border-radius: 99px; overflow: hidden; }
-    .queue-item-progress-bar { height: 100%; background: linear-gradient(90deg, #0F4C81, #2a8def); border-radius: 99px; width: 0%; transition: width 0.4s ease-out; }
+    .queue-item-progress-bar { height: 100%; background: linear-gradient(90deg, #0F4C81, #2a8def); border-radius: 99px; width: 0%; transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
     .queue-item-progress-pct { font-size: 11px; font-weight: 800; color: var(--blue-primary); min-width: 36px; text-align: right; flex-shrink: 0; }
     .queue-item-note { font-size: 11.5px; color: var(--text-secondary); margin-top: 8px; display: flex; align-items: center; gap: 6px; }
     .queue-item-note i { color: var(--blue-secondary); }
@@ -565,38 +565,132 @@ let currentModalJobId = null;
 let globalQueue = [];   // [{ job_id, position, status, is_mine, progress, displayProgress, _animTimer }]
 
 /* ================================================================
-   PROGRESS UPDATER (REALTIME)
-   Progress % langsung diset sesuai data terbaru dari endpoint
-   status (tanpa menunggu status "completed", tanpa cap/animasi
-   bertahap di JS). Pergerakan lebar bar 40% -> 41% -> 42% -> 43%
-   dibuat halus oleh CSS transition pada width (lihat .queue-item-
-   progress-bar / .gen-progress-bar), bukan oleh interval JS.
+   PROGRESS UPDATER — SMOOTH ANIMATED
+   - Progress TIDAK pernah mundur (hanya maju).
+   - Saat server belum kirim progress detail, animasi estimasi
+     berjalan perlahan agar bar tidak terlihat macet.
+   - Saat progress asli diterima, langsung "catch up" tanpa lompat.
+   - Mapping stage: 0-10 upload, 10-30 drive, 30-40 script1,
+     40-60 script2, 60-90 script3, 90-100 finalisasi.
 ================================================================ */
-function setJobProgress(job, target) {
+
+// Mapping range → label pesan
+const PROGRESS_STAGES = [
+  { min:  0, max: 10, label: 'Mempersiapkan dan mengunggah file...' },
+  { min: 10, max: 30, label: 'Mengunggah ke Google Drive...' },
+  { min: 30, max: 40, label: 'Proses Apps Script tahap 1...' },
+  { min: 40, max: 60, label: 'Proses Apps Script tahap 2...' },
+  { min: 60, max: 90, label: 'Proses Apps Script tahap 3...' },
+  { min: 90, max: 100, label: 'Menyimpan hasil dan finalisasi...' },
+];
+
+function getLabelForProgress(pct) {
+  for (const s of PROGRESS_STAGES) {
+    if (pct >= s.min && pct < s.max) return s.label;
+  }
+  return 'Menyelesaikan proses...';
+}
+
+// Kecepatan animasi estimasi per stage (pct/detik)
+// Stage awal lebih cepat, stage tengah lebih lambat (terasa proses berat)
+const STAGE_SPEEDS = [
+  { max: 10,  speed: 2.5 },   // 0-10: upload, relatif cepat
+  { max: 30,  speed: 1.2 },   // 10-30: drive upload, sedang
+  { max: 40,  speed: 0.8 },   // 30-40: script 1
+  { max: 60,  speed: 0.6 },   // 40-60: script 2, lebih lama
+  { max: 90,  speed: 0.4 },   // 60-90: script 3, paling berat
+  { max: 99,  speed: 0.3 },   // 90-99: finalisasi (tidak sampai 100 kecuali server konfirmasi)
+];
+
+function getEstimateSpeed(pct) {
+  for (const s of STAGE_SPEEDS) {
+    if (pct < s.max) return s.speed;
+  }
+  return 0.1;
+}
+
+// Jalankan animasi estimasi: progress merangkak perlahan sampai cap
+// Cap = 1 pct di bawah batas stage berikutnya agar tidak "lompat" stage
+function startProgressEstimate(job) {
+  if (job.progressAnimTimer) return; // sudah jalan
+  const TICK_MS = 120; // update tiap 120ms → smooth
+  job.progressAnimTimer = setInterval(() => {
+    if (job.status === 'completed' || job.status === 'failed') {
+      _clearEstimate(job); return;
+    }
+    const cur = job.displayProgress;
+    const spd = getEstimateSpeed(cur) * (TICK_MS / 1000);
+    // Hitung cap: tidak melewati 99 dan tidak melewati server target
+    const serverTarget = Math.min(99, job.progress || 0);
+    // Jika displayProgress sudah di atas server target, tunggu server
+    if (cur >= serverTarget && serverTarget > 0) { return; }
+    const next = Math.min(cur + spd, 99); // tidak pernah sampai 100 via estimasi
+    if (next <= cur) return;
+    job.displayProgress = next;
+    _flushProgressUI(job);
+  }, TICK_MS);
+}
+
+function _clearEstimate(job) {
   if (job.progressAnimTimer) {
     clearInterval(job.progressAnimTimer);
     job.progressAnimTimer = null;
   }
-  job.displayProgress = Math.max(0, Math.min(100, target));
-  _flushProgressUI(job);
+}
+
+// Dipanggil saat server kirim progress baru
+function setJobProgress(job, serverPct) {
+  const clamped = Math.max(0, Math.min(100, serverPct));
+  // Simpan target server (tidak pernah mundur)
+  job.progress = Math.max(job.progress || 0, clamped);
+
+  if (clamped === 100) {
+    // Selesai: langsung set 100, hentikan estimasi
+    _clearEstimate(job);
+    job.displayProgress = 100;
+    _flushProgressUI(job);
+    return;
+  }
+
+  // Jika display sudah lebih maju dari server (estimasi), biarkan terus
+  // Jika server lebih maju dari display, "catch up" langsung (tidak mundur)
+  if (clamped > job.displayProgress) {
+    job.displayProgress = clamped;
+    _flushProgressUI(job);
+  }
+
+  // Pastikan estimasi berjalan
+  startProgressEstimate(job);
 }
 
 function _flushProgressUI(job) {
-  const pct = Math.round(job.displayProgress);
+  const pct = Math.min(100, Math.round(job.displayProgress));
+  // Label: prioritas message dari server, fallback ke mapping stage
+  const label = (job.status === 'processing' && job.message && job.message !== 'Sedang diproses')
+    ? job.message
+    : getLabelForProgress(pct);
+
   // Update sidebar item (realtime)
   renderQueueSidebar();
   updateQueueBadge();
+
   // Update modal jika terbuka untuk job ini
   if (currentModalJobId === job.id &&
       document.getElementById('genOverlay').classList.contains('active')) {
     document.getElementById('genBar').style.width  = pct + '%';
     document.getElementById('genPct').textContent  = pct + '%';
+    // Update step label juga (hanya panel process)
+    const stepLbl = document.getElementById('genStepLabel');
+    if (stepLbl && job.status === 'processing') stepLbl.textContent = label;
     const qProg = document.getElementById('genQueueProgress');
     const qBar  = document.getElementById('genQueueProgressBar');
     if (qProg) qProg.textContent = pct + '%';
     if (qBar)  qBar.style.width  = pct + '%';
   }
 }
+
+// Pastikan estimasi juga dimulai saat status berubah ke 'processing'
+// (dipanggil dari applyStatusUpdate)
 
 /* ================================================================
    DATE HELPERS
@@ -919,6 +1013,7 @@ async function submitBAJob() {
   renderModalForJob(job.id);
   renderQueueSidebar();
   updateQueueBadge();
+  startProgressEstimate(job); // mulai animasi estimasi segera
   startPolling(job.id);
 }
 
@@ -1003,7 +1098,7 @@ function stopPolling(localId) {
   const job = jobs.find(j => j.id === localId);
   if (!job) return;
   if (job.pollTimer) { clearTimeout(job.pollTimer); job.pollTimer = null; }
-  if (job.progressAnimTimer) { clearInterval(job.progressAnimTimer); job.progressAnimTimer = null; }
+  _clearEstimate(job);
 }
 
 /* ================================================================
@@ -1041,10 +1136,15 @@ function applyStatusUpdate(job, data) {
       job.position = data.position || null;
       if (prevStatus !== 'processing') {
         showToast('BA Mulai Diproses', job.title, 'info', 'bi-gear-wide-connected');
+        // Jika masuk processing tapi progress masih 0, mulai dari 10
+        // (upload sudah selesai = stage 0-10 sudah lewat)
+        if ((job.progress || 0) < 10) {
+          job.progress = 10;
+          if (job.displayProgress < 10) job.displayProgress = 10;
+        }
       }
-      // Server kirim progress 0-100 realtime, langsung dipakai tanpa cap
-      // agar progress bar selalu mengikuti angka terbaru (40->41->42->...)
-      setJobProgress(job, data.progress || 0);
+      // Server kirim progress realtime; estimasi akan mengisi celah
+      setJobProgress(job, data.progress || job.progress || 10);
       break;
     }
 
