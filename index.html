@@ -652,14 +652,13 @@ function setJobProgress(job, serverPct) {
     return;
   }
 
-  // Jika display sudah lebih maju dari server (estimasi), biarkan terus
-  // Jika server lebih maju dari display, "catch up" langsung (tidak mundur)
-  if (clamped > job.displayProgress) {
-    job.displayProgress = clamped;
-    _flushProgressUI(job);
-  }
+  // Jangan pernah langsung "lompat" displayProgress ke nilai server.
+  // Biarkan startProgressEstimate yang menaikkan displayProgress
+  // sedikit demi sedikit (animasi merangkak) sampai mengejar target server.
+  // job.progress (target) sudah diupdate di atas; UI akan ikut naik via animasi.
+  _flushProgressUI(job);
 
-  // Pastikan estimasi berjalan
+  // Pastikan estimasi berjalan (akan mengejar job.progress secara perlahan)
   startProgressEstimate(job);
 }
 
@@ -1136,11 +1135,11 @@ function applyStatusUpdate(job, data) {
       job.position = data.position || null;
       if (prevStatus !== 'processing') {
         showToast('BA Mulai Diproses', job.title, 'info', 'bi-gear-wide-connected');
-        // Jika masuk processing tapi progress masih 0, mulai dari 10
-        // (upload sudah selesai = stage 0-10 sudah lewat)
+        // Jika masuk processing tapi target progress masih 0, set target ke 10
+        // (upload sudah selesai = stage 0-10 sudah lewat).
+        // displayProgress TIDAK di-snap, biar animasi tetap merangkak dari posisi saat ini.
         if ((job.progress || 0) < 10) {
           job.progress = 10;
-          if (job.displayProgress < 10) job.displayProgress = 10;
         }
       }
       // Server kirim progress realtime; estimasi akan mengisi celah
