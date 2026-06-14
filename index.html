@@ -419,6 +419,13 @@
         <div class="spinner"></div>
       </button>
     </div>
+    <div class="action-bar" style="margin-top:10px;">
+      <button class="btn btn-outline" id="btnReset" onclick="handleResetForm()">
+        <i class="bi bi-arrow-counterclockwise"></i>
+        <span class="btn-label">Reset Form</span>
+        <div class="spinner"></div>
+      </button>
+    </div>
   </div>
 
 </main>
@@ -646,6 +653,30 @@
 
     // Refresh rekap realtime ke state kosong
     updateRekap();
+  }
+
+  function handleResetForm() {
+    const lokasi     = document.getElementById('fieldLokasi').value.trim();
+    const deskripsi  = document.getElementById('fieldDeskripsi').value.trim();
+    const keterangan = document.getElementById('fieldKeterangan').value.trim();
+    const hasPhotos  = photos.length > 0;
+
+    if (!lokasi && !deskripsi && !keterangan && !hasPhotos) {
+      showToast('Form sudah kosong', '', 'info', 'bi-info-circle-fill');
+      return;
+    }
+
+    // Reset tanggal manual kembali ke mode otomatis
+    if (manualDateActive) {
+      manualDateActive = false;
+      document.getElementById('manualDateWrap').classList.remove('show');
+      document.getElementById('btnTanggalToggle').classList.remove('active');
+      updateDateDisplay();
+    }
+
+    // Tidak menyentuh jobs[] / antrian — hanya form & foto
+    resetFormAfterSubmit();
+    showToast('Form direset', 'Semua isian dan foto telah dihapus', 'success', 'bi-arrow-counterclockwise');
   }
 
   /* ================================================================
@@ -1047,6 +1078,10 @@
       .replace(/[\\/:*?"<>|]/g, '-')
       .trim();
     const filename = baseName + '.' + ext;
+
+    // Cegah dialog "Leave site?" saat proses download memicu beforeunload
+    _allowRefresh = true;
+    setTimeout(() => { _allowRefresh = false; }, 1500);
 
     try {
       const resp = await fetch(url);
