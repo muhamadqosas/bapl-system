@@ -632,6 +632,22 @@
     }
   }
 
+  function resetFormAfterSubmit() {
+    // Kosongkan field input
+    document.getElementById('fieldLokasi').value     = '';
+    document.getElementById('fieldDeskripsi').value  = '';
+    document.getElementById('fieldKeterangan').value = '';
+
+    // Bersihkan semua foto + revoke object URL
+    photos.forEach(p => URL.revokeObjectURL(p.url));
+    photos.length = 0;
+    renderGrid();
+    updateCounter();
+
+    // Refresh rekap realtime ke state kosong
+    updateRekap();
+  }
+
   /* ================================================================
      UPLOAD / PHOTO
   ================================================================ */
@@ -871,6 +887,7 @@
 
     setLoading(document.getElementById('btnGenerate'), false);
     showToast('BA Ditambahkan ke Antrian', title, 'info', 'bi-clock-history');
+    resetFormAfterSubmit();
 
     currentModalJobId = job.id;
     openGenModal();
