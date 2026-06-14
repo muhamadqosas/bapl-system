@@ -557,12 +557,34 @@ let jobs = [];
 let currentModalJobId = null;
 
 // Global queue dari server (semua user)
-let globalQueue = [];   // [{ job_id, position, status, is_mine }]
+let globalQueue = [];   // [{ job_id, position, status, is_mine, progress, displayProgress, _animTimer }]
 
 /* ================================================================
    PROGRESS ANIMATOR
    Gerak bertahap dari displayProgress → target, per-job.
 ================================================================ */
+/* ================================================================
+   GLOBAL QUEUE PROGRESS ANIMATOR (untuk user lain)
+================================================================ */
+function animateGlobalQueueItem(q, target) {
+  if (q._animTimer) { clearInterval(q._animTimer); q._animTimer = null; }
+  if (target <= (q.displayProgress || 0)) {
+    q.displayProgress = target;
+    renderQueueSidebar();
+    return;
+  }
+  q._animTimer = setInterval(() => {
+    const diff = target - (q.displayProgress || 0);
+    const step = Math.max(1, Math.round(diff * 0.07));
+    q.displayProgress = Math.min(target, (q.displayProgress || 0) + step);
+    renderQueueSidebar();
+    if (q.displayProgress >= target) {
+      clearInterval(q._animTimer);
+      q._animTimer = null;
+    }
+  }, 60);
+}
+
 function animateProgressTo(job, target, onDone) {
   if (job.progressAnimTimer) {
     clearInterval(job.progressAnimTimer);
@@ -945,9 +967,28 @@ function startGlobalQueuePolling() {
         const data = await resp.json();
         if (Array.isArray(data.queue_info)) {
           const myJobIds = new Set(jobs.map(j => j.jobId));
+          const prevMap = new Map(globalQueue.map(q => [q.job_id, q]));
           globalQueue = data.queue_info
             .filter(q => q.status === 'queued' || q.status === 'processing')
-            .map(q => ({ ...q, is_mine: myJobIds.has(q.job_id) }));
+            .map(q => {
+              const prev = prevMap.get(q.job_id);
+              const isMine = myJobIds.has(q.job_id);
+              const entry = {
+                ...q,
+                is_mine: isMine,
+                displayProgress: prev ? (prev.displayProgress || 0) : 0,
+                _animTimer: prev ? prev._animTimer : null,
+              };
+              // Animate progress untuk user lain (user sendiri ditangani polling job)
+              if (!isMine) {
+                const serverPct = q.progress || 0;
+                const targetPct = q.status === 'processing'
+                  ? Math.min(90, Math.max(entry.displayProgress, serverPct))
+                  : Math.min(15, serverPct || 5);
+                animateGlobalQueueItem(entry, targetPct);
+              }
+              return entry;
+            });
           renderQueueSidebar();
           updateQueueBadge();
           if (document.getElementById('genOverlay').classList.contains('active')) {
@@ -1018,9 +1059,27 @@ function applyStatusUpdate(job, data) {
   if (Array.isArray(data.queue_info)) {
     // Tandai mana yg milik user ini
     const myJobIds = new Set(jobs.map(j => j.jobId));
+    const prevMap = new Map(globalQueue.map(q => [q.job_id, q]));
     globalQueue = data.queue_info
       .filter(q => q.status === 'queued' || q.status === 'processing')
-      .map(q => ({ ...q, is_mine: myJobIds.has(q.job_id) }));
+      .map(q => {
+        const prev = prevMap.get(q.job_id);
+        const isMine = myJobIds.has(q.job_id);
+        const entry = {
+          ...q,
+          is_mine: isMine,
+          displayProgress: prev ? (prev.displayProgress || 0) : 0,
+          _animTimer: prev ? prev._animTimer : null,
+        };
+        if (!isMine) {
+          const serverPct = q.progress || 0;
+          const targetPct = q.status === 'processing'
+            ? Math.min(90, Math.max(entry.displayProgress, serverPct))
+            : Math.min(15, serverPct || 5);
+          animateGlobalQueueItem(entry, targetPct);
+        }
+        return entry;
+      });
   }
 
   switch (data.status) {
@@ -1201,11 +1260,14 @@ function renderGenQueueList(currentLocalId) {
       .slice()
       .sort((a, b) => (a.position || 0) - (b.position || 0))
       .map(q => ({
-        jobId:     q.job_id,
-        isMine:    q.is_mine,
-        status:    q.status,
-        position:  q.position,
-        title:     q.is_mine
+        jobId:           q.job_id,
+        isMine:          q.is_mine,
+        status:          q.status,
+        position:        q.position,
+        displayProgress: q.is_mine
+          ? (jobs.find(j => j.jobId === q.job_id)?.displayProgress || 0)
+          : (q.displayProgress || 0),
+        title:           q.is_mine
           ? (jobs.find(j => j.jobId === q.job_id)?.title || 'Pekerjaan Anda')
           : 'User Lain',
       }));
@@ -1239,13 +1301,18 @@ function renderGenQueueList(currentLocalId) {
     const statusBadge = isProcessing
       ? `<span class="gen-queue-list-badge processing">Diproses</span>`
       : `<span class="gen-queue-list-badge waiting">Menunggu</span>`;
+    const pct = Math.round(q.displayProgress || 0);
+    const miniBar = pct > 0
+      ? `<div style="margin-top:6px;height:4px;background:var(--border);border-radius:99px;overflow:hidden;"><div style="height:100%;width:${pct}%;background:linear-gradient(90deg,#0F4C81,#2a8def);border-radius:99px;transition:width 0.5s ease;"></div></div>`
+      : '';
 
     html += `
       <div class="${itemClasses.join(' ')}">
         <div class="gen-queue-list-pos">${pos}</div>
-        <div class="gen-queue-list-body">
+        <div class="gen-queue-list-body" style="flex:1;">
           <div class="gen-queue-list-title">${q.title}</div>
           ${ownerLine}
+          ${miniBar}
         </div>
         ${statusBadge}
       </div>`;
@@ -1378,6 +1445,7 @@ function renderQueueItemOther(q, idx, isMineWithoutLocalData) {
     ? `<span class="queue-owner-tag mine"><i class="bi bi-person-check-fill"></i>Anda</span>`
     : `<span class="queue-owner-tag other"><i class="bi bi-person"></i>User Lain</span>`;
   const pos          = q.position || (idx + 1);
+  const pct          = Math.round(q.displayProgress || 0);
 
   return `
     <div class="queue-item is-other">
@@ -1386,12 +1454,12 @@ function renderQueueItemOther(q, idx, isMineWithoutLocalData) {
         <div class="queue-item-icon" style="${iconStyle}"><i class="bi ${iconClass}"></i></div>
         <div style="flex:1;">
           <div class="queue-item-title">Job #${pos} - Antrian</div>
-          <div class="queue-item-sub">Posisi ${pos} dalam antrian</div>
+          <div class="queue-item-sub">Posisi ${pos} dalam antrian${pct > 0 ? ` • ${pct}%` : ''}</div>
           ${ownerTag}
         </div>
         <span class="queue-status-badge ${badgeClass}">${badgeText}</span>
       </div>
-      <div class="queue-item-progress-track"><div class="queue-item-progress-bar" style="width:0%"></div></div>
+      <div class="queue-item-progress-track"><div class="queue-item-progress-bar" style="width:${pct}%"></div></div>
     </div>`;
 }
 
