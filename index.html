@@ -553,6 +553,7 @@ const RETRY_DELAY_MS    = 2000;
 let photos = [];
 let manualDateActive  = false;
 let currentDateDisplay = '';
+let currentDateISO    = ''; // format YYYY-MM-DD, dikirim ke backend/Apps Script
 let currentHari       = '';
 
 // jobs[]: { id, jobId, title, status, progress, displayProgress,
@@ -736,11 +737,17 @@ function formatTanggalBA(d) {
   return `${HARI[d.getDay()]}, ${d.getDate()} ${BULAN[d.getMonth()]} ${d.getFullYear()}`;
 }
 
+// Format YYYY-MM-DD (timezone-safe, sesuai format yang diharapkan Apps Script)
+function formatTanggalISO(d) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
 function updateDateDisplay() {
   if (manualDateActive) return;
   const now = new Date();
   currentHari        = HARI[now.getDay()];
   currentDateDisplay = formatTanggalBA(now);
+  currentDateISO     = formatTanggalISO(now);
   document.getElementById('fieldTanggal').value = currentDateDisplay;
   updateRekap();
 }
@@ -768,6 +775,7 @@ function applyManualDate() {
   const d = new Date(val + 'T00:00:00');
   currentHari        = HARI[d.getDay()];
   currentDateDisplay = formatTanggalBA(d);
+  currentDateISO     = val; // sudah dalam format YYYY-MM-DD dari <input type="date">
   document.getElementById('fieldTanggal').value = currentDateDisplay;
   updateRekap();
 }
@@ -976,7 +984,8 @@ function setLoading(btn, state) {
 }
 
 async function submitBAJob() {
-  const tanggal    = currentDateDisplay;
+  const tanggal    = currentDateDisplay; // untuk tampilan lokal (job.tanggal)
+  const tanggalISO = currentDateISO;     // format YYYY-MM-DD untuk backend & Apps Script
   const lokasi     = document.getElementById('fieldLokasi').value.trim();
   const deskripsi  = document.getElementById('fieldDeskripsi').value.trim();
   const keterangan = document.getElementById('fieldKeterangan').value.trim();
@@ -987,11 +996,16 @@ async function submitBAJob() {
   if (lokasi)    acSave('lokasi', lokasi);
 
   const formData = new FormData();
-  formData.append('tanggal',    tanggal);
+  formData.append('tanggal',    tanggalISO);
   formData.append('lokasi',     lokasi);
   formData.append('deskripsi',  deskripsi);
   formData.append('keterangan', keterangan);
   photos.forEach(p => formData.append('photos[]', p.file, p.name));
+
+  // [DEBUG SEMENTARA - BUG TANGGAL] hapus setelah verifikasi selesai
+  console.log('[DEBUG tanggal] manualDateActive =', manualDateActive,
+               '| currentDateDisplay =', currentDateDisplay,
+               '| tanggalISO dikirim =', tanggalISO);
 
   let resp;
   try {
@@ -1339,6 +1353,11 @@ function renderGenQueueList(currentLocalId) {
 
   if (globalQueue.length > 0) {
     displayList = globalQueue
+      .filter(q => {
+        if (!q.is_mine) return true;
+        const job = jobs.find(j => j.jobId === q.job_id);
+        return !job || (job.status !== 'completed' && job.status !== 'failed');
+      })
       .slice()
       .sort((a, b) => (a.position || 0) - (b.position || 0))
       .map(q => ({
@@ -1443,22 +1462,38 @@ function renderQueueSidebar() {
 
   // ── Bagian: antrian gabungan (urut sesuai posisi server, milik saya + user lain)
   if (globalQueue.length > 0) {
-    html += `<div class="queue-section-label">Antrian Saat Ini</div>`;
-    globalQueue
-      .slice()
-      .sort((a, b) => (a.position || 0) - (b.position || 0))
-      .forEach((q, idx) => {
-        if (q.is_mine) {
-          const job = myJobs.find(j => j.jobId === q.job_id);
-          if (job) {
-            html += renderQueueItem(job, true, q.position);
+    // Saring entri globalQueue yang job lokalnya sudah completed/failed.
+    // globalQueue berasal dari poll terpisah (1 detik) sehingga bisa sedikit
+    // "telat" dibanding status lokal — tanpa filter ini, job yang baru saja
+    // selesai akan tampil dobel: sekali di "Antrian Saat Ini" (dari globalQueue
+    // basi) dan sekali lagi di "Riwayat Pekerjaan Anda".
+    const visibleQueue = globalQueue.filter(q => {
+      if (!q.is_mine) return true;
+      const job = myJobs.find(j => j.jobId === q.job_id);
+      return !job || (job.status !== 'completed' && job.status !== 'failed');
+    });
+
+    if (visibleQueue.length > 0) {
+      html += `<div class="queue-section-label">Antrian Saat Ini</div>`;
+      visibleQueue
+        .slice()
+        .sort((a, b) => (a.position || 0) - (b.position || 0))
+        .forEach((q, idx) => {
+          if (q.is_mine) {
+            const job = myJobs.find(j => j.jobId === q.job_id);
+            if (job) {
+              html += renderQueueItem(job, true, q.position);
+            } else {
+              html += renderQueueItemOther(q, idx, true);
+            }
           } else {
-            html += renderQueueItemOther(q, idx, true);
+            html += renderQueueItemOther(q, idx, false);
           }
-        } else {
-          html += renderQueueItemOther(q, idx, false);
-        }
-      });
+        });
+    } else if (myActiveJobs.length > 0) {
+      html += `<div class="queue-section-label">Antrian Saat Ini</div>`;
+      myActiveJobs.forEach(job => { html += renderQueueItem(job, true); });
+    }
   } else if (myActiveJobs.length > 0) {
     // Fallback: server belum kirim queue_info
     html += `<div class="queue-section-label">Antrian Saat Ini</div>`;
