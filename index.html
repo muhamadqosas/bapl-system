@@ -800,15 +800,15 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeLight
    VALIDATION
 ================================================================ */
 function validate() {
-  const lokasi    = document.getElementById('fieldLokasi').value.trim();
   const deskripsi = document.getElementById('fieldDeskripsi').value.trim();
-  if (!lokasi) {
-    showToast('Lokasi wajib diisi', '', 'danger', 'bi-exclamation-triangle-fill');
-    document.getElementById('fieldLokasi').focus(); return false;
-  }
+  const lokasi    = document.getElementById('fieldLokasi').value.trim();
   if (!deskripsi) {
-    showToast('Deskripsi wajib diisi', '', 'danger', 'bi-exclamation-triangle-fill');
+    showToast('Pekerjaan Utama wajib diisi', 'Isi kolom Pekerjaan Utama terlebih dahulu', 'danger', 'bi-exclamation-triangle-fill');
     document.getElementById('fieldDeskripsi').focus(); return false;
+  }
+  if (!lokasi) {
+    showToast('Lokasi Pekerjaan wajib diisi', 'Isi kolom Lokasi Pekerjaan terlebih dahulu', 'danger', 'bi-exclamation-triangle-fill');
+    document.getElementById('fieldLokasi').focus(); return false;
   }
   return true;
 }
@@ -1486,7 +1486,7 @@ function hasUnsavedData() {
   const lokasi     = document.getElementById('fieldLokasi').value.trim();
   const deskripsi  = document.getElementById('fieldDeskripsi').value.trim();
   const keterangan = document.getElementById('fieldKeterangan').value.trim();
-  return lokasi || deskripsi || keterangan || photos.length > 0 || jobs.some(j => j.status !== 'completed');
+  return lokasi || deskripsi || keterangan || photos.length > 0 || jobs.length > 0;
 }
 
 let _allowRefresh = false;
