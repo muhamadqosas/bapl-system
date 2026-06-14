@@ -536,6 +536,7 @@
 ================================================================ */
 const API_BASE_URL      = 'https://api-bapl.qcdefect.online';
 const POLL_INTERVAL_MS  = 2000;
+const GLOBAL_QUEUE_POLL_MS = 3000;
 const UPLOAD_TIMEOUT_MS = 60000;
 const POLL_TIMEOUT_MS   = 300000;
 const MAX_RETRY         = 3;
@@ -931,8 +932,42 @@ async function submitBAJob() {
 }
 
 /* ================================================================
-   POLLING
+   GLOBAL QUEUE POLLING (realtime, untuk semua user — termasuk yang
+   tidak punya pekerjaan sendiri, agar tetap bisa melihat antrian
+   umum & progres user lain)
 ================================================================ */
+let globalQueuePollTimer = null;
+
+function startGlobalQueuePolling() {
+  if (globalQueuePollTimer) return;
+
+  async function doGlobalPoll() {
+    try {
+      const resp = await fetchWithTimeout(`${API_BASE_URL}/ba/queue`, { method: 'GET' }, 10000);
+      if (resp.ok) {
+        const data = await resp.json();
+        if (Array.isArray(data.queue_info)) {
+          const myJobIds = new Set(jobs.map(j => j.jobId));
+          globalQueue = data.queue_info
+            .filter(q => q.status === 'queued' || q.status === 'processing')
+            .map(q => ({ ...q, is_mine: myJobIds.has(q.job_id) }));
+          renderQueueSidebar();
+          updateQueueBadge();
+          if (document.getElementById('genOverlay').classList.contains('active')) {
+            renderGenQueueList(currentModalJobId);
+          }
+        }
+      }
+    } catch (_) {
+      // diamkan; coba lagi pada interval berikutnya
+    }
+    globalQueuePollTimer = setTimeout(doGlobalPoll, GLOBAL_QUEUE_POLL_MS);
+  }
+
+  doGlobalPoll();
+}
+
+
 function startPolling(localId) {
   const job = jobs.find(j => j.id === localId);
   if (!job) return;
@@ -1516,6 +1551,7 @@ setInterval(checkBackendStatus, STATUS_CHECK_INTERVAL);
 ================================================================ */
 renderQueueSidebar();
 updateQueueBadge();
+startGlobalQueuePolling();
 </script>
 </body>
 </html>
