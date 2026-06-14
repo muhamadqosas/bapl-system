@@ -1055,7 +1055,74 @@ async function submitBAJob() {
    tidak punya pekerjaan sendiri, agar tetap bisa melihat antrian
    umum & progres user lain)
 ================================================================ */
-let globalQueuePollTimer = null;
+// Gabungkan data queue_info dari server ke globalQueue, mempertahankan
+// displayProgress & progress yang sudah berjalan (animasi) untuk item lama.
+function mergeGlobalQueue(queueInfo) {
+  const myJobIds = new Set(jobs.map(j => j.jobId));
+  const prevById = new Map(globalQueue.map(q => [q.job_id, q]));
+
+  globalQueue = queueInfo
+    .filter(q => q.status === 'queued' || q.status === 'processing')
+    .map(q => {
+      const prev = prevById.get(q.job_id);
+      const serverPct = Math.max(0, Math.min(100, q.progress || 0));
+      const merged = {
+        ...q,
+        is_mine: myJobIds.has(q.job_id),
+        progress: prev ? Math.max(prev.progress || 0, serverPct) : serverPct,
+        displayProgress: prev ? prev.displayProgress : 0,
+        _animTimer: prev ? prev._animTimer : null,
+      };
+      return merged;
+    });
+
+  // Hentikan timer milik item yang sudah tidak ada lagi di queue
+  prevById.forEach((q, jobId) => {
+    if (!globalQueue.find(g => g.job_id === jobId) && q._animTimer) {
+      clearInterval(q._animTimer);
+    }
+  });
+
+  // Pastikan animasi berjalan untuk setiap item "user lain" (is_mine sudah
+  // ditangani lewat startProgressEstimate pada job lokal masing-masing)
+  globalQueue.forEach(q => {
+    if (!q.is_mine) startGlobalQueueItemEstimate(q);
+  });
+}
+
+// Animasi merangkak untuk item antrian milik user lain, sama seperti job lokal
+function startGlobalQueueItemEstimate(q) {
+  if (q._animTimer) return;
+  const TICK_MS = 120;
+  q._animTimer = setInterval(() => {
+    if (q.status === 'completed' || q.status === 'failed' ||
+        !globalQueue.includes(q)) {
+      clearInterval(q._animTimer);
+      q._animTimer = null;
+      return;
+    }
+    const cur = q.displayProgress;
+    const serverTarget = Math.min(99, q.progress || 0);
+
+    let next;
+    if (serverTarget > 0 && cur < serverTarget) {
+      next = Math.min(cur + CATCHUP_SPEED * (TICK_MS / 1000), serverTarget);
+    } else if (cur >= serverTarget && serverTarget > 0) {
+      return;
+    } else {
+      next = Math.min(cur + getEstimateSpeed(cur) * (TICK_MS / 1000), 99);
+    }
+
+    if (next <= cur) return;
+    q.displayProgress = next;
+    renderQueueSidebar();
+    if (document.getElementById('genOverlay').classList.contains('active')) {
+      renderGenQueueList(currentModalJobId);
+    }
+  }, TICK_MS);
+}
+
+
 
 function startGlobalQueuePolling() {
   if (globalQueuePollTimer) return;
@@ -1066,14 +1133,7 @@ function startGlobalQueuePolling() {
       if (resp.ok) {
         const data = await resp.json();
         if (Array.isArray(data.queue_info)) {
-          const myJobIds = new Set(jobs.map(j => j.jobId));
-          globalQueue = data.queue_info
-            .filter(q => q.status === 'queued' || q.status === 'processing')
-            .map(q => ({
-              ...q,
-              is_mine: myJobIds.has(q.job_id),
-              displayProgress: q.progress || 0,
-            }));
+          mergeGlobalQueue(data.queue_info);
           renderQueueSidebar();
           updateQueueBadge();
           if (document.getElementById('genOverlay').classList.contains('active')) {
@@ -1142,15 +1202,7 @@ function applyStatusUpdate(job, data) {
 
   // ── Update global queue dari server (queue_info bisa berupa array semua job aktif)
   if (Array.isArray(data.queue_info)) {
-    // Tandai mana yg milik user ini
-    const myJobIds = new Set(jobs.map(j => j.jobId));
-    globalQueue = data.queue_info
-      .filter(q => q.status === 'queued' || q.status === 'processing')
-      .map(q => ({
-        ...q,
-        is_mine: myJobIds.has(q.job_id),
-        displayProgress: q.progress || 0,
-      }));
+    mergeGlobalQueue(data.queue_info);
   }
 
   switch (data.status) {
