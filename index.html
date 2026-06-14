@@ -243,6 +243,7 @@
     .queue-owner-tag { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 6px; margin-top: 4px; }
     .queue-owner-tag.mine { background: #EFF6FF; color: #1D4ED8; }
     .queue-owner-tag.other { background: #F3F4F6; color: #6B7280; }
+    .queue-item-pos { width: 26px; height: 26px; flex-shrink: 0; border-radius: 8px; background: var(--blue-light); color: var(--blue-primary); font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; }
 
     .gen-queue-panel { text-align: center; }
     .gen-queue-icon { width: 70px; height: 70px; background: #FEF3C7; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #B45309; font-size: 30px; margin: 0 auto 18px; animation: pulse 2s infinite; }
@@ -1157,15 +1158,18 @@ function renderGenQueueList(currentLocalId) {
   let displayList = [];
 
   if (globalQueue.length > 0) {
-    displayList = globalQueue.map(q => ({
-      jobId:     q.job_id,
-      isMine:    q.is_mine,
-      status:    q.status,
-      position:  q.position,
-      title:     q.is_mine
-        ? (jobs.find(j => j.jobId === q.job_id)?.title || 'Pekerjaan Anda')
-        : 'User Lain',
-    }));
+    displayList = globalQueue
+      .slice()
+      .sort((a, b) => (a.position || 0) - (b.position || 0))
+      .map(q => ({
+        jobId:     q.job_id,
+        isMine:    q.is_mine,
+        status:    q.status,
+        position:  q.position,
+        title:     q.is_mine
+          ? (jobs.find(j => j.jobId === q.job_id)?.title || 'Pekerjaan Anda')
+          : 'User Lain',
+      }));
   } else {
     // Fallback: hanya jobs lokal jika server belum kirim queue_info
     displayList = jobs
@@ -1232,10 +1236,11 @@ function updateQueueBadge() {
 function renderQueueSidebar() {
   const list = document.getElementById('queueList');
 
-  const myJobs        = jobs;
-  const myJobIds      = new Set(jobs.map(j => j.jobId));
-  const otherActive   = globalQueue.filter(q => !q.is_mine);
-  const hasAnything   = myJobs.length > 0 || otherActive.length > 0;
+  const myJobs       = jobs;
+  const myActiveJobs = myJobs.filter(j => j.status === 'queued' || j.status === 'processing');
+  const myDoneJobs   = myJobs.filter(j => j.status === 'completed' || j.status === 'failed');
+  const otherActive  = globalQueue.filter(q => !q.is_mine);
+  const hasAnything  = myJobs.length > 0 || otherActive.length > 0;
 
   if (!hasAnything) {
     list.innerHTML = `<div class="queue-empty"><i class="bi bi-inbox"></i>Belum ada BA dalam antrian atau proses.<br>Klik "Generate BA" untuk memulai.</div>`;
@@ -1244,24 +1249,40 @@ function renderQueueSidebar() {
 
   let html = '';
 
-  // ── Bagian: pekerjaan saya
-  if (myJobs.length > 0) {
-    html += `<div class="queue-section-label">Pekerjaan Anda</div>`;
-    myJobs.slice().reverse().forEach(job => { html += renderQueueItem(job, true); });
+  // ── Bagian: antrian gabungan (urut sesuai posisi server, milik saya + user lain)
+  if (globalQueue.length > 0) {
+    html += `<div class="queue-section-label">Antrian Saat Ini</div>`;
+    globalQueue
+      .slice()
+      .sort((a, b) => (a.position || 0) - (b.position || 0))
+      .forEach((q, idx) => {
+        if (q.is_mine) {
+          const job = myJobs.find(j => j.jobId === q.job_id);
+          if (job) {
+            html += renderQueueItem(job, true, q.position);
+          } else {
+            html += renderQueueItemOther(q, idx, true);
+          }
+        } else {
+          html += renderQueueItemOther(q, idx, false);
+        }
+      });
+  } else if (myActiveJobs.length > 0) {
+    // Fallback: server belum kirim queue_info
+    html += `<div class="queue-section-label">Antrian Saat Ini</div>`;
+    myActiveJobs.forEach(job => { html += renderQueueItem(job, true); });
   }
 
-  // ── Bagian: antrian user lain yang masih aktif
-  if (otherActive.length > 0) {
-    html += `<div class="queue-section-label" style="margin-top:8px;">User Lain (Aktif)</div>`;
-    otherActive.forEach((q, idx) => {
-      html += renderQueueItemOther(q, idx);
-    });
+  // ── Bagian: riwayat pekerjaan saya (selesai/gagal)
+  if (myDoneJobs.length > 0) {
+    html += `<div class="queue-section-label" style="margin-top:8px;">Riwayat Pekerjaan Anda</div>`;
+    myDoneJobs.slice().reverse().forEach(job => { html += renderQueueItem(job, true); });
   }
 
   list.innerHTML = html;
 }
 
-function renderQueueItem(job, isMine) {
+function renderQueueItem(job, isMine, queuePosition) {
   let badgeClass, badgeText, iconClass, iconStyle, note = '';
   const pct = Math.round(job.displayProgress);
 
@@ -1278,19 +1299,23 @@ function renderQueueItem(job, isMine) {
   } else {
     badgeClass = 'queued-mine';  badgeText = 'Menunggu';
     iconClass  = 'bi-hourglass-split'; iconStyle = 'background:#E0E7FF;color:#4338CA;';
-    note = job.position
-      ? `<div class="queue-item-note"><i class="bi bi-list-ol"></i>Posisi antrian ke-${job.position}</div>`
+    const pos = queuePosition || job.position;
+    note = pos
+      ? `<div class="queue-item-note"><i class="bi bi-list-ol"></i>Posisi antrian ke-${pos}</div>`
       : `<div class="queue-item-note"><i class="bi bi-clock-history"></i>Menunggu giliran diproses</div>`;
   }
 
   const canOpen    = job.status !== 'failed';
   const itemClass  = ['queue-item', canOpen ? 'clickable' : '', job.status === 'processing' ? 'is-mine-processing' : ''].filter(Boolean).join(' ');
   const onClick    = canOpen ? ` onclick="openModalForJob('${job.id}')"` : '';
+  const posBadge   = (queuePosition && (job.status === 'queued' || job.status === 'processing'))
+    ? `<div class="queue-item-pos">${queuePosition}</div>` : '';
   const ownerTag   = `<span class="queue-owner-tag mine"><i class="bi bi-person-check-fill"></i>Anda</span>`;
 
   return `
     <div class="${itemClass}"${onClick}>
       <div class="queue-item-top">
+        ${posBadge}
         <div class="queue-item-icon" style="${iconStyle}"><i class="bi ${iconClass}"></i></div>
         <div style="flex:1;">
           <div class="queue-item-title">${job.title}</div>
@@ -1304,18 +1329,21 @@ function renderQueueItem(job, isMine) {
     </div>`;
 }
 
-function renderQueueItemOther(q, idx) {
+function renderQueueItemOther(q, idx, isMineWithoutLocalData) {
   const isProcessing = q.status === 'processing';
   const badgeClass   = isProcessing ? 'processing' : 'queued-other';
   const badgeText    = isProcessing ? 'Diproses' : 'Menunggu';
   const iconClass    = isProcessing ? 'bi-gear-wide-connected' : 'bi-hourglass-split';
   const iconStyle    = isProcessing ? 'background:#FEF3C7;color:#B45309;' : 'background:#F3F4F6;color:#6B7280;';
-  const ownerTag     = `<span class="queue-owner-tag other"><i class="bi bi-person"></i>User Lain</span>`;
+  const ownerTag     = isMineWithoutLocalData
+    ? `<span class="queue-owner-tag mine"><i class="bi bi-person-check-fill"></i>Anda</span>`
+    : `<span class="queue-owner-tag other"><i class="bi bi-person"></i>User Lain</span>`;
   const pos          = q.position || (idx + 1);
 
   return `
     <div class="queue-item is-other">
       <div class="queue-item-top">
+        <div class="queue-item-pos">${pos}</div>
         <div class="queue-item-icon" style="${iconStyle}"><i class="bi ${iconClass}"></i></div>
         <div style="flex:1;">
           <div class="queue-item-title">Job #${pos} — Antrian</div>
