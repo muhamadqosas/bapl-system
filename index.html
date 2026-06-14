@@ -1,0 +1,1340 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Berita Acara Pekerjaan — PT Nusa Raya Cipta | Elevee Penthouse Alam Sutera</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --blue-primary: #0F4C81; --blue-secondary: #1E6FB9; --blue-light: #EAF4FF;
+      --bg: #F5F9FD; --white: #FFFFFF; --border: #D6E4F2;
+      --text-dark: #1F2937; --text-secondary: #6B7280;
+      --success: #16A34A; --danger: #DC2626;
+      --radius-card: 18px; --radius-input: 10px;
+      --shadow-card: 0 4px 24px rgba(15,76,129,0.08);
+      --shadow-hover: 0 8px 32px rgba(15,76,129,0.14);
+      --transition: all 0.25s ease;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text-dark); min-height: 100vh; line-height: 1.6; }
+
+    .header { position: sticky; top: 0; z-index: 100; background: linear-gradient(135deg, #0F4C81, #1E6FB9); padding: 0 24px; box-shadow: 0 2px 20px rgba(15,76,129,0.25); }
+    .header-inner { max-width: 860px; margin: 0 auto; display: flex; align-items: center; gap: 16px; height: 64px; }
+    .header-logo { width: 40px; height: 40px; background: rgba(255,255,255,0.18); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 20px; flex-shrink: 0; }
+    .header-titles { flex: 1; }
+    .header-titles h1 { color: #fff; font-size: 15px; font-weight: 700; line-height: 1.2; }
+    .header-titles p { color: rgba(255,255,255,0.72); font-size: 11.5px; }
+    .header-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; padding: 5px 12px; border-radius: 20px; white-space: nowrap; transition: all 0.4s ease; }
+    .header-badge.status-online { background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.25); }
+    .header-badge.status-offline { background: #fff1f1; color: #DC2626; border: 1.5px solid #fca5a5; }
+    .header-badge.status-checking { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.2); }
+    #backendStatusDot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+    .status-online #backendStatusDot { background: #4ade80; animation: pulse 2s infinite; }
+    .status-offline #backendStatusDot { background: #DC2626; animation: none; }
+    .status-checking #backendStatusDot { background: rgba(255,255,255,0.45); animation: pulse 1s infinite; }
+
+    .main { max-width: 860px; margin: 0 auto; padding: 28px 16px 60px; }
+    .page-intro { margin-bottom: 24px; }
+    .page-intro h2 { font-size: 22px; font-weight: 700; color: var(--blue-primary); }
+    .page-intro p { font-size: 13.5px; color: var(--text-secondary); margin-top: 4px; }
+
+    .card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-card); box-shadow: var(--shadow-card); padding: 28px; margin-bottom: 20px; transition: var(--transition); }
+    .card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
+    .card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 22px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+    .card-icon { width: 38px; height: 38px; background: var(--blue-light); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--blue-primary); font-size: 17px; flex-shrink: 0; }
+    .card-title { font-size: 15px; font-weight: 700; color: var(--text-dark); line-height: 1.2; }
+    .card-subtitle { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+
+    .form-group { margin-bottom: 18px; }
+    label { display: block; font-size: 12.5px; font-weight: 600; color: var(--text-dark); margin-bottom: 7px; }
+    label .required { color: var(--danger); margin-left: 2px; }
+    input[type="text"], textarea { width: 100%; border: 1.5px solid var(--border); border-radius: var(--radius-input); padding: 10px 14px; font-size: 14px; color: var(--text-dark); background: var(--white); transition: var(--transition); outline: none; font-family: inherit; }
+    input[type="text"]:focus, textarea:focus { border-color: var(--blue-secondary); box-shadow: 0 0 0 3px rgba(30,111,185,0.12); }
+    input[readonly] { background: var(--blue-light); color: var(--blue-primary); font-weight: 600; cursor: default; }
+    textarea { resize: vertical; }
+
+    /* Tanggal row */
+    .tanggal-row { display: flex; gap: 10px; align-items: flex-start; }
+    .tanggal-row input { flex: 1; }
+    .btn-tanggal-toggle { flex-shrink: 0; display: flex; align-items: center; gap: 6px; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: var(--radius-input); background: var(--white); color: var(--text-secondary); font-size: 13px; font-weight: 600; cursor: pointer; transition: var(--transition); white-space: nowrap; height: 43px; }
+    .btn-tanggal-toggle:hover { border-color: var(--blue-secondary); color: var(--blue-secondary); background: var(--blue-light); }
+    .btn-tanggal-toggle.active { border-color: var(--blue-primary); color: var(--blue-primary); background: var(--blue-light); }
+    #manualDateWrap { margin-top: 10px; display: none; }
+    #manualDateWrap.show { display: block; }
+    input[type="date"] { width: 100%; border: 1.5px solid var(--border); border-radius: var(--radius-input); padding: 10px 14px; font-size: 14px; color: var(--text-dark); background: var(--white); transition: var(--transition); outline: none; font-family: inherit; }
+    input[type="date"]:focus { border-color: var(--blue-secondary); box-shadow: 0 0 0 3px rgba(30,111,185,0.12); }
+
+    .input-icon-wrap { position: relative; }
+    .input-icon-wrap i.icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); font-size: 15px; pointer-events: none; }
+    .input-icon-wrap input { padding-left: 36px; }
+
+    /* Upload */
+    .upload-drop-zone { border: 2px dashed var(--border); border-radius: 14px; padding: 32px 20px; text-align: center; cursor: pointer; transition: var(--transition); background: var(--bg); position: relative; }
+    .upload-drop-zone:hover, .upload-drop-zone.drag-over { border-color: var(--blue-secondary); background: var(--blue-light); }
+    .upload-drop-zone input[type="file"] { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+    .upload-icon { width: 56px; height: 56px; background: var(--blue-light); border-radius: 14px; display: flex; align-items: center; justify-content: center; color: var(--blue-primary); font-size: 24px; margin: 0 auto 14px; }
+    .upload-drop-zone h4 { font-size: 14.5px; font-weight: 700; color: var(--text-dark); margin-bottom: 5px; }
+    .upload-drop-zone p { font-size: 12.5px; color: var(--text-secondary); }
+    .upload-hint { margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 14px; flex-wrap: wrap; }
+    .upload-hint span { display: flex; align-items: center; gap: 4px; font-size: 11.5px; color: var(--text-secondary); }
+    .upload-hint span i { font-size: 13px; color: var(--blue-secondary); }
+    .upload-source-btns { display: flex; gap: 12px; justify-content: center; margin-top: 18px; flex-wrap: wrap; }
+    .btn-source { display: flex; flex-direction: column; align-items: center; gap: 7px; padding: 14px 28px; border: 2px solid var(--border); border-radius: 14px; background: var(--white); color: var(--blue-primary); font-size: 13px; font-weight: 700; cursor: pointer; transition: var(--transition); min-width: 110px; }
+    .btn-source i { font-size: 24px; }
+    .btn-source:hover { border-color: var(--blue-secondary); background: var(--blue-light); transform: translateY(-2px); box-shadow: 0 4px 14px rgba(15,76,129,0.12); }
+
+    .photo-counter { display: flex; align-items: center; gap: 8px; margin: 16px 0 14px; padding: 10px 16px; background: var(--blue-light); border-radius: 10px; border: 1px solid var(--border); }
+    .photo-counter i { color: var(--blue-primary); font-size: 16px; }
+    .photo-counter-text { font-size: 13px; font-weight: 700; color: var(--blue-primary); }
+    .photo-counter-sub { font-size: 12px; color: var(--text-secondary); margin-left: auto; }
+    .photo-counter[data-count="0"] { background: var(--bg); }
+    .photo-counter[data-count="0"] i, .photo-counter[data-count="0"] .photo-counter-text { color: var(--text-secondary); }
+
+    .photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 12px; margin-top: 4px; }
+    .photo-thumb { position: relative; aspect-ratio: 1; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 10px rgba(15,76,129,0.10); animation: thumbIn 0.25s ease; background: var(--border); }
+    @keyframes thumbIn { from { opacity:0; transform:scale(0.88); } to { opacity:1; transform:scale(1); } }
+    .photo-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; transition: var(--transition); }
+    .photo-thumb:hover img { transform: scale(1.05); }
+    .photo-thumb-overlay { position: absolute; inset: 0; background: rgba(15,76,129,0.0); transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .photo-thumb:hover .photo-thumb-overlay { background: rgba(15,76,129,0.45); }
+    .photo-thumb-btn { width: 32px; height: 32px; border-radius: 8px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px; opacity: 0; transform: scale(0.8); transition: var(--transition); }
+    .photo-thumb:hover .photo-thumb-btn { opacity: 1; transform: scale(1); }
+    .btn-preview { background: rgba(255,255,255,0.92); color: var(--blue-primary); }
+    .btn-remove { background: rgba(220,38,38,0.88); color: #fff; }
+    .photo-thumb-label { position: absolute; bottom: 0; left: 0; right: 0; font-size: 10px; color: rgba(255,255,255,0.9); background: linear-gradient(transparent, rgba(0,0,0,0.5)); padding: 14px 6px 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    /* REKAP CARD */
+    .rekap-card { background: linear-gradient(135deg, #0F4C81 0%, #1E6FB9 100%); border-radius: var(--radius-card); padding: 24px 28px; margin-bottom: 20px; color: #fff; box-shadow: 0 6px 28px rgba(15,76,129,0.22); position: relative; overflow: hidden; }
+    .rekap-card::before { content: ''; position: absolute; top: -40px; right: -40px; width: 160px; height: 160px; border-radius: 50%; background: rgba(255,255,255,0.06); }
+    .rekap-card::after { content: ''; position: absolute; bottom: -60px; right: 60px; width: 200px; height: 200px; border-radius: 50%; background: rgba(255,255,255,0.04); }
+    .rekap-label { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; color: rgba(255,255,255,0.65); text-transform: uppercase; margin-bottom: 10px; display: flex; align-items: center; gap: 7px; }
+    .rekap-label i { font-size: 13px; }
+    .rekap-judul { font-size: 17px; font-weight: 800; color: #fff; margin-bottom: 16px; line-height: 1.4; min-height: 26px; }
+    .rekap-judul.empty { color: rgba(255,255,255,0.35); font-weight: 400; font-style: italic; font-size: 14px; }
+    .rekap-divider { height: 1px; background: rgba(255,255,255,0.15); margin-bottom: 16px; }
+    .rekap-isi-label { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; color: rgba(255,255,255,0.55); text-transform: uppercase; margin-bottom: 8px; }
+    .rekap-isi { font-size: 14px; line-height: 1.75; color: rgba(255,255,255,0.88); min-height: 24px; }
+    .rekap-isi.empty { color: rgba(255,255,255,0.35); font-style: italic; }
+    .rekap-pulse { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #4ade80; margin-right: 5px; animation: pulse 2s infinite; vertical-align: middle; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+    /* Lightbox */
+    .lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.88); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.2s ease; }
+    .lightbox.active { opacity: 1; pointer-events: all; }
+    .lightbox img { max-width: 90vw; max-height: 85vh; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.6); object-fit: contain; }
+    .lightbox-close { position: absolute; top: 20px; right: 20px; width: 40px; height: 40px; background: rgba(255,255,255,0.15); border: none; border-radius: 10px; color: #fff; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: var(--transition); }
+    .lightbox-close:hover { background: rgba(255,255,255,0.28); }
+
+    /* Buttons */
+    .action-bar { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; border-radius: 10px; border: none; font-size: 14px; font-weight: 700; cursor: pointer; transition: var(--transition); white-space: nowrap; }
+    .btn-primary { background: var(--blue-primary); color: #fff; box-shadow: 0 4px 14px rgba(15,76,129,0.28); flex: 1; justify-content: center; }
+    .btn-primary:hover { background: var(--blue-secondary); box-shadow: 0 6px 20px rgba(15,76,129,0.38); transform: translateY(-1px); }
+    .btn-outline { background: var(--white); color: var(--blue-primary); border: 2px solid var(--blue-primary); flex: 1; justify-content: center; }
+    .btn-outline:hover { background: var(--blue-light); transform: translateY(-1px); }
+    .btn .spinner { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.35); border-top-color: #fff; border-radius: 50%; animation: spin 0.6s linear infinite; display: none; }
+    .btn.loading .spinner { display: block; }
+    .btn.loading .btn-label, .btn.loading i { display: none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ===== GENERATE MODAL ===== */
+  .gen-overlay { position: fixed; inset: 0; background: rgba(10,30,60,0.72); z-index: 5000; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.28s ease; backdrop-filter: blur(4px); }
+  .gen-overlay.active { opacity: 1; pointer-events: all; }
+  .gen-modal { background: var(--white); border-radius: 22px; padding: 36px 32px 32px; width: 100%; max-width: 440px; box-shadow: 0 24px 80px rgba(15,76,129,0.28); transform: translateY(16px) scale(0.97); transition: transform 0.28s cubic-bezier(0.4,0,0.2,1); }
+  .gen-overlay.active .gen-modal { transform: translateY(0) scale(1); }
+
+  /* -- proses panel -- */
+  .gen-title { font-size: 16px; font-weight: 800; color: var(--blue-primary); margin-bottom: 6px; display: flex; align-items: center; gap: 9px; }
+  .gen-title i { font-size: 19px; }
+  .gen-sub { font-size: 12.5px; color: var(--text-secondary); margin-bottom: 26px; }
+
+  .gen-icon-anim { width: 66px; height: 66px; background: var(--blue-light); border-radius: 18px; display: flex; align-items: center; justify-content: center; color: var(--blue-primary); font-size: 28px; margin: 0 auto 22px; position: relative; overflow: hidden; }
+  .gen-icon-anim::after { content:''; position:absolute; inset:0; background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.55) 50%, transparent 70%); animation: shimmer 1.6s infinite; }
+  @keyframes shimmer { 0%{transform:translateX(-100%)} 100%{transform:translateX(100%)} }
+
+  .gen-progress-track { height: 8px; background: var(--border); border-radius: 99px; overflow: hidden; margin-bottom: 10px; }
+  .gen-progress-bar { height: 100%; background: linear-gradient(90deg, #0F4C81, #2a8def); border-radius: 99px; width: 0%; transition: width 0.6s cubic-bezier(0.4,0,0.2,1); }
+  .gen-progress-row { display: flex; justify-content: center; align-items: center; margin-bottom: 6px; }
+  .gen-pct { font-size: 13.5px; font-weight: 800; color: var(--blue-primary); }
+  .gen-status-text { font-size: 13px; font-weight: 600; color: var(--text-secondary); text-align: center; margin-bottom: 22px; min-height: 18px; transition: opacity 0.25s ease; }
+
+  /* -- hasil panel -- */
+  .gen-result { display: none; text-align: center; }
+  .gen-result.show { display: block; animation: fadeUp 0.4s ease; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+  .gen-result-icon { width: 72px; height: 72px; background: #DCFCE7; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--success); font-size: 32px; margin: 0 auto 18px; }
+  .gen-result-title { font-size: 18px; font-weight: 800; color: var(--text-dark); margin-bottom: 6px; }
+  .gen-result-sub { font-size: 13px; color: var(--text-secondary); margin-bottom: 24px; line-height: 1.6; }
+  .gen-result-meta { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 14px 18px; margin-bottom: 22px; text-align: left; }
+  .gen-result-meta-row { display: flex; justify-content: space-between; align-items: center; font-size: 12.5px; padding: 4px 0; }
+  .gen-result-meta-row:not(:last-child) { border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-bottom: 8px; }
+  .gen-result-meta-label { color: var(--text-secondary); font-weight: 600; }
+  .gen-result-meta-val { color: var(--text-dark); font-weight: 700; }
+  .gen-dl-btns { display: flex; gap: 10px; }
+  .btn-dl-excel { flex:1; display:flex; align-items:center; justify-content:center; gap:8px; padding:13px 16px; border-radius:10px; font-size:13.5px; font-weight:700; cursor:pointer; border: 2px solid #16A34A; background: #F0FDF4; color: #16A34A; transition: var(--transition); }
+  .btn-dl-excel:hover { background: #dcfce7; transform:translateY(-1px); box-shadow: 0 4px 14px rgba(22,163,74,0.2); }
+  .btn-dl-pdf { flex:1; display:flex; align-items:center; justify-content:center; gap:8px; padding:13px 16px; border-radius:10px; font-size:13.5px; font-weight:700; cursor:pointer; border: 2px solid #DC2626; background: #FFF1F1; color: #DC2626; transition: var(--transition); }
+  .btn-dl-pdf:hover { background: #fee2e2; transform:translateY(-1px); box-shadow: 0 4px 14px rgba(220,38,38,0.2); }
+  .btn-close-result { width:100%; margin-top:12px; padding:11px; border-radius:10px; border:1.5px solid var(--border); background:var(--white); color:var(--text-secondary); font-size:13.5px; font-weight:700; cursor:pointer; transition:var(--transition); }
+  .btn-close-result:hover { background:var(--bg); color:var(--text-dark); }
+
+  /* ===== REFRESH CONFIRM MODAL ===== */
+  .refresh-overlay { position: fixed; inset: 0; background: rgba(10,30,60,0.72); z-index: 99999; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.25s ease; backdrop-filter: blur(4px); }
+  .refresh-overlay.active { opacity: 1; pointer-events: all; }
+  .refresh-modal { background: var(--white); border-radius: 22px; padding: 32px 28px 28px; width: 100%; max-width: 400px; box-shadow: 0 24px 80px rgba(15,76,129,0.30); transform: translateY(16px) scale(0.97); transition: transform 0.28s cubic-bezier(0.4,0,0.2,1); }
+  .refresh-overlay.active .refresh-modal { transform: translateY(0) scale(1); }
+  .refresh-modal-icon { width: 64px; height: 64px; background: #FEF3C7; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #D97706; font-size: 28px; margin: 0 auto 18px; }
+  .refresh-modal-title { font-size: 17px; font-weight: 800; color: var(--text-dark); text-align: center; margin-bottom: 10px; }
+  .refresh-modal-desc { font-size: 13.5px; color: var(--text-secondary); text-align: center; line-height: 1.6; margin-bottom: 10px; }
+  .refresh-modal-warning { background: #FEF3C7; border: 1px solid #FCD34D; border-radius: 10px; padding: 11px 15px; margin-bottom: 24px; display: flex; align-items: flex-start; gap: 9px; }
+  .refresh-modal-warning i { color: #D97706; font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+  .refresh-modal-warning span { font-size: 12.5px; color: #92400E; font-weight: 600; line-height: 1.5; }
+  .refresh-modal-btns { display: flex; gap: 10px; }
+  .btn-refresh-cancel { flex: 1; padding: 13px 16px; border-radius: 10px; border: 2px solid var(--blue-primary); background: var(--white); color: var(--blue-primary); font-size: 14px; font-weight: 700; cursor: pointer; transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 7px; }
+  .btn-refresh-cancel:hover { background: var(--blue-light); transform: translateY(-1px); }
+  .btn-refresh-confirm { flex: 1; padding: 13px 16px; border-radius: 10px; border: none; background: var(--danger); color: #fff; font-size: 14px; font-weight: 700; cursor: pointer; transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 7px; box-shadow: 0 4px 14px rgba(220,38,38,0.28); }
+  .btn-refresh-confirm:hover { background: #b91c1c; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(220,38,38,0.38); }
+
+  #toast-container { position: fixed; top: 24px; right: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+    .toast { display: flex; align-items: center; gap: 10px; padding: 13px 18px; border-radius: 12px; background: var(--white); box-shadow: 0 8px 30px rgba(0,0,0,0.15); border-left: 4px solid var(--blue-primary); min-width: 260px; max-width: 340px; font-size: 13.5px; font-weight: 600; color: var(--text-dark); animation: toastIn 0.3s cubic-bezier(0.4,0,0.2,1); pointer-events: all; }
+    .toast.success { border-left-color: var(--success); }
+    .toast.danger { border-left-color: var(--danger); }
+    .toast i { font-size: 18px; }
+    .toast.success i { color: var(--success); }
+    .toast.danger i { color: var(--danger); }
+    .toast.info i { color: var(--blue-primary); }
+    .toast-msg { flex: 1; line-height: 1.4; }
+    .toast-sub { font-size: 11.5px; font-weight: 400; color: var(--text-secondary); margin-top: 2px; }
+    @keyframes toastIn { from { opacity:0; transform:translateX(24px) scale(0.96); } to { opacity:1; transform:translateX(0) scale(1); } }
+    @keyframes toastOut { to { opacity:0; transform:translateX(24px) scale(0.96); } }
+
+    .status-bar { display: flex; align-items: center; gap: 8px; padding: 8px 14px; background: var(--blue-light); border-radius: 8px; margin-bottom: 20px; font-size: 12px; color: var(--blue-primary); font-weight: 600; border: 1px solid var(--border); }
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--success); animation: pulse 2s infinite; }
+
+    /* ===== QUEUE FAB & SIDEBAR ===== */
+    .queue-fab { position: fixed; left: 18px; bottom: 22px; z-index: 4000; width: 56px; height: 56px; border-radius: 50%; background: var(--blue-primary); color: #fff; border: none; box-shadow: 0 8px 24px rgba(15,76,129,0.35); font-size: 22px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: var(--transition); }
+    .queue-fab:hover { background: var(--blue-secondary); transform: translateY(-2px); }
+    .queue-fab .queue-badge { position: absolute; top: -4px; right: -4px; background: var(--danger); color: #fff; font-size: 11px; font-weight: 800; min-width: 20px; height: 20px; border-radius: 10px; display: none; align-items: center; justify-content: center; padding: 0 5px; border: 2px solid var(--white); }
+
+    .queue-overlay { position: fixed; inset: 0; background: rgba(10,30,60,0.45); z-index: 4500; opacity: 0; pointer-events: none; transition: opacity 0.25s ease; }
+    .queue-overlay.active { opacity: 1; pointer-events: all; }
+    .queue-sidebar { position: fixed; top: 0; left: 0; height: 100%; width: 100%; max-width: 380px; background: var(--white); z-index: 4600; box-shadow: 8px 0 32px rgba(15,76,129,0.18); transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.4,0,0.2,1); display: flex; flex-direction: column; }
+    .queue-overlay.active .queue-sidebar { transform: translateX(0); }
+    .queue-sidebar-header { display: flex; align-items: center; gap: 10px; padding: 18px 20px; border-bottom: 1px solid var(--border); background: linear-gradient(135deg, #0F4C81, #1E6FB9); flex-shrink: 0; }
+    .queue-sidebar-header h3 { font-size: 15px; font-weight: 800; flex: 1; color: #fff; }
+    .queue-sidebar-header i.bi-list-task { font-size: 18px; color: #fff; }
+    .queue-sidebar-header button { background: rgba(255,255,255,0.15); border: none; color: #fff; width: 32px; height: 32px; border-radius: 8px; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: var(--transition); }
+    .queue-sidebar-header button:hover { background: rgba(255,255,255,0.28); }
+    .queue-sidebar-body { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+    .queue-section-label { font-size: 11px; font-weight: 800; color: var(--text-secondary); letter-spacing: 0.06em; text-transform: uppercase; }
+    .queue-empty { text-align: center; color: var(--text-secondary); font-size: 13px; padding: 50px 10px; }
+    .queue-empty i { font-size: 36px; color: var(--border); display: block; margin-bottom: 12px; }
+
+    .queue-item { border: 1.5px solid var(--border); border-radius: 14px; padding: 14px; transition: var(--transition); background: var(--bg); }
+    .queue-item.clickable { cursor: pointer; }
+    .queue-item.clickable:hover { border-color: var(--blue-secondary); box-shadow: 0 4px 14px rgba(15,76,129,0.10); }
+    .queue-item.is-mine-processing { border-color: var(--blue-primary); background: var(--blue-light); }
+    .queue-item.is-other { opacity: 0.85; }
+    .queue-item-top { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+    .queue-item-icon { width: 34px; height: 34px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; }
+    .queue-item-title { font-size: 12.5px; font-weight: 700; color: var(--text-dark); line-height: 1.3; }
+    .queue-item-sub { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+    .queue-status-badge { font-size: 10px; font-weight: 800; padding: 3px 9px; border-radius: 20px; white-space: nowrap; text-transform: uppercase; letter-spacing: 0.03em; flex-shrink: 0; }
+    .queue-status-badge.processing { background: #FEF3C7; color: #B45309; }
+    .queue-status-badge.queued-other { background: #FEE2E2; color: #B91C1C; }
+    .queue-status-badge.queued-mine { background: #E0E7FF; color: #4338CA; }
+    .queue-status-badge.done { background: #DCFCE7; color: #15803D; }
+    .queue-item-progress-track { height: 6px; background: var(--border); border-radius: 99px; overflow: hidden; margin-top: 8px; }
+    .queue-item-progress-bar { height: 100%; background: linear-gradient(90deg, #0F4C81, #2a8def); border-radius: 99px; transition: width 0.5s ease; }
+    .queue-item-note { font-size: 11.5px; color: var(--text-secondary); margin-top: 8px; display: flex; align-items: center; gap: 6px; }
+    .queue-item-note i { color: var(--blue-secondary); }
+
+    /* queue panel inside generate modal */
+    .gen-queue-panel { text-align: center; }
+    .gen-queue-icon { width: 70px; height: 70px; background: #FEF3C7; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #B45309; font-size: 30px; margin: 0 auto 18px; animation: pulse 2s infinite; }
+    .gen-queue-title { font-size: 16px; font-weight: 800; color: var(--text-dark); margin-bottom: 8px; }
+    .gen-queue-msg { font-size: 13px; color: var(--text-secondary); margin-bottom: 18px; line-height: 1.6; }
+    .gen-queue-info { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; margin-bottom: 20px; text-align: left; font-size: 12.5px; }
+    .gen-queue-info-row { display: flex; justify-content: space-between; padding: 4px 0; }
+    .gen-queue-info-row:not(:last-child) { border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-bottom: 8px; }
+    .gen-queue-info-label { color: var(--text-secondary); font-weight: 600; }
+    .gen-queue-info-val { color: var(--text-dark); font-weight: 700; text-align: right; }
+
+    .gen-queue-list-wrap { margin-bottom: 20px; }
+    .gen-queue-list-label { font-size: 11px; font-weight: 800; color: var(--text-secondary); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+    .gen-queue-list { display: flex; flex-direction: column; gap: 8px; max-height: 220px; overflow-y: auto; }
+    .gen-queue-list-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 10px; background: var(--bg); border: 1.5px solid var(--border); text-align: left; }
+    .gen-queue-list-item.is-current { border-color: var(--blue-primary); background: var(--blue-light); box-shadow: 0 0 0 3px rgba(15,76,129,0.08); }
+    .gen-queue-list-pos { width: 26px; height: 26px; border-radius: 50%; background: var(--white); border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; color: var(--blue-primary); flex-shrink: 0; }
+    .gen-queue-list-item.is-current .gen-queue-list-pos { background: var(--blue-primary); border-color: var(--blue-primary); color: #fff; }
+    .gen-queue-list-item.is-processing .gen-queue-list-pos { background: #FEF3C7; border-color: #FEF3C7; color: #B45309; }
+    .gen-queue-list-body { flex: 1; min-width: 0; }
+    .gen-queue-list-title { font-size: 12px; font-weight: 700; color: var(--text-dark); line-height: 1.3; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .gen-queue-list-owner { font-size: 11px; color: var(--text-secondary); margin-top: 2px; display: flex; align-items: center; gap: 4px; }
+    .gen-queue-list-owner.mine { color: var(--blue-primary); font-weight: 700; }
+    .gen-queue-list-badge { font-size: 9.5px; font-weight: 800; padding: 2px 8px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.03em; flex-shrink: 0; white-space: nowrap; }
+    .gen-queue-list-badge.processing { background: #FEF3C7; color: #B45309; }
+    .gen-queue-list-badge.waiting { background: #E0E7FF; color: #4338CA; }
+
+    .gen-back-btn { width: 100%; margin-top: 16px; padding: 11px; border-radius: 10px; border: 1.5px solid var(--border); background: var(--white); color: var(--text-secondary); font-size: 13.5px; font-weight: 700; cursor: pointer; transition: var(--transition); }
+    .gen-back-btn:hover { background: var(--bg); color: var(--text-dark); }
+    .gen-process-hint { font-size: 11.5px; color: var(--text-secondary); text-align: center; margin-top: 10px; line-height: 1.5; }
+
+    @media (max-width: 600px) {
+      .card { padding: 20px 16px; }
+      .rekap-card { padding: 20px 18px; }
+      .header-badge { display: inline-flex; font-size: 10px; padding: 4px 8px; gap: 5px; }
+      #backendStatusDot { width: 7px; height: 7px; }
+      .photo-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
+      .btn { padding: 12px 16px; font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-logo"><i class="bi bi-file-earmark-check-fill"></i></div>
+    <div class="header-titles">
+      <h1>Berita Acara Pekerjaan</h1>
+      <p>PT Nusa Raya Cipta — Elevee Penthouse Alam Sutera</p>
+    </div>
+    <span class="header-badge status-checking" id="backendStatusBadge"><span id="backendStatusDot"></span><span id="backendStatusText">Checking...</span></span>
+  </div>
+</header>
+
+<main class="main">
+
+  <div class="page-intro">
+    <h2>Buat Berita Acara Baru</h2>
+    <p>Isi formulir di bawah, lampirkan foto dokumentasi, lalu generate BA.</p>
+  </div>
+
+  <!-- ===================== REKAP REALTIME ===================== -->
+  <div class="rekap-card">
+    <div class="rekap-label"><span class="rekap-pulse"></span>Preview Berita Acara — Update otomatis</div>
+    <div class="rekap-judul empty" id="rekapJudul">Judul BA akan muncul di sini...</div>
+    <div class="rekap-divider"></div>
+    <div class="rekap-isi-label">Isi Berita Acara</div>
+    <div class="rekap-isi empty" id="rekapIsi">Isi BA akan muncul setelah data diisi...</div>
+  </div>
+
+  <!-- ===================== INFORMASI PEKERJAAN ===================== -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon"><i class="bi bi-info-circle-fill"></i></div>
+      <div>
+        <div class="card-title">Informasi Pekerjaan</div>
+        <div class="card-subtitle">Data utama yang akan tercantum dalam dokumen BA</div>
+      </div>
+    </div>
+
+    <!-- Tanggal -->
+    <div class="form-group">
+      <label><i class="bi bi-calendar3" style="margin-right:5px;color:var(--blue-secondary)"></i>Tanggal</label>
+      <div class="tanggal-row">
+        <input type="text" id="fieldTanggal" readonly />
+        <button class="btn-tanggal-toggle" id="btnTanggalToggle" onclick="toggleManualDate()">
+          <i class="bi bi-pencil-square"></i> Edit
+        </button>
+      </div>
+      <div id="manualDateWrap">
+        <input type="date" id="fieldTanggalManual" onchange="applyManualDate()" />
+      </div>
+    </div>
+
+    <!-- Pekerjaan Utama -->
+    <div class="form-group">
+      <label><i class="bi bi-text-paragraph" style="margin-right:5px;color:var(--blue-secondary)"></i>Pekerjaan Utama <span class="required">*</span></label>
+      <div class="input-icon-wrap">
+        <i class="icon bi bi-briefcase"></i>
+        <input type="text" id="fieldDeskripsi" placeholder="cth: Pemasangan Keramik Lantai" oninput="updateRekap()" />
+      </div>
+    </div>
+
+    <!-- Lokasi -->
+    <div class="form-group">
+      <label><i class="bi bi-geo-alt-fill" style="margin-right:5px;color:var(--blue-secondary)"></i>Lokasi Pekerjaan <span class="required">*</span></label>
+      <div class="input-icon-wrap">
+        <i class="icon bi bi-geo-alt"></i>
+        <input type="text" id="fieldLokasi" placeholder="cth: Unit 12A Tower 2" oninput="updateRekap()" />
+      </div>
+    </div>
+
+    <!-- Deskripsi Pekerjaan -->
+    <div class="form-group">
+      <label><i class="bi bi-chat-square-text" style="margin-right:5px;color:var(--blue-secondary)"></i>Deskripsi Pekerjaan</label>
+      <textarea id="fieldKeterangan" rows="4" placeholder="Uraian pekerjaan (opsional)" oninput="updateRekap()"></textarea>
+    </div>
+
+  </div>
+
+  <!-- ===================== FOTO ===================== -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon"><i class="bi bi-camera-fill"></i></div>
+      <div>
+        <div class="card-title">Dokumentasi Foto</div>
+        <div class="card-subtitle">Upload satu atau beberapa foto sebagai bukti pekerjaan</div>
+      </div>
+    </div>
+
+    <!-- Hidden file inputs -->
+    <input type="file" id="fileInput" accept="image/*" multiple style="display:none" />
+    <input type="file" id="fileInputCamera" accept="image/*" multiple capture="environment" style="display:none" />
+
+    <div class="upload-drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()" style="cursor:pointer;">
+      <div class="upload-icon"><i class="bi bi-cloud-arrow-up-fill"></i></div>
+      <h4>Tambahkan Foto Dokumentasi</h4>
+      <p>Pilih sumber foto yang ingin Anda gunakan</p>
+      <p style="font-size:11.5px;color:var(--text-secondary);margin-top:6px;"><i class="bi bi-arrow-down-circle" style="margin-right:4px;color:var(--blue-secondary);"></i>Atau seret &amp; jatuhkan foto ke sini</p>
+      <div class="upload-source-btns" onclick="event.stopPropagation()">
+        <button type="button" class="btn-source" onclick="document.getElementById('fileInputCamera').click()">
+          <i class="bi bi-camera-fill"></i>
+          <span>Kamera</span>
+        </button>
+        <button type="button" class="btn-source" onclick="document.getElementById('fileInput').click()">
+          <i class="bi bi-images"></i>
+          <span>Galeri</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="photo-counter" id="photoCounter" data-count="0">
+      <i class="bi bi-images"></i>
+      <span class="photo-counter-text" id="photoCountText">Belum ada foto</span>
+      <span class="photo-counter-sub" id="photoCountSub"></span>
+    </div>
+    <div class="photo-grid" id="photoGrid"></div>
+  </div>
+
+  <!-- ===================== ACTION ===================== -->
+  <div class="card" style="margin-bottom:0">
+    <div class="action-bar">
+      <button class="btn btn-primary" id="btnGenerate" onclick="handleGenerate()">
+        <i class="bi bi-file-earmark-arrow-down-fill"></i>
+        <span class="btn-label">Generate BA</span>
+        <div class="spinner"></div>
+      </button>
+    </div>
+  </div>
+
+</main>
+
+<!-- ===== GENERATE MODAL ===== -->
+<div class="gen-overlay" id="genOverlay">
+  <div class="gen-modal" id="genModal">
+
+    <!-- PANEL ANTRIAN -->
+    <div id="genQueuePanel" class="gen-queue-panel" style="display:none;">
+      <div class="gen-queue-icon"><i class="bi bi-hourglass-split"></i></div>
+      <div class="gen-queue-title" id="genQueueTitle">Menunggu Antrian</div>
+      <div class="gen-queue-msg" id="genQueueMsg">BA Anda sedang menunggu giliran untuk diproses.</div>
+      <div class="gen-queue-info">
+        <div class="gen-queue-info-row"><span class="gen-queue-info-label">Dokumen</span><span class="gen-queue-info-val" id="genQueueDocTitle">—</span></div>
+        <div class="gen-queue-info-row"><span class="gen-queue-info-label">Posisi Antrian</span><span class="gen-queue-info-val" id="genQueuePos">—</span></div>
+      </div>
+
+      <div class="gen-queue-list-wrap">
+        <div class="gen-queue-list-label"><i class="bi bi-list-ol"></i> Urutan Antrian Saat Ini</div>
+        <div class="gen-queue-list" id="genQueueList"></div>
+      </div>
+
+      <button class="gen-back-btn" onclick="closeGenModal()"><i class="bi bi-arrow-left" style="margin-right:6px;"></i>Kembali ke Formulir</button>
+      <div class="gen-process-hint">BA Anda tetap diproses di latar belakang. Pantau progresnya lewat menu Antrian.</div>
+    </div>
+
+    <!-- PANEL PROSES -->
+    <div id="genProcessPanel">
+      <div class="gen-icon-anim"><i class="bi bi-file-earmark-text-fill" id="genModalIcon"></i></div>
+      <div class="gen-title"><i class="bi bi-gear-wide-connected"></i> Memproses Berita Acara</div>
+      <div class="gen-sub">Sistem sedang menyusun dokumen Anda. Mohon tunggu...</div>
+
+      <div class="gen-progress-track"><div class="gen-progress-bar" id="genBar"></div></div>
+      <div class="gen-progress-row">
+        <span class="gen-pct" id="genPct">0%</span>
+      </div>
+      <div class="gen-status-text" id="genStepLabel">Mempersiapkan data...</div>
+
+      <button class="gen-back-btn" onclick="closeGenModal()"><i class="bi bi-arrow-left" style="margin-right:6px;"></i>Kembali ke Formulir</button>
+      <div class="gen-process-hint">Proses tetap berjalan di latar belakang. Anda bisa membuat BA lain atau memantau progres lewat menu Antrian.</div>
+    </div>
+
+    <!-- PANEL HASIL -->
+    <div class="gen-result" id="genResultPanel">
+      <div class="gen-result-icon"><i class="bi bi-check-circle-fill"></i></div>
+      <div class="gen-result-title">Dokumen Berhasil Dibuat!</div>
+      <div class="gen-result-sub">Berita Acara telah selesai disusun.<br>Silakan unduh dokumen di bawah ini.</div>
+      <div class="gen-result-meta">
+        <div class="gen-result-meta-row"><span class="gen-result-meta-label">Jenis Dokumen</span><span class="gen-result-meta-val">Berita Acara Pekerjaan</span></div>
+        <div class="gen-result-meta-row"><span class="gen-result-meta-label">Tanggal Dibuat</span><span class="gen-result-meta-val" id="resultTanggal">—</span></div>
+        <div class="gen-result-meta-row"><span class="gen-result-meta-label">Foto Terlampir</span><span class="gen-result-meta-val" id="resultFoto">0 foto</span></div>
+        <div class="gen-result-meta-row"><span class="gen-result-meta-label">Status</span><span class="gen-result-meta-val" style="color:var(--success)"><i class="bi bi-check-circle-fill" style="font-size:11px;margin-right:4px;"></i>Selesai</span></div>
+      </div>
+      <div class="gen-dl-btns">
+        <button class="btn-dl-excel" id="btnDlExcel" onclick="downloadFile('excel')"><i class="bi bi-file-earmark-excel-fill"></i> Download Excel</button>
+        <button class="btn-dl-pdf" id="btnDlPdf" onclick="downloadFile('pdf')"><i class="bi bi-file-earmark-pdf-fill"></i> Download PDF</button>
+      </div>
+      <button class="btn-close-result" onclick="closeGenModal()"><i class="bi bi-arrow-left" style="margin-right:6px;"></i>Kembali ke Formulir</button>
+    </div>
+
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <img id="lightboxImg" src="" alt="Preview" onclick="event.stopPropagation()" />
+  <button class="lightbox-close" onclick="closeLightbox()"><i class="bi bi-x-lg"></i></button>
+</div>
+
+<!-- ===== QUEUE FAB ===== -->
+<button class="queue-fab" id="queueFab" onclick="openQueueSidebar()" title="Antrian & Proses BA">
+  <i class="bi bi-list-task"></i>
+  <span class="queue-badge" id="queueBadge">0</span>
+</button>
+
+<!-- ===== QUEUE SIDEBAR ===== -->
+<div class="queue-overlay" id="queueOverlay" onclick="if(event.target===this) closeQueueSidebar()">
+  <div class="queue-sidebar">
+    <div class="queue-sidebar-header">
+      <i class="bi bi-list-task"></i>
+      <h3>Antrian &amp; Proses BA</h3>
+      <button onclick="closeQueueSidebar()"><i class="bi bi-x-lg"></i></button>
+    </div>
+    <div class="queue-sidebar-body" id="queueList"></div>
+  </div>
+</div>
+
+<!-- ===== REFRESH CONFIRM MODAL ===== -->
+<div class="refresh-overlay" id="refreshOverlay">
+  <div class="refresh-modal">
+    <div class="refresh-modal-icon"><i class="bi bi-arrow-clockwise"></i></div>
+    <div class="refresh-modal-title">Refresh Halaman?</div>
+    <div class="refresh-modal-desc">Anda akan me-refresh halaman ini. Semua data yang sedang dikerjakan akan hilang.</div>
+    <div class="refresh-modal-warning">
+      <i class="bi bi-exclamation-triangle-fill"></i>
+      <span>Data formulir, foto yang diunggah, dan tugas yang sedang diproses akan <strong>terhapus permanen</strong>.</span>
+    </div>
+    <div class="refresh-modal-btns">
+      <button class="btn-refresh-cancel" onclick="cancelRefresh()"><i class="bi bi-x-circle"></i> Batal</button>
+      <button class="btn-refresh-confirm" onclick="confirmRefresh()"><i class="bi bi-arrow-clockwise"></i> Tetap Refresh</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+
+<script>
+  /* ================================================================
+     CONFIG
+  ================================================================ */
+  const API_BASE_URL = 'https://api.qcdefect.online';
+  const POLL_INTERVAL_MS = 2000;
+  const UPLOAD_TIMEOUT_MS = 60000;
+  const POLL_TIMEOUT_MS = 300000; // 5 min max total poll time
+  const MAX_RETRY = 3;
+  const RETRY_DELAY_MS = 2000;
+
+  /* ================================================================
+     STATE
+  ================================================================ */
+  let photos = [];
+  let manualDateActive = false;
+  let currentDateDisplay = '';
+  let currentHari = '';
+
+  // jobs[]: { id, jobId, title, status, progress, message, fotoCount,
+  //           tanggal, excel_url, pdf_url, pollController, pollTimer }
+  let jobs = [];
+  let currentModalJobId = null;
+
+  /* ================================================================
+     DATE HELPERS
+  ================================================================ */
+  const HARI  = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+  const BULAN = ['Januari','Februari','Maret','April','Mei','Juni','Juli',
+                 'Agustus','September','Oktober','November','Desember'];
+
+  function formatTanggalBA(d) {
+    return `${HARI[d.getDay()]}, ${d.getDate()} ${BULAN[d.getMonth()]} ${d.getFullYear()}`;
+  }
+
+  function updateDateDisplay() {
+    if (manualDateActive) return;
+    const now = new Date();
+    currentHari        = HARI[now.getDay()];
+    currentDateDisplay = formatTanggalBA(now);
+    document.getElementById('fieldTanggal').value = currentDateDisplay;
+    updateRekap();
+  }
+
+  function toggleManualDate() {
+    manualDateActive = !manualDateActive;
+    const wrap = document.getElementById('manualDateWrap');
+    const btn  = document.getElementById('btnTanggalToggle');
+    wrap.classList.toggle('show', manualDateActive);
+    btn.classList.toggle('active', manualDateActive);
+    if (!manualDateActive) {
+      updateDateDisplay();
+      showToast('Tanggal otomatis', 'Kembali ke tanggal & waktu sekarang', 'info', 'bi-clock');
+    } else {
+      const today = new Date();
+      const yyyy  = today.getFullYear();
+      const mm    = String(today.getMonth() + 1).padStart(2, '0');
+      const dd    = String(today.getDate()).padStart(2, '0');
+      document.getElementById('fieldTanggalManual').value = `${yyyy}-${mm}-${dd}`;
+      showToast('Mode tanggal manual', 'Pilih tanggal sesuai kebutuhan', 'info', 'bi-pencil-square');
+    }
+  }
+
+  function applyManualDate() {
+    const val = document.getElementById('fieldTanggalManual').value;
+    if (!val) return;
+    const d = new Date(val + 'T00:00:00');
+    currentHari        = HARI[d.getDay()];
+    currentDateDisplay = formatTanggalBA(d);
+    document.getElementById('fieldTanggal').value = currentDateDisplay;
+    updateRekap();
+  }
+
+  updateDateDisplay();
+  setInterval(() => { if (!manualDateActive) updateDateDisplay(); }, 30000);
+
+  /* ================================================================
+     REKAP REALTIME
+  ================================================================ */
+  function updateRekap() {
+    const deskripsi  = document.getElementById('fieldDeskripsi').value.trim();
+    const lokasi     = document.getElementById('fieldLokasi').value.trim();
+    const keterangan = document.getElementById('fieldKeterangan').value.trim();
+    const tanggal    = currentDateDisplay;
+    const judulEl    = document.getElementById('rekapJudul');
+    const isiEl      = document.getElementById('rekapIsi');
+
+    if (deskripsi || lokasi) {
+      judulEl.textContent = [deskripsi, lokasi].filter(Boolean).join(' ').toUpperCase();
+      judulEl.classList.remove('empty');
+    } else {
+      judulEl.textContent = 'Judul BA akan muncul di sini...';
+      judulEl.classList.add('empty');
+    }
+
+    if (deskripsi && lokasi) {
+      let kalimat = `Pada hari ${tanggal} telah dilakukan pekerjaan ${deskripsi} pada area ${lokasi}`;
+      if (keterangan) kalimat += `, ${keterangan}`;
+      kalimat += '.';
+      isiEl.textContent = kalimat;
+      isiEl.classList.remove('empty');
+    } else {
+      isiEl.textContent = 'Isi BA akan muncul setelah Deskripsi Pekerjaan dan Lokasi diisi...';
+      isiEl.classList.add('empty');
+    }
+  }
+
+  /* ================================================================
+     UPLOAD / PHOTO
+  ================================================================ */
+  const fileInput = document.getElementById('fileInput');
+  const dropZone  = document.getElementById('dropZone');
+
+  fileInput.addEventListener('change', () => addFiles(fileInput.files));
+  document.getElementById('fileInputCamera').addEventListener('change', function () { addFiles(this.files); });
+  dropZone.addEventListener('dragover',  e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+  dropZone.addEventListener('dragleave', ()  => dropZone.classList.remove('drag-over'));
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.classList.remove('drag-over');
+    addFiles(e.dataTransfer.files);
+  });
+
+  function addFiles(fileList) {
+    const newFiles = Array.from(fileList).filter(f => f.type.startsWith('image/'));
+    if (!newFiles.length) return;
+    newFiles.forEach(file => {
+      const id  = Date.now() + Math.random().toString(36).slice(2);
+      const url = URL.createObjectURL(file);
+      photos.push({ id, file, url, name: file.name });
+    });
+    fileInput.value = '';
+    renderGrid();
+    updateCounter();
+    showToast(`${newFiles.length} foto ditambahkan`, `Total ${photos.length} foto siap dilampirkan`, 'success', 'bi-check-circle-fill');
+  }
+
+  function renderGrid() {
+    const grid = document.getElementById('photoGrid');
+    grid.innerHTML = '';
+    photos.forEach(photo => {
+      const thumb = document.createElement('div');
+      thumb.className = 'photo-thumb';
+      thumb.innerHTML = `
+        <img src="${photo.url}" alt="${photo.name}" loading="lazy" />
+        <div class="photo-thumb-overlay">
+          <button class="photo-thumb-btn btn-preview" onclick="openLightbox('${photo.url}')"><i class="bi bi-zoom-in"></i></button>
+          <button class="photo-thumb-btn btn-remove" onclick="removePhoto('${photo.id}')"><i class="bi bi-trash3-fill"></i></button>
+        </div>
+        <div class="photo-thumb-label">${photo.name}</div>`;
+      grid.appendChild(thumb);
+    });
+  }
+
+  function removePhoto(id) {
+    const idx = photos.findIndex(p => p.id === id);
+    if (idx === -1) return;
+    URL.revokeObjectURL(photos[idx].url);
+    photos.splice(idx, 1);
+    renderGrid();
+    updateCounter();
+    showToast('Foto dihapus', `Sisa ${photos.length} foto`, 'info', 'bi-trash3');
+  }
+
+  function updateCounter() {
+    const counter  = document.getElementById('photoCounter');
+    const text     = document.getElementById('photoCountText');
+    const sub      = document.getElementById('photoCountSub');
+    const n        = photos.length;
+    counter.dataset.count = n;
+    if (n === 0) {
+      text.textContent = 'Belum ada foto';
+      sub.textContent  = '';
+    } else {
+      text.textContent = `${n} Foto Dipilih`;
+      const totalMB    = (photos.reduce((s, p) => s + (p.file.size || 0), 0) / 1048576).toFixed(1);
+      sub.textContent  = `±${totalMB} MB`;
+    }
+  }
+
+  /* ================================================================
+     LIGHTBOX
+  ================================================================ */
+  function openLightbox(url) {
+    document.getElementById('lightboxImg').src = url;
+    document.getElementById('lightbox').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('active');
+    document.body.style.overflow = '';
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+  /* ================================================================
+     VALIDATION
+  ================================================================ */
+  function validate() {
+    const lokasi    = document.getElementById('fieldLokasi').value.trim();
+    const deskripsi = document.getElementById('fieldDeskripsi').value.trim();
+    if (!lokasi) {
+      showToast('Lokasi wajib diisi', '', 'danger', 'bi-exclamation-triangle-fill');
+      document.getElementById('fieldLokasi').focus();
+      return false;
+    }
+    if (!deskripsi) {
+      showToast('Deskripsi wajib diisi', '', 'danger', 'bi-exclamation-triangle-fill');
+      document.getElementById('fieldDeskripsi').focus();
+      return false;
+    }
+    return true;
+  }
+
+  /* ================================================================
+     NETWORK HELPERS
+  ================================================================ */
+  function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  async function fetchWithTimeout(url, options = {}, timeoutMs = UPLOAD_TIMEOUT_MS) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      const resp = await fetch(url, { ...options, signal: controller.signal });
+      clearTimeout(timer);
+      return resp;
+    } catch (err) {
+      clearTimeout(timer);
+      throw err;
+    }
+  }
+
+  async function fetchWithRetry(url, options = {}, timeoutMs = UPLOAD_TIMEOUT_MS, maxRetry = MAX_RETRY) {
+    let lastErr;
+    for (let attempt = 1; attempt <= maxRetry; attempt++) {
+      try {
+        const resp = await fetchWithTimeout(url, options, timeoutMs);
+        return resp;
+      } catch (err) {
+        lastErr = err;
+        if (attempt < maxRetry) await sleep(RETRY_DELAY_MS * attempt);
+      }
+    }
+    throw lastErr;
+  }
+
+  function isNetworkError(err) {
+    return err instanceof TypeError || err.name === 'AbortError' || err.name === 'TypeError';
+  }
+
+  function friendlyError(err) {
+    if (err && err.name === 'AbortError') return 'Request timeout. Periksa koneksi internet Anda.';
+    if (isNetworkError(err))              return 'Tidak dapat terhubung ke server. Periksa koneksi internet.';
+    return err && err.message ? err.message : 'Terjadi kesalahan yang tidak diketahui.';
+  }
+
+  /* ================================================================
+     GENERATE BA — SUBMIT
+  ================================================================ */
+  async function handleGenerate() {
+    if (!validate()) return;
+    const btn = document.getElementById('btnGenerate');
+    setLoading(btn, true);
+    try {
+      await submitBAJob();
+    } catch (err) {
+      setLoading(btn, false);
+    }
+  }
+
+  function setLoading(btn, state) {
+    btn.classList.toggle('loading', state);
+    btn.disabled = state;
+  }
+
+  async function submitBAJob() {
+    const tanggal    = currentDateDisplay;
+    const lokasi     = document.getElementById('fieldLokasi').value.trim();
+    const deskripsi  = document.getElementById('fieldDeskripsi').value.trim();
+    const keterangan = document.getElementById('fieldKeterangan').value.trim();
+    const title      = [deskripsi, lokasi].filter(Boolean).join(' ').toUpperCase() || 'BERITA ACARA PEKERJAAN';
+
+    const formData = new FormData();
+    formData.append('tanggal',    tanggal);
+    formData.append('lokasi',     lokasi);
+    formData.append('deskripsi',  deskripsi);
+    formData.append('keterangan', keterangan);
+    photos.forEach(p => formData.append('photos[]', p.file, p.name));
+
+    let resp;
+    try {
+      resp = await fetchWithRetry(
+        `${API_BASE_URL}/ba/generate`,
+        { method: 'POST', body: formData },
+        UPLOAD_TIMEOUT_MS,
+        MAX_RETRY
+      );
+    } catch (err) {
+      showToast('Upload gagal', friendlyError(err), 'danger', 'bi-wifi-off');
+      setLoading(document.getElementById('btnGenerate'), false);
+      return;
+    }
+
+    if (!resp.ok) {
+      let msg = `Server error ${resp.status}`;
+      try { const d = await resp.json(); msg = d.message || msg; } catch (_) {}
+      showToast('Generate gagal', msg, 'danger', 'bi-exclamation-triangle-fill');
+      setLoading(document.getElementById('btnGenerate'), false);
+      return;
+    }
+
+    let data;
+    try {
+      data = await resp.json();
+    } catch (_) {
+      showToast('Response tidak valid', 'Server mengembalikan data yang tidak dapat dibaca.', 'danger', 'bi-exclamation-triangle-fill');
+      setLoading(document.getElementById('btnGenerate'), false);
+      return;
+    }
+
+    if (!data.job_id) {
+      showToast('Response tidak valid', 'job_id tidak ditemukan dalam response server.', 'danger', 'bi-exclamation-triangle-fill');
+      setLoading(document.getElementById('btnGenerate'), false);
+      return;
+    }
+
+    // Job berhasil dibuat — buat entry lokal
+    const job = {
+      id:         'local_' + Date.now(),
+      jobId:      data.job_id,
+      title:      title,
+      status:     'queued',
+      progress:   0,
+      message:    'Menunggu antrian',
+      position:   null,
+      fotoCount:  photos.length,
+      tanggal:    tanggal,
+      excel_url:  null,
+      pdf_url:    null,
+      pollTimer:  null,
+    };
+    jobs.push(job);
+
+    setLoading(document.getElementById('btnGenerate'), false);
+    showToast('BA Ditambahkan ke Antrian', title, 'info', 'bi-clock-history');
+
+    currentModalJobId = job.id;
+    openGenModal();
+    renderModalForJob(job.id);
+    renderQueueSidebar();
+    updateQueueBadge();
+
+    startPolling(job.id);
+  }
+
+  /* ================================================================
+     POLLING
+  ================================================================ */
+  function startPolling(localId) {
+    const job = jobs.find(j => j.id === localId);
+    if (!job) return;
+    stopPolling(localId); // reset jika sudah ada
+
+    const startTime = Date.now();
+
+    async function doPoll() {
+      if (!job || job.status === 'completed' || job.status === 'failed') return;
+
+      // Timeout total polling
+      if (Date.now() - startTime > POLL_TIMEOUT_MS) {
+        job.status  = 'failed';
+        job.message = 'Waktu tunggu habis. Silakan coba lagi.';
+        onJobFailed(job);
+        return;
+      }
+
+      let resp;
+      try {
+        resp = await fetchWithTimeout(
+          `${API_BASE_URL}/ba/status/${job.jobId}`,
+          { method: 'GET' },
+          10000
+        );
+      } catch (err) {
+        // Jaringan putus — coba lagi di polling berikutnya
+        showToast('Koneksi terputus', 'Mencoba menghubungi server kembali...', 'danger', 'bi-wifi-off');
+        job.pollTimer = setTimeout(doPoll, POLL_INTERVAL_MS * 3);
+        return;
+      }
+
+      if (!resp.ok) {
+        // Server error transien — retry
+        job.pollTimer = setTimeout(doPoll, POLL_INTERVAL_MS * 2);
+        return;
+      }
+
+      let data;
+      try {
+        data = await resp.json();
+      } catch (_) {
+        job.pollTimer = setTimeout(doPoll, POLL_INTERVAL_MS);
+        return;
+      }
+
+      applyStatusUpdate(job, data);
+
+      if (job.status !== 'completed' && job.status !== 'failed') {
+        job.pollTimer = setTimeout(doPoll, POLL_INTERVAL_MS);
+      }
+    }
+
+    job.pollTimer = setTimeout(doPoll, POLL_INTERVAL_MS);
+  }
+
+  function stopPolling(localId) {
+    const job = jobs.find(j => j.id === localId);
+    if (!job) return;
+    if (job.pollTimer) { clearTimeout(job.pollTimer); job.pollTimer = null; }
+  }
+
+  function applyStatusUpdate(job, data) {
+    const prevStatus = job.status;
+
+    switch (data.status) {
+      case 'queued':
+        job.status   = 'queued';
+        job.progress = data.progress || 0;
+        job.message  = data.message  || 'Menunggu antrian';
+        job.position = data.position || null;
+        break;
+
+      case 'processing':
+        job.status   = 'processing';
+        job.progress = data.progress || 0;
+        job.message  = data.message  || 'Sedang diproses';
+        job.position = null;
+        if (prevStatus !== 'processing') {
+          showToast('BA Mulai Diproses', job.title, 'info', 'bi-gear-wide-connected');
+        }
+        break;
+
+      case 'completed':
+        job.status    = 'completed';
+        job.progress  = 100;
+        job.message   = 'Selesai';
+        job.excel_url = data.excel_url || null;
+        job.pdf_url   = data.pdf_url   || null;
+        onJobCompleted(job);
+        break;
+
+      case 'failed':
+        job.status  = 'failed';
+        job.message = data.message || 'Terjadi kesalahan pada server';
+        onJobFailed(job);
+        break;
+
+      default:
+        break;
+    }
+
+    renderQueueSidebar();
+    updateQueueBadge();
+    if (currentModalJobId === job.id && document.getElementById('genOverlay').classList.contains('active')) {
+      renderModalForJob(job.id);
+    }
+  }
+
+  function onJobCompleted(job) {
+    stopPolling(job.id);
+    showToast('BA Selesai Dibuat!', job.title, 'success', 'bi-check-circle-fill');
+    renderQueueSidebar();
+    updateQueueBadge();
+    if (currentModalJobId === job.id) renderModalForJob(job.id);
+  }
+
+  function onJobFailed(job) {
+    stopPolling(job.id);
+    showToast('Generate Gagal', job.message, 'danger', 'bi-x-circle-fill');
+    renderQueueSidebar();
+    updateQueueBadge();
+    if (currentModalJobId === job.id) {
+      // Kembalikan ke panel proses dengan error state
+      setGenProgress(0, `Gagal: ${job.message}`);
+    }
+  }
+
+  /* ================================================================
+     DOWNLOAD
+  ================================================================ */
+  function downloadFile(type) {
+    const job = jobs.find(j => j.id === currentModalJobId);
+    if (!job) return;
+    const url = type === 'excel' ? job.excel_url : job.pdf_url;
+    if (!url) {
+      showToast('URL tidak tersedia', 'File belum siap untuk diunduh.', 'danger', 'bi-exclamation-triangle-fill');
+      return;
+    }
+    const a = document.createElement('a');
+    a.href        = url;
+    a.target      = '_blank';
+    a.rel         = 'noopener noreferrer';
+    a.download    = '';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+
+  /* ================================================================
+     MODAL GENERATE
+  ================================================================ */
+  function openGenModal() {
+    document.getElementById('genOverlay').classList.add('active');
+  }
+
+  function closeGenModal() {
+    document.getElementById('genOverlay').classList.remove('active');
+    // Polling tetap berjalan di background
+  }
+
+  function setGenProgress(pct, label) {
+    document.getElementById('genBar').style.width = pct + '%';
+    document.getElementById('genPct').textContent = pct + '%';
+    document.getElementById('genStepLabel').textContent = label;
+  }
+
+  function openModalForJob(localId) {
+    currentModalJobId = localId;
+    renderModalForJob(localId);
+    openGenModal();
+    closeQueueSidebar();
+  }
+
+  function renderModalForJob(localId) {
+    const job = jobs.find(j => j.id === localId);
+    if (!job) return;
+
+    const queuePanel   = document.getElementById('genQueuePanel');
+    const processPanel = document.getElementById('genProcessPanel');
+    const resultPanel  = document.getElementById('genResultPanel');
+
+    queuePanel.style.display = 'none';
+    processPanel.style.display = 'none';
+    resultPanel.classList.remove('show');
+
+    if (job.status === 'queued') {
+      queuePanel.style.display = '';
+      document.getElementById('genQueueDocTitle').textContent = job.title;
+      const posText = job.position != null ? `Antrian ke-${job.position}` : 'Menunggu...';
+      document.getElementById('genQueuePos').textContent = posText;
+      document.getElementById('genQueueTitle').textContent = 'Menunggu Antrian';
+      document.getElementById('genQueueMsg').textContent   = job.message || 'BA Anda sedang menunggu giliran untuk diproses.';
+      renderGenQueueList(localId);
+
+    } else if (job.status === 'processing') {
+      processPanel.style.display = '';
+      setGenProgress(job.progress, job.message || 'Memproses...');
+
+    } else if (job.status === 'completed') {
+      resultPanel.classList.add('show');
+      document.getElementById('resultTanggal').textContent = job.tanggal || '—';
+      document.getElementById('resultFoto').textContent    = job.fotoCount + ' foto';
+
+    } else if (job.status === 'failed') {
+      // tampilkan panel proses dengan info gagal
+      processPanel.style.display = '';
+      setGenProgress(0, `Gagal: ${job.message}`);
+    }
+  }
+
+  /* ================================================================
+     ANTRIAN LIST DALAM MODAL
+  ================================================================ */
+  function renderGenQueueList(currentLocalId) {
+    const listEl = document.getElementById('genQueueList');
+    if (!listEl) return;
+
+    const active = jobs.filter(j => j.status === 'queued' || j.status === 'processing');
+
+    if (!active.length) {
+      listEl.innerHTML = `<div class="gen-queue-list-item"><div class="gen-queue-list-body"><div class="gen-queue-list-title">Tidak ada antrian aktif</div></div></div>`;
+      return;
+    }
+
+    let html = '';
+    active.forEach((j, idx) => {
+      const pos           = idx + 1;
+      const isCurrent     = j.id === currentLocalId;
+      const isProcessing  = j.status === 'processing';
+      const itemClasses   = ['gen-queue-list-item'];
+      if (isCurrent)    itemClasses.push('is-current');
+      if (isProcessing) itemClasses.push('is-processing');
+
+      const ownerLine  = `<span class="gen-queue-list-owner mine"><i class="bi bi-person-check-fill"></i>${isCurrent ? 'Milik Anda — BA ini' : 'Milik Anda'}</span>`;
+      const statusBadge = isProcessing
+        ? `<span class="gen-queue-list-badge processing">Diproses</span>`
+        : `<span class="gen-queue-list-badge waiting">Menunggu</span>`;
+
+      html += `
+        <div class="${itemClasses.join(' ')}">
+          <div class="gen-queue-list-pos">${pos}</div>
+          <div class="gen-queue-list-body">
+            <div class="gen-queue-list-title">${j.title}</div>
+            ${ownerLine}
+          </div>
+          ${statusBadge}
+        </div>`;
+    });
+
+    listEl.innerHTML = html;
+  }
+
+  /* ================================================================
+     SIDEBAR ANTRIAN
+  ================================================================ */
+  function openQueueSidebar() {
+    renderQueueSidebar();
+    document.getElementById('queueOverlay').classList.add('active');
+  }
+
+  function closeQueueSidebar() {
+    document.getElementById('queueOverlay').classList.remove('active');
+  }
+
+  function updateQueueBadge() {
+    const badge       = document.getElementById('queueBadge');
+    const activeCount = jobs.filter(j => j.status !== 'completed' && j.status !== 'failed').length;
+    if (activeCount > 0) {
+      badge.style.display = 'flex';
+      badge.textContent   = activeCount;
+    } else {
+      badge.style.display = 'none';
+    }
+  }
+
+  function renderQueueSidebar() {
+    const list   = document.getElementById('queueList');
+    const myJobs = jobs;
+
+    if (!myJobs.length) {
+      list.innerHTML = `<div class="queue-empty"><i class="bi bi-inbox"></i>Belum ada BA dalam antrian atau proses.<br>Klik "Generate BA" untuk memulai.</div>`;
+      return;
+    }
+
+    let html = `<div class="queue-section-label">BA Saya</div>`;
+    myJobs.slice().reverse().forEach(job => { html += renderQueueItem(job); });
+    list.innerHTML = html;
+  }
+
+  function renderQueueItem(job) {
+    let badgeClass, badgeText, iconClass, iconStyle, note = '';
+
+    if (job.status === 'completed') {
+      badgeClass = 'done';        badgeText = 'Selesai';
+      iconClass  = 'bi-check-circle-fill'; iconStyle = 'background:#DCFCE7;color:#15803D;';
+    } else if (job.status === 'processing') {
+      badgeClass = 'processing';  badgeText = 'Sedang Diproses';
+      iconClass  = 'bi-gear-wide-connected'; iconStyle = 'background:#FEF3C7;color:#B45309;';
+    } else if (job.status === 'failed') {
+      badgeClass = 'queued-other'; badgeText = 'Gagal';
+      iconClass  = 'bi-x-circle-fill'; iconStyle = 'background:#FEE2E2;color:#B91C1C;';
+      note = `<div class="queue-item-note"><i class="bi bi-exclamation-triangle-fill"></i>${job.message}</div>`;
+    } else {
+      badgeClass = 'queued-mine'; badgeText = 'Menunggu';
+      iconClass  = 'bi-hourglass-split'; iconStyle = 'background:#E0E7FF;color:#4338CA;';
+      if (job.position) {
+        note = `<div class="queue-item-note"><i class="bi bi-list-ol"></i>Posisi antrian ke-${job.position}</div>`;
+      } else {
+        note = `<div class="queue-item-note"><i class="bi bi-clock-history"></i>Menunggu giliran diproses</div>`;
+      }
+    }
+
+    const canOpen   = job.status !== 'failed';
+    const itemClasses = ['queue-item'];
+    if (canOpen) itemClasses.push('clickable');
+    if (job.status === 'processing') itemClasses.push('is-mine-processing');
+
+    const subText = `${job.fotoCount} foto • ${job.tanggal}`;
+    const onClick = canOpen ? ` onclick="openModalForJob('${job.id}')"` : '';
+
+    return `
+      <div class="${itemClasses.join(' ')}"${onClick}>
+        <div class="queue-item-top">
+          <div class="queue-item-icon" style="${iconStyle}"><i class="bi ${iconClass}"></i></div>
+          <div style="flex:1;">
+            <div class="queue-item-title">${job.title}</div>
+            <div class="queue-item-sub">${subText}</div>
+          </div>
+          <span class="queue-status-badge ${badgeClass}">${badgeText}</span>
+        </div>
+        <div class="queue-item-progress-track"><div class="queue-item-progress-bar" style="width:${job.progress}%"></div></div>
+        ${note}
+      </div>`;
+  }
+
+  /* ================================================================
+     MODAL OVERLAY — TUTUP DENGAN KLIK BACKDROP
+  ================================================================ */
+  document.getElementById('genOverlay').addEventListener('click', function (e) {
+    if (e.target === this) closeGenModal();
+  });
+
+  /* ================================================================
+     REFRESH GUARD
+  ================================================================ */
+  function hasUnsavedData() {
+    const lokasi     = document.getElementById('fieldLokasi').value.trim();
+    const deskripsi  = document.getElementById('fieldDeskripsi').value.trim();
+    const keterangan = document.getElementById('fieldKeterangan').value.trim();
+    const hasPhotos  = photos.length > 0;
+    const hasJobs    = jobs.some(j => j.status !== 'completed');
+    return lokasi || deskripsi || keterangan || hasPhotos || hasJobs;
+  }
+
+  let _allowRefresh = false;
+
+  function cancelRefresh() {
+    document.getElementById('refreshOverlay').classList.remove('active');
+  }
+
+  function confirmRefresh() {
+    _allowRefresh = true;
+    // Hentikan semua polling sebelum refresh
+    jobs.forEach(j => stopPolling(j.id));
+    window.location.reload();
+  }
+
+  document.addEventListener('keydown', function (e) {
+    const isRefreshKey = e.key === 'F5' || ((e.ctrlKey || e.metaKey) && e.key === 'r');
+    if (isRefreshKey && hasUnsavedData()) {
+      e.preventDefault();
+      document.getElementById('refreshOverlay').classList.add('active');
+    }
+  });
+
+  window.addEventListener('beforeunload', function (e) {
+    if (!_allowRefresh && hasUnsavedData()) {
+      e.preventDefault();
+      e.returnValue = 'Data yang sedang Anda kerjakan akan hilang jika halaman di-refresh. Lanjutkan?';
+    }
+  });
+
+  /* ================================================================
+     TOAST
+  ================================================================ */
+  function showToast(msg, sub = '', type = 'info', icon = 'bi-info-circle-fill') {
+    const c = document.getElementById('toast-container');
+    const t = document.createElement('div');
+    t.className = `toast ${type}`;
+    t.innerHTML = `<i class="bi ${icon}"></i><div class="toast-msg">${msg}${sub ? `<div class="toast-sub">${sub}</div>` : ''}</div>`;
+    c.appendChild(t);
+    setTimeout(() => {
+      t.style.animation = 'toastOut 0.3s ease forwards';
+      setTimeout(() => t.remove(), 300);
+    }, 3500);
+  }
+
+  /* ================================================================
+     BACKEND CONNECTION STATUS CHECK
+  ================================================================ */
+  const BACKEND_URL = 'https://api.qcdefect.online';
+  const STATUS_CHECK_INTERVAL = 30000; // 30 detik
+
+  async function checkBackendStatus() {
+    const badge = document.getElementById('backendStatusBadge');
+    const text  = document.getElementById('backendStatusText');
+    badge.className = 'header-badge status-checking';
+    text.textContent = 'Checking...';
+
+    let online = false;
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 8000);
+
+    try {
+      const res = await fetch(BACKEND_URL + '/health', {
+        method: 'GET',
+        signal: controller.signal,
+        cache: 'no-store'
+      });
+      clearTimeout(timer);
+
+      if (res.ok) {
+        const data = await res.json();
+        online = data && data.status === 'ok';
+      }
+    } catch (e) {
+      clearTimeout(timer);
+      online = false;
+    }
+
+    if (online) {
+      badge.className = 'header-badge status-online';
+      text.textContent = 'ONLINE';
+    } else {
+      badge.className = 'header-badge status-offline';
+      text.textContent = 'Offline';
+    }
+  }
+
+  // Cek saat halaman pertama kali dibuka
+  checkBackendStatus();
+
+  // Ulangi setiap 30 detik
+  setInterval(checkBackendStatus, STATUS_CHECK_INTERVAL);
+
+  /* ================================================================
+     INIT
+  ================================================================ */
+  renderQueueSidebar();
+  updateQueueBadge();
+</script>
+</body>
+</html>
