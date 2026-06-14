@@ -1100,26 +1100,33 @@ function onJobFailed(job) {
 async function downloadFile(type) {
   const job = jobs.find(j => j.id === currentModalJobId);
   if (!job) return;
-  const url = type === 'excel' ? job.excel_url : job.pdf_url;
-  if (!url) { showToast('URL tidak tersedia', 'File belum siap untuk diunduh.', 'danger', 'bi-exclamation-triangle-fill'); return; }
+  if (!job.jobId) { showToast('URL tidak tersedia', 'File belum siap untuk diunduh.', 'danger', 'bi-exclamation-triangle-fill'); return; }
 
   const ext      = type === 'excel' ? 'xlsx' : 'pdf';
   const baseName = (job.title || job.tanggal || type).toString().replace(/[\\/:*?"<>|]/g, '-').trim();
   const filename = baseName + '.' + ext;
+  const endpoint = type === 'excel' ? 'excel' : 'pdf';
+  const url = `${API_BASE_URL}/download/${endpoint}/${job.jobId}`;
 
   _allowRefresh = true;
   setTimeout(() => { _allowRefresh = false; }, 1500);
 
   try {
-    const resp = await fetch(url);
+    const resp = await fetch(url, { method: 'GET' });
     if (!resp.ok) throw new Error('HTTP ' + resp.status);
     const blob    = await resp.blob();
     const blobUrl = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = blobUrl; a.download = filename;
-    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    a.href = blobUrl;
+    a.download = filename;
+    a.rel = 'noopener';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
     setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
-  } catch (_) { window.location.href = url; }
+  } catch (err) {
+    showToast('Gagal Mengunduh', 'Terjadi kesalahan saat mengunduh file: ' + err.message, 'danger', 'bi-exclamation-triangle-fill');
+  }
 }
 
 /* ================================================================
