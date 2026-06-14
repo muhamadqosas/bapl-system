@@ -1015,7 +1015,7 @@
   /* ================================================================
      DOWNLOAD
   ================================================================ */
-  function downloadFile(type) {
+  async function downloadFile(type) {
     const job = jobs.find(j => j.id === currentModalJobId);
     if (!job) return;
     const url = type === 'excel' ? job.excel_url : job.pdf_url;
@@ -1023,14 +1023,32 @@
       showToast('URL tidak tersedia', 'File belum siap untuk diunduh.', 'danger', 'bi-exclamation-triangle-fill');
       return;
     }
-    const a = document.createElement('a');
-    a.href        = url;
-    a.target      = '_blank';
-    a.rel         = 'noopener noreferrer';
-    a.download    = '';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+
+    const ext = type === 'excel' ? 'xlsx' : 'pdf';
+    const baseName = (job.title || job.tanggal || type)
+      .toString()
+      .replace(/[\\/:*?"<>|]/g, '-')
+      .trim();
+    const filename = baseName + '.' + ext;
+
+    try {
+      const resp = await fetch(url);
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      const blob = await resp.blob();
+      const blobUrl = URL.createObjectURL(blob);
+
+      const a = document.createElement('a');
+      a.href     = blobUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+    } catch (err) {
+      // Fallback: jika fetch gagal (mis. CORS), buka langsung di tab saat ini
+      window.location.href = url;
+    }
   }
 
   /* ================================================================
