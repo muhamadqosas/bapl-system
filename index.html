@@ -2119,20 +2119,48 @@ body.dash-mode #toast-container-dms {
     }).join('');
   }
 
-  // Open a tool from the dashboard: hide dashboard, show app shell, switch to the tab
-  window.openToolFromDashboard = function(id) {
+  // ─── Internal view setters (no history side-effects) ───
+  function enterTool(id) {
     document.body.classList.remove('dash-mode');
     if (typeof window.switchTo === 'function') window.switchTo(id);
     try { sessionStorage.setItem('nrc_dash_mode', '0'); } catch(e) {}
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  }
 
-  // Return to dashboard from any tool page
-  window.goToDashboard = function() {
+  function enterDashboard() {
     document.body.classList.add('dash-mode');
     try { sessionStorage.setItem('nrc_dash_mode', '1'); } catch(e) {}
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // Open a tool from the dashboard: hide dashboard, show app shell, switch to the tab
+  window.openToolFromDashboard = function(id) {
+    enterTool(id);
+    // Push a history entry so the phone/browser back button can return to the dashboard.
+    try { history.pushState({ nrcPage: 'tool', tool: id }, '', location.href); } catch(e) {}
   };
+
+  // Return to dashboard - used by the "Beranda" button AND mirrors the back-button flow.
+  window.goToDashboard = function() {
+    // If we're sitting on a history entry pushed when a tool was opened, go back through it
+    // so the browser/phone back button stays perfectly in sync with the Beranda button.
+    if (window.history.state && window.history.state.nrcPage === 'tool') {
+      history.back();
+    } else {
+      enterDashboard();
+      try { history.pushState({ nrcPage: 'home' }, '', location.href); } catch(e) {}
+    }
+  };
+
+  // Phone/browser hardware or gesture back (and forward) button support.
+  window.addEventListener('popstate', function(e) {
+    var state = e.state;
+    if (state && state.nrcPage === 'tool') {
+      enterTool(state.tool);
+    } else {
+      enterDashboard();
+    }
+  });
 
   // Mirror the existing unified status badges onto the dashboard cards,
   // without touching the original setUnifiedStatus function.
@@ -2159,15 +2187,19 @@ body.dash-mode #toast-container-dms {
   renderDashCards();
   startStatusMirror();
 
-  // Restore dashboard/tool mode on load (defaults to dashboard)
-  try {
-    var dashMode = sessionStorage.getItem('nrc_dash_mode');
-    if (dashMode === '0') {
-      document.body.classList.remove('dash-mode');
-    } else {
-      document.body.classList.add('dash-mode');
-    }
-  } catch(e) {
+  // Restore dashboard/tool mode on load (defaults to dashboard) and set up the
+  // history baseline ('home' beneath, 'tool' on top if applicable) so the
+  // phone/browser back button works correctly right from the first load.
+  var initialTab = 'outstanding', dashMode;
+  try { initialTab = sessionStorage.getItem('nrc_active_tab') || 'outstanding'; } catch(e) {}
+  try { dashMode = sessionStorage.getItem('nrc_dash_mode'); } catch(e) {}
+
+  try { history.replaceState({ nrcPage: 'home' }, '', location.href); } catch(e) {}
+
+  if (dashMode === '0') {
+    document.body.classList.remove('dash-mode');
+    try { history.pushState({ nrcPage: 'tool', tool: initialTab }, '', location.href); } catch(e) {}
+  } else {
     document.body.classList.add('dash-mode');
   }
 })();
