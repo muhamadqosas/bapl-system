@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NRC Quality Control System | DMS, BAPL & Outstanding </title>
+<title>BAPL NRC — Outstanding &amp; Berita Acara | Elevee Penthouse Alam Sutera</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css" />
 
 <!-- ═══ SHARED BASE ═══ -->
@@ -28,8 +28,8 @@ html, body { background: var(--bg); font-family: 'Segoe UI', system-ui, -apple-s
 /* UNIFIED HEADER */
 .unified-header { position: sticky; top: 0; z-index: 1200; background: linear-gradient(135deg, #0F4C81, #1E6FB9); box-shadow: 0 2px 20px rgba(15,76,129,0.28); padding: 0 20px; }
 .unified-header-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; height: 60px; gap: 12px; }
-.u-logo { height: 36px; width: 60px; background: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; }
-.u-logo img { height: 100%; width: 100%; object-fit: contain; }
+.u-logo { height: 44px; width: 56px; background: rgba(255,255,255,0.95); padding: 6px 8px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; }
+.u-logo img { width: 150%; height: 150%; object-fit: cover; object-position: center center; }
 .u-titles { flex: 1; min-width: 0; }
 .u-titles h1 { color: #fff; font-size: 14px; font-weight: 800; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .u-titles p { color: rgba(255,255,255,0.72); font-size: 10.5px; }
@@ -64,7 +64,7 @@ html, body { background: var(--bg); font-family: 'Segoe UI', system-ui, -apple-s
 @media (min-width: 768px) {
   .unified-header { padding: 0 28px; }
   .unified-header-inner { height: 66px; }
-  .u-logo { height: 42px; width: 68px; }
+  .u-logo { height: 50px; width: 64px; }
   .u-titles h1 { font-size: 16px; }
   .u-titles p { font-size: 11.5px; }
   .u-active-label { font-size: 12px; padding: 5px 14px; }
@@ -112,7 +112,7 @@ html, body { background: var(--bg); font-family: 'Segoe UI', system-ui, -apple-s
 }
 </style>
 
-<!-- ═══ WEB 1 (OUTSTANDING) CSS - scoped to #section-outstanding ═══ -->
+<!-- ═══ WEB 1 (OUTSTANDING) CSS — scoped to #section-outstanding ═══ -->
 <style>
   :root {
     --blue-primary: #0F4C81;
@@ -224,7 +224,7 @@ html, body { background: var(--bg); font-family: 'Segoe UI', system-ui, -apple-s
     .defect-marker:hover { transform: translate(-50%,-50%) scale(0.85); }
   }
 
-  /* ===== TABLE - DESKTOP ===== */
+  /* ===== TABLE — DESKTOP ===== */
   .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
   table { width: 100%; border-collapse: collapse; font-size: 13.5px; min-width: 580px; }
   thead th { background: var(--blue-primary); color: #fff; font-size: 11.5px; font-weight: 700; padding: 9px 10px; text-align: left; letter-spacing: 0.3px; }
@@ -361,7 +361,7 @@ html, body { background: var(--bg); font-family: 'Segoe UI', system-ui, -apple-s
   .fp-modal-box { background: var(--white); border-radius: 14px; box-shadow: 0 12px 60px rgba(0,0,0,0.45); width: 100%; max-width: min(1280px, calc(100vw - 24px)); height: calc(100vh - 24px); max-height: calc(100vh - 24px); overflow: hidden; display: flex; flex-direction: column; animation: fpModalIn 0.18s ease; }
   /* CATATAN FIX MARKER BERGESER: dulu pakai animasi "modalIn" yang men-transform:scale(0.94->1)
      pada .fp-modal-box. Saat JS mengukur getBoundingClientRect() container tepat di awal animasi
-     (sebelum scale selesai mencapai 1), ukuran yang terbaca masih lebih kecil dari ukuran final -
+     (sebelum scale selesai mencapai 1), ukuran yang terbaca masih lebih kecil dari ukuran final —
      titik marker yang dihitung/disimpan jadi meleset & "loncat" tiap kali popup dibuka/ditutup.
      fpModalIn di bawah ini HANYA fade opacity, tidak ada transform sama sekali, sehingga ukuran
      container sudah akurat sejak frame pertama. */
@@ -479,7 +479,7 @@ html, body { background: var(--bg); font-family: 'Segoe UI', system-ui, -apple-s
 </style>
 </style>
 
-<!-- ═══ WEB 2 (BAPL) CSS - scoped to #section-bapl ═══ -->
+<!-- ═══ WEB 2 (BAPL) CSS — scoped to #section-bapl ═══ -->
 <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -772,7 +772,7 @@ html, body { background: var(--bg); font-family: 'Segoe UI', system-ui, -apple-s
   </style>
 </style>
 
-<!-- ═══ DASHBOARD (HOME) CSS - scoped to #page-home ═══ -->
+<!-- ═══ DASHBOARD (HOME) CSS — scoped to #page-home ═══ -->
 <style>
 #page-home {
   display: flex; flex-direction: column; min-height: 100vh;
@@ -943,7 +943,7 @@ html, body { background: var(--bg); font-family: 'Segoe UI', system-ui, -apple-s
 }
 #page-home .dash-badge-cat { background: #F0F5FB; color: #6B7280; border: 1px solid #D6E4F2; }
 
-/* Status badge on card - reuses same online/offline/checking states */
+/* Status badge on card — reuses same online/offline/checking states */
 #page-home .dash-tc-status {
   display: inline-flex; align-items: center; gap: 6px;
   padding: 2px 9px; border-radius: 20px;
@@ -1042,7 +1042,7 @@ body.dash-mode #toast-container-dms {
       </div>
       <div class="dash-text">
         <h1>PT Nusa Raya Cipta</h1>
-        <p>Elevee Penthouse · Alam Sutera - Sistem Operasional Internal</p>
+        <p>Elevee Penthouse · Alam Sutera — Sistem Operasional Internal</p>
       </div>
     </div>
   </header>
@@ -1087,12 +1087,12 @@ body.dash-mode #toast-container-dms {
     </div>
     <div class="u-titles">
       <h1 id="u-page-title">Outstanding Unit Report</h1>
-      <p>PT Nusa Raya Cipta - Elevee Penthouse Alam Sutera</p>
+      <p>PT Nusa Raya Cipta — Elevee Penthouse Alam Sutera</p>
     </div>
     <button class="btn-back-dash" onclick="goToDashboard()" type="button">
       <i class="bi bi-house-door-fill"></i><span class="btn-back-dash-label"> Beranda</span>
     </button>
-    <!-- STATUS BADGES - shown per active tab -->
+    <!-- STATUS BADGES — shown per active tab -->
     <div class="u-status-wrap">
       <!-- Outstanding status (web1) -->
       <div class="u-status-badge u-status-checking" id="u-status-outstanding">
@@ -1143,7 +1143,7 @@ body.dash-mode #toast-container-dms {
 
 
 <div id="pick-overlay">
-  <i class="bi bi-crosshair"></i> Klik lokasi defect pada denah -
+  <i class="bi bi-crosshair"></i> Klik lokasi defect pada denah —
   <button onclick="cancelPick()" style="background:rgba(255,255,255,0.2);border:none;color:#fff;font-size:12px;border-radius:4px;padding:2px 8px;cursor:pointer;margin-left:6px;">Batal</button>
 </div>
 
@@ -1227,7 +1227,7 @@ body.dash-mode #toast-container-dms {
     <div class="fp-modal-header">
       <div>
         <div class="fp-modal-title"><i class="bi bi-crosshair"></i> Pilih Lokasi Defect</div>
-        <div class="fp-modal-hint">Ketuk pada denah untuk menempatkan/memindah marker - bisa diulang berkali-kali, lalu tekan ✕ untuk simpan &amp; tutup</div>
+        <div class="fp-modal-hint">Ketuk pada denah untuk menempatkan/memindah marker — bisa diulang berkali-kali, lalu tekan ✕ untuk simpan &amp; tutup</div>
       </div>
       <button class="fp-modal-close" onclick="cancelPickModal()" title="Simpan &amp; Tutup"><i class="bi bi-check2"></i></button>
     </div>
@@ -1517,12 +1517,12 @@ body.dash-mode #toast-container-dms {
 </div><!-- /#section-bapl -->
 
 <!-- ═══════════════════════════════════════════════════
-     SECTION DMS (Web 3) - PDF › Excel
+     SECTION DMS (Web 3) — PDF › Excel
 ════════════════════════════════════════════════════ -->
 <div id="section-dms">
 
 <style>
-/* ── DMS Section Styles - scoped to #section-dms ── */
+/* ── DMS Section Styles — scoped to #section-dms ── */
 #section-dms {
   font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
   min-height: 100vh;
@@ -2050,7 +2050,7 @@ body.dash-mode #toast-container-dms {
 })();
 </script>
 
-<!-- ═══ DASHBOARD (HOME) LOGIC - additive only, does not modify switchTo/setUnifiedStatus ═══ -->
+<!-- ═══ DASHBOARD (HOME) LOGIC — additive only, does not modify switchTo/setUnifiedStatus ═══ -->
 <script>
 (function() {
   'use strict';
@@ -2185,7 +2185,7 @@ body.dash-mode #toast-container-dms {
 #toast-container-outstanding { position: fixed; top: 68px; right: 12px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
 @media (max-width: 767px) { #toast-container-outstanding { right: 8px; left: 8px; } }
 </style>
-<!-- ═══ WEB 1 JS - OUTSTANDING ═══ -->
+<!-- ═══ WEB 1 JS — OUTSTANDING ═══ -->
 <script>
 // ══════════════════════════════════════════════
 //  CONFIG - satu-satunya tempat untuk URL backend
@@ -2401,7 +2401,7 @@ async function init() {
     renderAllUnits();
 
     if (jobId) {
-      // Ada job yang sedang/baru selesai dipantau - recover
+      // Ada job yang sedang/baru selesai dipantau — recover
       try {
         var r = await fetch(api('/status/' + encodeURIComponent(jobId)), { signal: AbortSignal.timeout(5000) });
         var d = await r.json();
@@ -2696,7 +2696,7 @@ function renderAreaHTML(ub, area) {
         '<button class="btn-add-defect" onclick="addDefect(\'' + ub.id + '\',\'' + area.id + '\')">' +
           '<i class="bi bi-plus-circle-fill"></i> Tambah Defect' +
         '</button>' +
-        '<label class="btn-batch-import" title="Upload banyak foto sekaligus - tiap foto otomatis membuat satu defect baru" onclick="batchImportFoto(\'' + ub.id + '\',\'' + area.id + '\')">' +
+        '<label class="btn-batch-import" title="Upload banyak foto sekaligus — tiap foto otomatis membuat satu defect baru" onclick="batchImportFoto(\'' + ub.id + '\',\'' + area.id + '\')">' +
           '<i class="bi bi-images"></i> insert multi foto' +
         '</label>' +
       '</div>' +
@@ -2751,7 +2751,7 @@ function renderDefectRow(ubId, area, d, i) {
 function renderDefectCard(ubId, area, d, i) {
   var color = MARKER_COLORS[i % MARKER_COLORS.length];
   var circle = MARKER_CIRCLES[i] || (i + 1);
-  var areaLabel = area.areaName || '<span style="color:var(--text-secondary);font-style:italic;">-</span>';
+  var areaLabel = area.areaName || '<span style="color:var(--text-secondary);font-style:italic;">—</span>';
 
   var fotoCell;
   if (d.foto) {
@@ -2925,7 +2925,7 @@ function initFloorplanImage(ubId, area) {
 //  DEFECT CRUD
 // ══════════════════════════════════════════════
 // ══════════════════════════════════════════════
-//  PATCH HELPERS - update DOM surgical tanpa full re-render
+//  PATCH HELPERS — update DOM surgical tanpa full re-render
 // ══════════════════════════════════════════════
 
 // Re-render hanya bagian tbody + dcards + empty-state satu area
@@ -3147,7 +3147,7 @@ function _showCameraLoopPopup(ubId, areaId) {
     overlay.remove();
     var finalCount = _cameraLoopCount;
     _cameraLoopCount = 0;
-    toast('Selesai - ' + finalCount + ' foto ditambahkan', 'success');
+    toast('Selesai — ' + finalCount + ' foto ditambahkan', 'success');
   };
 }
 
@@ -3251,7 +3251,7 @@ function updateDesc(ubId, areaId, defectId, val) {
 }
 
 // ══════════════════════════════════════════════
-//  FLUSH AREA NAMES - pastikan nilai input area
+//  FLUSH AREA NAMES — pastikan nilai input area
 //  yang sedang diedit sudah tersimpan ke data model
 //  sebelum renderAllUnits() dipanggil (mencegah
 //  kolom Area tampil '-' saat render ulang)
@@ -3375,7 +3375,7 @@ function patchFotoCell(ubId, areaId, d, areaForRender) {
     if (fotoCells[3]) fotoCells[3].innerHTML = fotoHtml;
   }
 
-  // Update card (mobile) - foto ada di dalam .dc-actions (bersama markerBtn)
+  // Update card (mobile) — foto ada di dalam .dc-actions (bersama markerBtn)
   var card = document.querySelector('#dcards-' + area.id + ' [data-defect-id="' + d.id + '"]');
   if (card) {
     var dcActions = card.querySelector('.dc-actions');
@@ -3421,7 +3421,7 @@ async function changeFoto(ubId, areaId, defectId, input) {
   var dataUrl    = compressed.dataUrl;  // base64 hasil kompresi
   var compBlob   = compressed.blob;     // Blob untuk FormData upload
 
-  // Tampilkan preview lokal segera - TANPA re-render seluruh halaman
+  // Tampilkan preview lokal segera — TANPA re-render seluruh halaman
   // fotoOffline = false karena backend sudah mendukung Base64 Data URL langsung
   d.fotoUploading = false;
   d.foto = dataUrl;
@@ -3451,7 +3451,7 @@ async function changeFoto(ubId, areaId, defectId, input) {
     patchFotoCell(ubId, areaId, d, area);
     saveSession();
   } catch (err) {
-    // Upload ke server gagal - foto Base64 terkompresi tetap valid untuk /generate-report
+    // Upload ke server gagal — foto Base64 terkompresi tetap valid untuk /generate-report
     d.fotoOffline = false;
     d.fotoUploading = false;
     saveSession();
@@ -3675,7 +3675,7 @@ function initPhotoZoomHandlers() {
 function startPick(ubId, areaId, defectId) {
   pickingInfo = { ubId: ubId, areaId: areaId, defectId: defectId };
 
-  // Cache ukuran stage/gambar sebelumnya (jika ada) sudah tidak valid untuk sesi pick baru ini -
+  // Cache ukuran stage/gambar sebelumnya (jika ada) sudah tidak valid untuk sesi pick baru ini —
   // tanpa invalidate, posisi marker bisa salah saat ganti defect/area/unit dengan denah berbeda.
   invalidateFpCache();
 
@@ -3687,7 +3687,7 @@ function startPick(ubId, areaId, defectId) {
   img.style.display = 'none';
   container.style.background = '';
 
-  // Objek dummy sebagai "fallbackEl" - saat semua URL gagal, ubah background container
+  // Objek dummy sebagai "fallbackEl" — saat semua URL gagal, ubah background container
   var fallbackProxy = {
     style: {
       set display(v) {
@@ -3760,7 +3760,7 @@ function onFloorplanClick(e, ubId, areaId) {
 }
 
 function getRenderedImageRect(img) {
-  // img pakai object-fit:contain - elemen DOM bisa lebih besar dari area gambar aktual
+  // img pakai object-fit:contain — elemen DOM bisa lebih besar dari area gambar aktual
   // (ada letterbox/pillarbox). Hitung area gambar nyata yang dirender di dalam elemen.
   var domRect = img.getBoundingClientRect();
   var domW = domRect.width;
@@ -3861,7 +3861,7 @@ var fpzState = {
 var fpzHandlersInit = false;
 
 function resetFpZoom() {
-  // Dengan transform-origin:0 0, saat scale=1 stage sudah memenuhi container -
+  // Dengan transform-origin:0 0, saat scale=1 stage sudah memenuhi container —
   // cukup reset translate ke 0,0 dan scale ke 1.
   fpzState.scale = 1; fpzState.x = 0; fpzState.y = 0; fpzState.moved = false;
   applyFpZoom();
@@ -3875,7 +3875,7 @@ function invalidateFpCache() { _fpCache.valid = false; }
 
 // FIX MARKER BERGESER: ResizeObserver mengunci ulang posisi marker setiap kali ukuran
 // #fp-pick-container benar-benar berubah (resize window, rotasi device, munculnya keyboard
-// virtual di HP, dsb) - jauh lebih akurat daripada hanya andalkan setTimeout/resize listener,
+// virtual di HP, dsb) — jauh lebih akurat daripada hanya andalkan setTimeout/resize listener,
 // karena dipanggil persis saat layout selesai berubah, bukan tebak-tebak delay.
 var _fpResizeObserver = null;
 function ensureFpResizeObserver() {
@@ -3906,7 +3906,7 @@ function getFpCache() {
   return _fpCache;
 }
 
-// RAF handle - satu frame render per cycle, tidak tumpuk-tumpuk
+// RAF handle — satu frame render per cycle, tidak tumpuk-tumpuk
 var _fpRafId = null;
 function scheduleFpRender() {
   if (_fpRafId) return;
@@ -3921,14 +3921,14 @@ function _applyFpZoomNow() {
   if (!stage) return;
   stage.style.transformOrigin = '0 0';
   stage.style.transform = 'translate(' + fpzState.x + 'px,' + fpzState.y + 'px) scale(' + fpzState.scale + ')';
-  // Tidak pakai CSS transition - kita handle di JS agar marker selalu sync
+  // Tidak pakai CSS transition — kita handle di JS agar marker selalu sync
   stage.style.transition = 'none';
   _repositionMarkersNow();
 }
 
 function applyFpZoom() { scheduleFpRender(); }
 
-// Reposisi marker - pakai transform:translate() bukan left/top → zero reflow
+// Reposisi marker — pakai transform:translate() bukan left/top → zero reflow
 function _repositionMarkersNow() {
   var markersEl = document.getElementById('fp-pick-markers');
   if (!markersEl) return;
@@ -3967,7 +3967,7 @@ function _repositionMarkersNow() {
   }
 }
 
-// Panggil langsung (tanpa RAF) saat butuh sinkron - misal setelah gambar load
+// Panggil langsung (tanpa RAF) saat butuh sinkron — misal setelah gambar load
 function repositionFpMarkers() { _repositionMarkersNow(); }
 
 function fpzDist(t0, t1) {
@@ -4128,7 +4128,7 @@ function toast(msg, type) {
 }
 
 // ══════════════════════════════════════════════
-//  VALIDATE - highlight SEMUA field error sekaligus
+//  VALIDATE — highlight SEMUA field error sekaligus
 // ══════════════════════════════════════════════
 
 // Hapus semua highlight error dari sesi validasi sebelumnya
@@ -4157,7 +4157,7 @@ function validateAll() {
     var ubLabel = 'Blok ke-' + (i + 1);
     var ubBlockEl = document.getElementById('ub-block-' + ub.id);
 
-    // Tower (hanya validasi jika belum dipilih - field selalu ada value default)
+    // Tower (hanya validasi jika belum dipilih — field selalu ada value default)
     if (!ub.tower) {
       var towerSel = document.getElementById('tower-sel-' + ub.id);
       if (towerSel) towerSel.classList.add('field-error-persistent');
@@ -4240,7 +4240,7 @@ function validateAll() {
   if (errors.length === 0) return true;
 
   // Toast ringkasan
-  toast(errors.length + ' field belum lengkap - lihat indikator merah', 'warning');
+  toast(errors.length + ' field belum lengkap — lihat indikator merah', 'warning');
 
   // Scroll ke elemen bermasalah pertama
   if (firstScrollTarget) {
@@ -4710,7 +4710,7 @@ function doReset() {
 }
 </script>
 
-<!-- ═══ WEB 2 JS - BAPL ═══ -->
+<!-- ═══ WEB 2 JS — BAPL ═══ -->
 <script>
 /* ================================================================
    CONFIG
@@ -4742,7 +4742,7 @@ let currentModalJobId = null;
 let globalQueue = [];   // [{ job_id, position, status, is_mine, progress, displayProgress, _animTimer }]
 
 /* ================================================================
-   PROGRESS UPDATER - SMOOTH ANIMATED
+   PROGRESS UPDATER — SMOOTH ANIMATED
    - Progress TIDAK pernah mundur (hanya maju).
    - Saat server belum kirim progress detail, animasi estimasi
      berjalan perlahan agar bar tidak terlihat macet.
@@ -5640,7 +5640,7 @@ function renderQueueSidebar() {
   if (globalQueue.length > 0) {
     // Saring entri globalQueue yang job lokalnya sudah completed/failed.
     // globalQueue berasal dari poll terpisah (1 detik) sehingga bisa sedikit
-    // "telat" dibanding status lokal - tanpa filter ini, job yang baru saja
+    // "telat" dibanding status lokal — tanpa filter ini, job yang baru saja
     // selesai akan tampil dobel: sekali di "Antrian Saat Ini" (dari globalQueue
     // basi) dan sekali lagi di "Riwayat Pekerjaan Anda".
     const visibleQueue = globalQueue.filter(q => {
@@ -5936,10 +5936,10 @@ setInterval(w1_checkBackendStatus, 30000);
 renderQueueSidebar();
 updateQueueBadge();
 </script>
-<!-- ═══ WEB 3 JS - DMS PDF › Excel ═══ -->
+<!-- ═══ WEB 3 JS — DMS PDF › Excel ═══ -->
 <script>
 /* ================================================================
-   DMS CONFIG - menggunakan CONFIG yang sama dengan Outstanding (web1)
+   DMS CONFIG — menggunakan CONFIG yang sama dengan Outstanding (web1)
    URL backend: https://api.qcdefect.online (sama)
 ================================================================ */
 // Semua fungsi DMS diberi prefix "dms" agar tidak konflik dengan web1/web2
