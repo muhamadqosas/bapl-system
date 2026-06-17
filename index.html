@@ -76,8 +76,8 @@ html, body { background: var(--bg); font-family: 'Segoe UI', system-ui, -apple-s
 }
 
 /* SECTION VISIBILITY */
-#section-outstanding, #section-bapl { display: none; }
-#section-outstanding.active, #section-bapl.active { display: block; }
+#section-outstanding, #section-bapl, #section-dms { display: none; }
+#section-outstanding.active, #section-bapl.active, #section-dms.active { display: block; }
 
 /* FLOATING PILL SWITCHER */
 .pill-switcher {
@@ -98,17 +98,17 @@ html, body { background: var(--bg); font-family: 'Segoe UI', system-ui, -apple-s
 .pill-btn:not(.active):hover { background: rgba(255,255,255,0.14); color: #fff; }
 @media (max-width: 480px) {
   .pill-switcher { bottom: 14px; padding: 4px; gap: 2px; }
-  .pill-btn { padding: 8px 14px; font-size: 12px; gap: 5px; }
-  .pill-btn i { font-size: 14px; }
+  .pill-btn { padding: 8px 10px; font-size: 11px; gap: 4px; }
+  .pill-btn i { font-size: 13px; }
 }
 
 /* TOAST CONTAINERS */
-#toast-container-outstanding, #toast-container-bapl {
+#toast-container-outstanding, #toast-container-bapl, #toast-container-dms {
   position: fixed; top: 76px; right: 12px; z-index: 9999;
   display: flex; flex-direction: column; gap: 8px; pointer-events: none;
 }
 @media (max-width: 767px) {
-  #toast-container-outstanding, #toast-container-bapl { right: 8px; left: 8px; }
+  #toast-container-outstanding, #toast-container-bapl, #toast-container-dms { right: 8px; left: 8px; }
 }
 </style>
 
@@ -797,6 +797,11 @@ html, body { background: var(--bg); font-family: 'Segoe UI', system-ui, -apple-s
         <span class="u-status-dot"></span>
         <span class="u-status-text" id="u-status-text-bapl">Checking...</span>
       </div>
+      <!-- DMS status (web3) -->
+      <div class="u-status-badge u-status-checking" id="u-status-dms" style="display:none;">
+        <span class="u-status-dot"></span>
+        <span class="u-status-text" id="u-status-text-dms">Checking...</span>
+      </div>
     </div>
   </div>
 </header>
@@ -804,6 +809,7 @@ html, body { background: var(--bg); font-family: 'Segoe UI', system-ui, -apple-s
 <!-- SHARED TOAST CONTAINERS -->
 <div id="toast-container-outstanding"></div>
 <div id="toast-container-bapl"></div>
+<div id="toast-container-dms"></div>
 
 <!-- FLOATING PILL SWITCHER -->
 <div class="pill-switcher" role="tablist" aria-label="Pilih Modul">
@@ -814,6 +820,10 @@ html, body { background: var(--bg); font-family: 'Segoe UI', system-ui, -apple-s
   <button class="pill-btn" id="pill-bapl" role="tab"
           aria-selected="false" onclick="switchTo('bapl')">
     <i class="bi bi-file-earmark-text-fill"></i> BAPL
+  </button>
+  <button class="pill-btn" id="pill-dms" role="tab"
+          aria-selected="false" onclick="switchTo('dms')">
+    <i class="bi bi-file-earmark-spreadsheet-fill"></i> DMS
   </button>
 </div>
 
@@ -1199,69 +1209,536 @@ html, body { background: var(--bg); font-family: 'Segoe UI', system-ui, -apple-s
 
 </div><!-- /#section-bapl -->
 
+<!-- ═══════════════════════════════════════════════════
+     SECTION DMS (Web 3) — PDF › Excel
+════════════════════════════════════════════════════ -->
+<div id="section-dms">
+
+<style>
+/* ── DMS Section Styles — scoped to #section-dms ── */
+#section-dms {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+}
+#section-dms .dms-page {
+  max-width: 820px; margin: 0 auto; padding: 36px 20px 90px; width: 100%;
+}
+#section-dms .sec-label {
+  font-size: 11.5px; font-weight: 700; color: #94A8BD;
+  text-transform: uppercase; letter-spacing: .7px; margin-bottom: 12px;
+}
+#section-dms .upload-card {
+  background: #fff; border: 2px dashed #D6E4F2; border-radius: 10px;
+  padding: 48px 32px; text-align: center; cursor: pointer; transition: all .18s; margin-bottom: 10px;
+}
+#section-dms .upload-card:hover, #section-dms .upload-card.drag {
+  border-color: #0F4C81; background: #EAF4FF;
+}
+#section-dms .upload-icon {
+  width: 70px; height: 70px; background: #EAF4FF; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; transition: transform .18s;
+}
+#section-dms .upload-card:hover .upload-icon { transform: scale(1.06); }
+#section-dms .upload-icon svg { width: 30px; height: 30px; color: #0F4C81; }
+#section-dms .upload-title { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+#section-dms .upload-sub { font-size: 13.5px; color: #6B7280; margin-bottom: 18px; }
+#section-dms .chips { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
+#section-dms .chip {
+  background: #F5F9FD; border: 1px solid #D6E4F2; border-radius: 99px;
+  padding: 4px 13px; font-size: 11.5px; color: #6B7280; font-weight: 500;
+}
+#section-dms #dms-file-input { display: none; }
+#section-dms .file-row {
+  display: none; align-items: center; gap: 12px;
+  background: #F5F9FD; border: 1px solid #D6E4F2; border-radius: 8px;
+  padding: 13px 16px; margin-bottom: 6px;
+}
+#section-dms .file-row.show { display: flex; }
+#section-dms .file-ico {
+  width: 40px; height: 40px; background: #FEF2F2; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+#section-dms .file-ico svg { width: 19px; height: 19px; color: #DC2626; }
+#section-dms .file-det { flex: 1; min-width: 0; }
+#section-dms .file-name { font-size: 13.5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#section-dms .file-size { font-size: 12px; color: #6B7280; margin-top: 2px; }
+#section-dms .btn-rm {
+  background: none; border: none; cursor: pointer; color: #94A8BD;
+  font-size: 17px; padding: 4px; line-height: 1; transition: color .15s;
+}
+#section-dms .btn-rm:hover { color: #DC2626; }
+#section-dms .warn-box {
+  display: flex; align-items: flex-start; gap: 9px; background: #FFF7E6;
+  border: 1px solid #FDE68A; border-radius: 8px; padding: 12px 15px;
+  font-size: 12.5px; color: #92400E; margin-bottom: 14px;
+}
+#section-dms .warn-box svg { width: 15px; height: 15px; flex-shrink: 0; margin-top: 1px; color: #F59E0B; }
+#section-dms .action-row { display: flex; justify-content: center; margin-bottom: 28px; }
+#section-dms .btn-main {
+  background: linear-gradient(135deg, #0F4C81, #1E6FB9); color: #fff; border: none;
+  padding: 15px 52px; border-radius: 10px; font-size: 15.5px; font-weight: 700; cursor: pointer;
+  display: flex; align-items: center; gap: 10px;
+  box-shadow: 0 4px 22px rgba(15,76,129,.32); transition: all .18s; font-family: inherit;
+}
+#section-dms .btn-main:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 7px 28px rgba(15,76,129,.4); }
+#section-dms .btn-main:disabled { opacity: .45; cursor: not-allowed; transform: none; box-shadow: none; }
+#section-dms .btn-main svg { width: 18px; height: 18px; }
+#section-dms .pipeline {
+  display: grid; grid-template-columns: repeat(4,1fr); gap: 0; margin-bottom: 28px;
+  background: #fff; border: 1px solid #D6E4F2; border-radius: 10px; overflow: hidden;
+}
+#section-dms .pipe-step {
+  padding: 18px 14px; text-align: center; border-right: 1px solid #D6E4F2; position: relative;
+}
+#section-dms .pipe-step:last-child { border-right: none; }
+#section-dms .pipe-num {
+  width: 26px; height: 26px; border-radius: 50%;
+  background: linear-gradient(135deg, #0F4C81, #1E6FB9); color: #fff;
+  font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 8px;
+}
+#section-dms .pipe-icon { font-size: 22px; margin-bottom: 6px; }
+#section-dms .pipe-label { font-size: 12px; font-weight: 700; margin-bottom: 3px; }
+#section-dms .pipe-desc { font-size: 11px; color: #6B7280; line-height: 1.5; }
+#section-dms .pipe-step.active-step { background: #EAF4FF; }
+#section-dms .pipe-step.done-step { background: #E7F6EC; }
+#section-dms .pipe-step.done-step .pipe-num { background: #16A34A; }
+#section-dms .pipe-arrow {
+  position: absolute; right: -10px; top: 50%; transform: translateY(-50%); z-index: 2;
+  width: 20px; height: 20px; background: #fff; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; border: 1px solid #D6E4F2;
+}
+#section-dms .pipe-arrow svg { width: 11px; height: 11px; color: #94A8BD; }
+#section-dms .pipe-step:last-child .pipe-arrow { display: none; }
+#section-dms .prog-card {
+  background: #fff; border: 1px solid #D6E4F2; border-radius: 10px;
+  padding: 24px; display: none; margin-bottom: 16px;
+}
+#section-dms .prog-card.show { display: block; }
+#section-dms .prog-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+#section-dms .prog-label { font-size: 14px; font-weight: 600; }
+#section-dms .prog-pct { font-size: 24px; font-weight: 800; color: #0F4C81; }
+#section-dms .prog-bar-wrap { height: 10px; background: #D6E4F2; border-radius: 99px; overflow: hidden; margin-bottom: 16px; }
+#section-dms .prog-bar {
+  height: 100%; border-radius: 99px;
+  background: linear-gradient(90deg, #0F4C81, #1E6FB9);
+  transition: width .35s ease; position: relative; overflow: hidden;
+}
+#section-dms .prog-bar::after {
+  content: ''; position: absolute; inset: 0 -100%; width: 60%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.35), transparent);
+  animation: dms-sh 1.6s infinite;
+}
+@keyframes dms-sh { from{transform:translateX(-100%)} to{transform:translateX(300%)} }
+#section-dms .prog-steps { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+#section-dms .ps { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: #94A8BD; transition: color .2s; }
+#section-dms .ps.act { color: #0F4C81; font-weight: 500; }
+#section-dms .ps.done { color: #16A34A; }
+#section-dms .ps-dot {
+  width: 19px; height: 19px; border-radius: 50%; border: 2px solid #D6E4F2;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  font-size: 9px; transition: all .2s;
+}
+#section-dms .ps.act .ps-dot { border-color: #0F4C81; background: #EAF4FF; animation: dms-pdot 1.2s infinite; }
+#section-dms .ps.done .ps-dot { border-color: #16A34A; background: #16A34A; color: #fff; }
+@keyframes dms-pdot { 0%,100%{box-shadow:0 0 0 0 rgba(15,76,129,.3)} 50%{box-shadow:0 0 0 4px rgba(15,76,129,.1)} }
+#section-dms .queue-card {
+  background: #fff; border: 1px solid #D6E4F2; border-radius: 10px;
+  overflow: hidden; display: none; margin-bottom: 16px;
+}
+#section-dms .queue-card.show { display: block; }
+#section-dms .queue-head {
+  padding: 13px 20px; border-bottom: 1px solid #D6E4F2;
+  display: flex; align-items: center; justify-content: space-between;
+}
+#section-dms .queue-title { font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+#section-dms .q-badge { background: #EAF4FF; color: #0F4C81; font-size: 11.5px; font-weight: 700; padding: 2px 10px; border-radius: 99px; }
+#section-dms .q-list { padding: 6px 0; }
+#section-dms .q-row {
+  display: flex; align-items: center; gap: 12px; padding: 11px 20px;
+  border-bottom: 1px solid #F4F9FD; transition: background .12s;
+}
+#section-dms .q-row:last-child { border-bottom: none; }
+#section-dms .q-row.mine { background: #EAF4FF; }
+#section-dms .q-num {
+  width: 27px; height: 27px; border-radius: 50%; background: #F5F9FD;
+  font-size: 12px; font-weight: 700; color: #6B7280;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+#section-dms .q-num.proc { background: #EAF4FF; color: #0F4C81; }
+#section-dms .q-num.me { background: linear-gradient(135deg, #0F4C81, #1E6FB9); color: #fff; }
+#section-dms .q-inf { flex: 1; min-width: 0; }
+#section-dms .q-name-row { display: flex; align-items: center; gap: 6px; }
+#section-dms .q-name { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#section-dms .q-me-tag {
+  font-size: 10px; color: #0F4C81; font-weight: 700;
+  background: #EAF4FF; padding: 2px 8px; border-radius: 99px; white-space: nowrap; flex-shrink: 0;
+}
+#section-dms .q-meta { font-size: 11.5px; color: #94A8BD; margin-top: 2px; }
+#section-dms .stbadge {
+  display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px;
+  border-radius: 99px; font-size: 11px; font-weight: 500; white-space: nowrap; flex-shrink: 0;
+}
+#section-dms .sd { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+#section-dms .sp { background: #EAF4FF; color: #0F4C81; }
+#section-dms .sp .sd { background: #0F4C81; animation: dms-pdot 1.2s infinite; }
+#section-dms .sw { background: #F5F9FD; color: #6B7280; }
+#section-dms .sw .sd { background: #94A8BD; }
+#section-dms .sk { background: #E7F6EC; color: #15803D; }
+#section-dms .sk .sd { background: #16A34A; }
+#section-dms .se { background: #FEF2F2; color: #DC2626; }
+#section-dms .se .sd { background: #DC2626; }
+#section-dms .log-card {
+  background: #fff; border: 1px solid #D6E4F2; border-radius: 10px;
+  overflow: hidden; display: none; margin-bottom: 16px;
+}
+#section-dms .log-card.show { display: block; }
+#section-dms .log-head {
+  padding: 11px 18px; border-bottom: 1px solid #D6E4F2;
+  display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 600;
+}
+#section-dms .log-body {
+  padding: 12px 16px; font-size: 12px;
+  font-family: 'JetBrains Mono','Fira Code',monospace;
+  display: flex; flex-direction: column; gap: 4px; max-height: 150px; overflow-y: auto;
+}
+#section-dms .ll { display: flex; gap: 10px; }
+#section-dms .lt { color: #94A8BD; flex-shrink: 0; width: 52px; }
+#section-dms .lm.i { color: #0F4C81; }
+#section-dms .lm.ok { color: #16A34A; }
+#section-dms .lm.w { color: #F59E0B; }
+#section-dms .lm.e { color: #DC2626; }
+#section-dms .lm.c { color: #1E6FB9; }
+#section-dms .result-card {
+  background: #fff; border: 1px solid #BFE8CB; border-radius: 10px;
+  padding: 32px; display: none; text-align: center; margin-bottom: 16px;
+}
+#section-dms .result-card.show { display: block; }
+#section-dms .result-ico {
+  width: 68px; height: 68px; background: #E7F6EC; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; margin: 0 auto 14px;
+}
+#section-dms .result-ico svg { width: 30px; height: 30px; color: #16A34A; }
+#section-dms .result-title { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+#section-dms .result-sub { font-size: 13.5px; color: #6B7280; margin-bottom: 22px; line-height: 1.6; }
+#section-dms .result-file {
+  background: #F5F9FD; border-radius: 8px; padding: 14px 18px;
+  display: flex; align-items: center; gap: 13px; margin-bottom: 22px; text-align: left;
+}
+#section-dms .result-file-ico {
+  width: 42px; height: 42px; background: #E7F6EC; border-radius: 9px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+#section-dms .result-file-ico svg { width: 20px; height: 20px; color: #16A34A; }
+#section-dms .result-fname { font-size: 13.5px; font-weight: 700; }
+#section-dms .result-fmeta { font-size: 12px; color: #6B7280; margin-top: 3px; }
+#section-dms .btn-dl {
+  background: linear-gradient(135deg, #15803D, #16A34A); color: #fff; border: none;
+  padding: 14px 40px; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 9px;
+  box-shadow: 0 4px 18px rgba(22,163,74,.3); transition: all .18s; margin-bottom: 12px;
+}
+#section-dms .btn-dl:hover { transform: translateY(-1px); box-shadow: 0 6px 26px rgba(22,163,74,.4); }
+#section-dms .btn-dl svg { width: 17px; height: 17px; }
+#section-dms .btn-again {
+  background: none; border: 1px solid #D6E4F2; color: #6B7280;
+  padding: 10px 24px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer;
+  transition: all .15s; font-family: inherit;
+}
+#section-dms .btn-again:hover { border-color: #0F4C81; color: #0F4C81; }
+#section-dms .btn-cancel {
+  background: none; border: 1.5px solid #FCA5A5; color: #DC2626;
+  padding: 9px 26px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 7px; transition: all .18s; font-family: inherit;
+}
+#section-dms .btn-cancel:hover:not(:disabled) { background: #FEF2F2; border-color: #DC2626; }
+#section-dms .btn-cancel:disabled { opacity: .55; cursor: not-allowed; background: #FFF7E6; color: #92400E; border-color: #FDE68A; }
+#section-dms .btn-cancel svg { width: 14px; height: 14px; }
+#section-dms .cancel-row { display: flex; justify-content: center; margin-top: 14px; }
+#section-dms .area-source-card {
+  background: #fff; border: 1px solid #D6E4F2; border-radius: 10px; padding: 16px 20px; margin-bottom: 14px;
+}
+#section-dms .area-source-header { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 12px; }
+#section-dms .area-source-icon {
+  width: 32px; height: 32px; background: #EAF4FF; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px;
+}
+#section-dms .area-source-icon svg { width: 15px; height: 15px; color: #0F4C81; }
+#section-dms .area-source-info { flex: 1; }
+#section-dms .area-source-title { font-size: 13px; font-weight: 700; color: #1F2937; margin-bottom: 2px; }
+#section-dms .area-source-desc { font-size: 12px; color: #6B7280; line-height: 1.5; }
+#section-dms .area-source-options { display: flex; flex-direction: column; gap: 7px; }
+#section-dms .area-opt {
+  display: flex; align-items: flex-start; gap: 11px; padding: 10px 13px;
+  border: 1.5px solid #D6E4F2; border-radius: 8px; cursor: pointer;
+  transition: all .15s; background: #F5F9FD;
+}
+#section-dms .area-opt:hover { border-color: #1E6FB9; background: #EAF4FF; }
+#section-dms .area-opt.selected { border-color: #0F4C81; background: #EAF4FF; }
+#section-dms .area-opt input[type=radio] { margin-top: 2px; flex-shrink: 0; accent-color: #0F4C81; width: 15px; height: 15px; cursor: pointer; }
+#section-dms .area-opt-body { flex: 1; }
+#section-dms .area-opt-label { font-size: 13px; font-weight: 600; color: #1F2937; display: flex; align-items: center; gap: 7px; margin-bottom: 3px; }
+#section-dms .area-opt-badge { font-size: 10.5px; font-weight: 700; padding: 1px 8px; border-radius: 99px; background: #D7E9F8; color: #0F4C81; }
+#section-dms .area-opt.selected .area-opt-badge { background: #0F4C81; color: #fff; }
+#section-dms .area-opt-example {
+  font-size: 11.5px; color: #1F2937; font-family: 'JetBrains Mono','Fira Code',monospace;
+  background: #D6E4F2; border-radius: 4px; padding: 2px 7px; display: inline-block; margin-bottom: 3px; word-break: break-all;
+}
+#section-dms .area-opt-result { font-size: 11.5px; color: #16A34A; font-weight: 600; }
+#section-dms .btn-cancel-row {
+  background: none; border: 1px solid #FCA5A5; color: #DC2626;
+  padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 4px; transition: all .15s;
+  font-family: inherit; white-space: nowrap; flex-shrink: 0;
+}
+#section-dms .btn-cancel-row:hover:not(:disabled) { background: #FEF2F2; border-color: #DC2626; }
+#section-dms .btn-cancel-row:disabled { opacity: .5; cursor: not-allowed; background: #FFF7E6; color: #92400E; border-color: #FDE68A; }
+#section-dms .dms-live-dot { width: 7px; height: 7px; background: #16A34A; border-radius: 50%; animation: dms-pulse-live 2s infinite; flex-shrink: 0; display: inline-block; }
+@keyframes dms-pulse-live { 0%,100%{box-shadow:0 0 0 3px rgba(22,163,74,.2)} 50%{box-shadow:0 0 0 6px rgba(22,163,74,.08)} }
+#section-dms .queue-preview-card {
+  display: none; background: #fff; border: 1px solid #D6E4F2; border-radius: 10px;
+  overflow: hidden; margin-bottom: 14px;
+}
+@media(max-width:620px) {
+  #section-dms .pipeline { grid-template-columns: 1fr 1fr; }
+  #section-dms .pipe-step:nth-child(2) { border-right: none; }
+  #section-dms .pipe-step:nth-child(3) { border-top: 1px solid #D6E4F2; }
+  #section-dms .pipe-step .pipe-arrow { display: none; }
+  #section-dms .prog-steps { grid-template-columns: 1fr; }
+  #section-dms .btn-main { width: 100%; justify-content: center; }
+}
+</style>
+
+<div class="dms-page">
+
+  <!-- Upload Section -->
+  <div id="dms-upload-section">
+    <div class="sec-label">Upload File</div>
+
+    <div class="warn-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <span>Hanya format <strong>PDF</strong>. Maks. <strong>10 file</strong> sekaligus. Setiap file jadi job terpisah dalam antrian FIFO.</span>
+    </div>
+
+    <div class="upload-card" id="dms-upload-zone" onclick="document.getElementById('dms-file-input').click()">
+      <input type="file" id="dms-file-input" accept=".pdf" multiple onchange="dmsHandleFile(this.files)">
+      <div class="upload-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
+      </div>
+      <div class="upload-title">Seret &amp; letakkan file PDF</div>
+      <div class="upload-sub">atau klik untuk memilih dari perangkat kamu - bisa pilih beberapa sekaligus</div>
+      <div class="chips">
+        <span class="chip">PDF only</span>
+        <span class="chip">Maks. 10 file</span>
+        <span class="chip">DMS Alam Sutera</span>
+      </div>
+    </div>
+
+    <div id="dms-file-list-wrap" style="display:none;margin-bottom:14px"></div>
+    <div id="dms-file-errors-wrap" style="display:none;margin-bottom:10px"></div>
+
+    <!-- Queue preview -->
+    <div id="dms-queue-preview-card" class="queue-preview-card">
+      <div style="padding:11px 18px;border-bottom:1px solid #D6E4F2;display:flex;align-items:center;justify-content:space-between">
+        <div style="font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px">
+          <div class="dms-live-dot"></div>
+          Antrian Aktif
+        </div>
+        <div id="dms-qp-badge" style="background:#EAF4FF;color:#0F4C81;font-size:11.5px;font-weight:700;padding:2px 10px;border-radius:99px">- file</div>
+      </div>
+      <div id="dms-qp-list" style="padding:6px 0"></div>
+    </div>
+
+    <!-- Pengaturan Sumber Nama Area -->
+    <div class="area-source-card">
+      <div class="area-source-header">
+        <div class="area-source-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 10h16M4 14h10"/><circle cx="17" cy="17" r="3"/><path d="m21 21-1.5-1.5"/></svg>
+        </div>
+        <div class="area-source-info">
+          <div class="area-source-title">Sumber Nama Area</div>
+          <div class="area-source-desc">Pilih bagian heading yang akan digunakan sebagai nama area saat proses parsing.</div>
+        </div>
+      </div>
+      <div class="area-source-options">
+        <label class="area-opt" id="dms-area-opt-first" onclick="dmsSetAreaSource('first')">
+          <input type="radio" name="dms_area_source_mode" value="first" id="dms-radio-first">
+          <div class="area-opt-body">
+            <div class="area-opt-label">Bagian Pertama</div>
+            <div class="area-opt-example"><strong>Living Room</strong> - LVP35 - Blueprint - Floor 1</div>
+            <div class="area-opt-result">→ Hasil: <strong>Living Room</strong></div>
+          </div>
+        </label>
+        <label class="area-opt selected" id="dms-area-opt-second" onclick="dmsSetAreaSource('second')">
+          <input type="radio" name="dms_area_source_mode" value="second" id="dms-radio-second" checked>
+          <div class="area-opt-body">
+            <div class="area-opt-label">
+              Bagian Kedua
+              <span class="area-opt-badge">Default</span>
+            </div>
+            <div class="area-opt-example">LVP35 - <strong>Living Room</strong> - Blueprint - Floor 1</div>
+            <div class="area-opt-result">→ Hasil: <strong>Living Room</strong></div>
+          </div>
+        </label>
+      </div>
+    </div>
+
+    <div class="action-row">
+      <button class="btn-main" id="dms-btn-main" disabled onclick="dmsStartProcess()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
+        Proses File
+      </button>
+    </div>
+  </div>
+
+  <!-- Pipeline -->
+  <div class="pipeline" id="dms-pipeline" style="margin-bottom:16px">
+    <div class="pipe-step" id="dms-ps0">
+      <div class="pipe-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></div>
+      <div class="pipe-num">1</div>
+      <div class="pipe-icon">📄</div>
+      <div class="pipe-label">Upload PDF</div>
+      <div class="pipe-desc">Pilih file DMS</div>
+    </div>
+    <div class="pipe-step" id="dms-ps1">
+      <div class="pipe-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></div>
+      <div class="pipe-num">2</div>
+      <div class="pipe-icon">🔄</div>
+      <div class="pipe-label">Konversi</div>
+      <div class="pipe-desc">PDF → Excel<br>via ilovepdf</div>
+    </div>
+    <div class="pipe-step" id="dms-ps2">
+      <div class="pipe-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></div>
+      <div class="pipe-num">3</div>
+      <div class="pipe-icon">☁️</div>
+      <div class="pipe-label">Drive + Script</div>
+      <div class="pipe-desc">Upload Drive &amp;<br>Apps Script</div>
+    </div>
+    <div class="pipe-step" id="dms-ps3">
+      <div class="pipe-num">4</div>
+      <div class="pipe-icon">⬇️</div>
+      <div class="pipe-label">Download</div>
+      <div class="pipe-desc">Hasil langsung<br>diunduh di web</div>
+    </div>
+  </div>
+
+  <!-- Progress -->
+  <div class="prog-card" id="dms-prog-card">
+    <div class="prog-head">
+      <div class="prog-label" id="dms-prog-label">Memproses…</div>
+      <div class="prog-pct" id="dms-prog-pct">0%</div>
+    </div>
+    <div class="prog-bar-wrap"><div class="prog-bar" id="dms-prog-bar" style="width:0%"></div></div>
+    <div class="prog-steps" id="dms-prog-steps"></div>
+    <div class="cancel-row">
+      <button class="btn-cancel" id="dms-btn-cancel" onclick="dmsCancelProcess()" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        Batalkan
+      </button>
+    </div>
+  </div>
+
+  <!-- Queue -->
+  <div class="queue-card" id="dms-queue-card">
+    <div class="queue-head">
+      <div class="queue-title">
+        <div class="dms-live-dot"></div>
+        Antrian
+      </div>
+      <div class="q-badge" id="dms-q-badge">0 file</div>
+    </div>
+    <div class="q-list" id="dms-q-list"></div>
+  </div>
+
+  <!-- Log -->
+  <div class="log-card" id="dms-log-card">
+    <div class="log-head">
+      <span>Log Proses</span>
+      <span style="font-size:11px;color:#94A8BD;font-weight:400" id="dms-log-elapsed">0.0 s</span>
+    </div>
+    <div class="log-body" id="dms-log-body"></div>
+  </div>
+
+  <!-- Result -->
+  <div class="result-card" id="dms-result-card">
+    <div class="result-ico">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <div class="result-title" id="dms-result-title">Konversi Selesai! ✅</div>
+    <div class="result-sub" id="dms-result-sub">File Excel hasil DMS Alam Sutera siap diunduh langsung dari halaman ini.</div>
+    <div id="dms-result-files-list" style="width:100%;margin-bottom:20px"></div>
+    <br>
+    <button class="btn-again" onclick="dmsReset()">↩ Proses file lain</button>
+  </div>
+
+</div><!-- /.dms-page -->
+</div><!-- /#section-dms -->
+
 <!-- ═══ SWITCHER LOGIC ═══ -->
 <script>
 (function() {
   'use strict';
-  var TITLES = { outstanding: 'Outstanding Unit Report', bapl: 'Berita Acara Pekerjaan' };
+  var TITLES = {
+    outstanding: 'Outstanding Unit Report',
+    bapl: 'Berita Acara Pekerjaan',
+    dms: 'DMS PDF › Excel'
+  };
 
   window.switchTo = function(tab) {
     var secOut  = document.getElementById('section-outstanding');
     var secBapl = document.getElementById('section-bapl');
+    var secDms  = document.getElementById('section-dms');
     var pillOut  = document.getElementById('pill-outstanding');
     var pillBapl = document.getElementById('pill-bapl');
+    var pillDms  = document.getElementById('pill-dms');
     var pageTitle  = document.getElementById('u-page-title');
-    var activeText = document.getElementById('u-active-text');
 
+    // Deactivate all
+    [secOut, secBapl, secDms].forEach(function(s) { if(s) s.classList.remove('active'); });
+    [pillOut, pillBapl, pillDms].forEach(function(p) {
+      if(p) { p.classList.remove('active'); p.setAttribute('aria-selected','false'); }
+    });
+
+    var targetSec, targetPill;
     if (tab === 'outstanding') {
-      secOut.classList.add('active');    secBapl.classList.remove('active');
-      pillOut.classList.add('active');   pillBapl.classList.remove('active');
-      pillOut.setAttribute('aria-selected','true'); pillBapl.setAttribute('aria-selected','false');
-      pageTitle.textContent  = TITLES.outstanding;
-      activeText.textContent = 'OUTSTANDING';
-    } else {
-      secBapl.classList.add('active');   secOut.classList.remove('active');
-      pillBapl.classList.add('active');  pillOut.classList.remove('active');
-      pillBapl.setAttribute('aria-selected','true'); pillOut.setAttribute('aria-selected','false');
-      pageTitle.textContent  = TITLES.bapl;
-      activeText.textContent = 'BAPL';
+      targetSec = secOut; targetPill = pillOut;
+    } else if (tab === 'bapl') {
+      targetSec = secBapl; targetPill = pillBapl;
+    } else if (tab === 'dms') {
+      targetSec = secDms; targetPill = pillDms;
     }
+    if (targetSec) targetSec.classList.add('active');
+    if (targetPill) { targetPill.classList.add('active'); targetPill.setAttribute('aria-selected','true'); }
+    if (pageTitle) pageTitle.textContent = TITLES[tab] || tab;
+
     window.scrollTo({ top: 0, behavior: 'smooth' });
     try { sessionStorage.setItem('nrc_active_tab', tab); } catch(e) {}
+
+    // Show/hide status badges
+    var badgeOut  = document.getElementById('u-status-outstanding');
+    var badgeBapl = document.getElementById('u-status-bapl');
+    var badgeDms  = document.getElementById('u-status-dms');
+    if (badgeOut)  badgeOut.style.display  = (tab === 'outstanding') ? '' : 'none';
+    if (badgeBapl) badgeBapl.style.display = (tab === 'bapl') ? '' : 'none';
+    if (badgeDms)  badgeDms.style.display  = (tab === 'dms') ? '' : 'none';
   };
 
   // Restore last active tab
   try {
     var saved = sessionStorage.getItem('nrc_active_tab');
     if (saved === 'bapl') switchTo('bapl');
-  } catch(e) {}
+    else if (saved === 'dms') switchTo('dms');
+    else switchTo('outstanding');
+  } catch(e) { switchTo('outstanding'); }
 
-  // ── STATUS BADGE HELPERS ──
-  // Called by both web1 and web2 backend check functions (after renaming)
+  // STATUS BADGE HELPERS
   window.setUnifiedStatus = function(which, state) {
-    // which: 'outstanding' | 'bapl'
-    // state: 'online' | 'offline' | 'checking'
     var badge = document.getElementById('u-status-' + which);
     var text  = document.getElementById('u-status-text-' + which);
     if (!badge || !text) return;
     badge.className = 'u-status-badge u-status-' + state;
     var labels = { online: 'ONLINE', offline: 'Offline', checking: 'Checking...' };
     text.textContent = labels[state] || state;
-  };
-
-  // Show/hide correct badge when tab switches
-  var _origSwitchTo = window.switchTo;
-  window.switchTo = function(tab) {
-    _origSwitchTo(tab);
-    var badgeOut  = document.getElementById('u-status-outstanding');
-    var badgeBapl = document.getElementById('u-status-bapl');
-    if (tab === 'outstanding') {
-      if (badgeOut)  badgeOut.style.display  = '';
-      if (badgeBapl) badgeBapl.style.display = 'none';
-    } else {
-      if (badgeBapl) badgeBapl.style.display = '';
-      if (badgeOut)  badgeOut.style.display  = 'none';
-    }
   };
 })();
 </script>
@@ -1271,6 +1748,7 @@ html, body { background: var(--bg); font-family: 'Segoe UI', system-ui, -apple-s
 #section-outstanding .main { padding-bottom: 90px !important; }
 #section-bapl .main { padding-bottom: 90px !important; }
 #section-bapl main.main { padding-bottom: 90px !important; }
+#section-dms .dms-page { padding-bottom: 90px !important; }
 </style>
 <!-- Fix: toast container CSS for outstanding -->
 <style>
@@ -5027,6 +5505,871 @@ setInterval(w1_checkBackendStatus, 30000);
 ================================================================ */
 renderQueueSidebar();
 updateQueueBadge();
+</script>
+<!-- ═══ WEB 3 JS — DMS PDF › Excel ═══ -->
+<script>
+/* ================================================================
+   DMS CONFIG — menggunakan CONFIG yang sama dengan Outstanding (web1)
+   URL backend: https://api.qcdefect.online (sama)
+================================================================ */
+// Semua fungsi DMS diberi prefix "dms" agar tidak konflik dengan web1/web2
+
+const DMS_SESSION_KEY = 'qcdefect_dms_session';
+const DMS_AREA_SOURCE_KEY = 'qcdefect_dms_area_source';
+const DMS_MAX_FILES = 10;
+
+function dmsApi(path) {
+  return CONFIG.API_BASE + path;
+}
+
+// ── State DMS ──
+let dmsSelFiles = [];
+let dmsJobId = null;
+let dmsUploadedJobs = [];
+let dmsCompletedJobIds = [];
+let dmsCancelRequested = null;
+let dmsT0 = null;
+let dmsPollIv = null;
+let dmsElapsedIv = null;
+let dmsCurrentProgress = 0;
+let dmsLastStatus = null;
+let dmsLastStage = null;
+let dmsQueuePreviewIv = null;
+
+let dmsAreaSourceMode = (function() {
+  try { return sessionStorage.getItem(DMS_AREA_SOURCE_KEY) || 'second'; } catch(_) { return 'second'; }
+})();
+
+// ── Area Source ──
+function dmsSetAreaSource(mode) {
+  dmsAreaSourceMode = mode;
+  try { sessionStorage.setItem(DMS_AREA_SOURCE_KEY, mode); } catch(_) {}
+  ['first', 'second'].forEach(function(m) {
+    var opt = document.getElementById('dms-area-opt-' + m);
+    var radio = document.getElementById('dms-radio-' + m);
+    if (!opt || !radio) return;
+    if (m === mode) { opt.classList.add('selected'); radio.checked = true; }
+    else { opt.classList.remove('selected'); radio.checked = false; }
+  });
+}
+
+// Terapkan saat init
+(function() {
+  if (document.readyState !== 'loading') dmsSetAreaSource(dmsAreaSourceMode);
+  else document.addEventListener('DOMContentLoaded', function() { dmsSetAreaSource(dmsAreaSourceMode); });
+})();
+
+// ── Steps ──
+const DMS_STEPS = [
+  'Validasi & upload PDF',
+  'Konversi PDF → Excel (ilovepdf)',
+  'Upload Excel ke Google Drive',
+  'Jalankan Apps Script',
+  'Proses data DMS di Spreadsheet',
+  'Download hasil dari Drive',
+  'Finalisasi & siap unduh',
+];
+
+// ── Helpers ──
+function dmsTs() {
+  return ((Date.now() - (dmsT0 || Date.now())) / 1000).toFixed(1) + 's';
+}
+
+function dmsEscHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function dmsAddLog(msg, type) {
+  type = type || 'i';
+  var body = document.getElementById('dms-log-body');
+  if (!body) return;
+  var line = document.createElement('div');
+  line.className = 'll';
+  line.innerHTML = '<span class="lt">' + dmsTs() + '</span><span class="lm ' + type + '">' + msg + '</span>';
+  body.appendChild(line);
+  body.scrollTop = body.scrollHeight;
+}
+
+function dmsSetProgress(pct, label) {
+  var p = Math.max(0, Math.min(100, Math.round(pct)));
+  var bar = document.getElementById('dms-prog-bar');
+  var pctEl = document.getElementById('dms-prog-pct');
+  var labelEl = document.getElementById('dms-prog-label');
+  if (bar) bar.style.width = p + '%';
+  if (pctEl) pctEl.textContent = p + '%';
+  if (label && labelEl) labelEl.textContent = label;
+  dmsCurrentProgress = p;
+}
+
+// ── Status badge update ──
+function dmsSetStatusBadge(state) {
+  if (typeof setUnifiedStatus === 'function') setUnifiedStatus('dms', state);
+}
+
+// ── Backend status check ──
+async function w3_checkBackendStatus() {
+  dmsSetStatusBadge('checking');
+  try {
+    var res = await fetch(dmsApi('/status'), { signal: AbortSignal.timeout(5000) });
+    var data = await res.json();
+    dmsSetStatusBadge(data && data.success === true ? 'online' : 'offline');
+  } catch(_) {
+    dmsSetStatusBadge('offline');
+  }
+}
+
+// ── Drag & drop ──
+(function() {
+  if (document.readyState !== 'loading') dmsInitDragDrop();
+  else document.addEventListener('DOMContentLoaded', dmsInitDragDrop);
+})();
+
+function dmsInitDragDrop() {
+  var zone = document.getElementById('dms-upload-zone');
+  if (!zone) return;
+  zone.addEventListener('dragover', function(e) { e.preventDefault(); zone.classList.add('drag'); });
+  zone.addEventListener('dragleave', function() { zone.classList.remove('drag'); });
+  zone.addEventListener('drop', function(e) {
+    e.preventDefault();
+    zone.classList.remove('drag');
+    if (e.dataTransfer.files.length) dmsHandleFile(e.dataTransfer.files);
+  });
+}
+
+// ── File handling ──
+function dmsHandleFile(files) {
+  var valid = [], errors = [];
+  var existingNames = new Set(dmsSelFiles.map(function(f) { return f.name; }));
+
+  Array.from(files).slice(0, DMS_MAX_FILES + 5).forEach(function(f) {
+    if (!f.name.toLowerCase().endsWith('.pdf')) {
+      errors.push({ name: f.name, reason: 'Bukan file PDF' });
+    } else if (existingNames.has(f.name)) {
+      errors.push({ name: f.name, reason: 'File sudah ada dalam daftar' });
+    } else {
+      valid.push(f);
+      existingNames.add(f.name);
+    }
+  });
+
+  var combined = dmsSelFiles.concat(valid);
+  var overflow = combined.splice(DMS_MAX_FILES);
+  overflow.forEach(function(f) { errors.push({ name: f.name, reason: 'Melebihi batas ' + DMS_MAX_FILES + ' file sekaligus' }); });
+
+  dmsSelFiles = combined;
+  dmsRenderFileList();
+  dmsRenderFileErrors(errors);
+
+  var btn = document.getElementById('dms-btn-main');
+  if (btn) {
+    btn.disabled = (dmsSelFiles.length === 0);
+    var svgIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>';
+    btn.innerHTML = svgIcon + (dmsSelFiles.length > 1 ? ' Proses ' + dmsSelFiles.length + ' File' : ' Proses File');
+  }
+}
+
+function dmsRenderFileList() {
+  var wrap = document.getElementById('dms-file-list-wrap');
+  if (!wrap) return;
+  if (dmsSelFiles.length === 0) { wrap.style.display = 'none'; wrap.innerHTML = ''; return; }
+  wrap.style.display = 'block';
+  wrap.innerHTML = dmsSelFiles.map(function(f, i) {
+    return '<div class="file-row show" style="margin-bottom:6px">' +
+      '<div class="file-ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5z"/></svg></div>' +
+      '<div class="file-det"><div class="file-name">' + dmsEscHtml(f.name) + '</div><div class="file-size">' + (f.size/1024/1024).toFixed(2) + ' MB · PDF</div></div>' +
+      '<button class="btn-rm" onclick="dmsRemoveFile(' + i + ')" title="Hapus">✕</button>' +
+      '</div>';
+  }).join('');
+}
+
+function dmsRenderFileErrors(errors) {
+  var wrap = document.getElementById('dms-file-errors-wrap');
+  if (!wrap) return;
+  if (!errors || errors.length === 0) { wrap.style.display = 'none'; wrap.innerHTML = ''; return; }
+  wrap.style.display = 'block';
+  wrap.innerHTML = errors.map(function(e) {
+    return '<div class="warn-box" style="margin-bottom:5px">' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>' +
+      '<span><strong>' + dmsEscHtml(e.name) + '</strong> - ' + dmsEscHtml(e.reason) + '</span>' +
+      '</div>';
+  }).join('');
+}
+
+function dmsRemoveFile(idx) {
+  dmsSelFiles.splice(idx, 1);
+  dmsRenderFileList();
+  var btn = document.getElementById('dms-btn-main');
+  if (!btn) return;
+  var svgIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>';
+  if (dmsSelFiles.length === 0) {
+    document.getElementById('dms-file-input').value = '';
+    btn.disabled = true;
+    btn.innerHTML = svgIcon + ' Proses File';
+  } else {
+    btn.innerHTML = svgIcon + ' Proses ' + dmsSelFiles.length + ' File';
+  }
+}
+
+// ── Queue preview ──
+async function dmsRefreshQueuePreview() {
+  try {
+    var res = await fetch(dmsApi('/queue'));
+    var data = await res.json();
+    var card = document.getElementById('dms-queue-preview-card');
+    var badge = document.getElementById('dms-qp-badge');
+    var list = document.getElementById('dms-qp-list');
+    if (!card || !badge || !list) return;
+
+    var jobs = data.active_jobs || [];
+    var activeCount = (data.waiting || 0) + (data.processing || 0);
+
+    if (activeCount === 0 && jobs.length === 0) { card.style.display = 'none'; return; }
+    card.style.display = 'block';
+    badge.textContent = activeCount + ' file';
+
+    var bmap = {
+      processing: '<span class="stbadge sp"><span class="sd"></span>Sedang Diproses</span>',
+      waiting:    '<span class="stbadge sw"><span class="sd"></span>Menunggu</span>',
+      completed:  '<span class="stbadge sk"><span class="sd"></span>Selesai</span>',
+      error:      '<span class="stbadge se"><span class="sd"></span>Gagal</span>',
+    };
+
+    if (jobs.length === 0) {
+      list.innerHTML = '<div style="padding:14px 20px;font-size:12.5px;color:#94A8BD">Antrian kosong</div>';
+      return;
+    }
+
+    var myJobMap = {};
+    dmsUploadedJobs.forEach(function(j) { myJobMap[j.job_id] = j.filename; });
+
+    list.innerHTML = jobs.map(function(job, idx) {
+      var isMine = !!(job.is_current_user === true || myJobMap[job.job_id]);
+      var isProc = job.status === 'processing';
+      var posLabel = isProc ? '▶' : ('#' + (job.queue_position || (idx + 1)));
+      var numClass = isProc ? 'q-num proc' : (isMine ? 'q-num me' : 'q-num');
+      var sizeMb = (typeof job.file_size_mb === 'number') ? job.file_size_mb.toFixed(2) + ' MB' : '';
+      var displayName = isMine ? (myJobMap[job.job_id] || job.filename || 'File Anda') : 'File User Lain';
+      var meTag = isMine ? '<span class="q-me-tag">&#9654; Milikmu</span>' : '';
+      return '<div class="q-row' + (isMine ? ' mine' : '') + '">' +
+        '<div class="' + numClass + '">' + posLabel + '</div>' +
+        '<div class="q-inf"><div class="q-name-row"><span class="q-name">' + dmsEscHtml(displayName) + '</span>' + meTag + '</div>' +
+        '<div class="q-meta">' + sizeMb + '</div></div>' +
+        (bmap[job.status] || '') +
+        '</div>';
+    }).join('');
+  } catch(_) {
+    var card2 = document.getElementById('dms-queue-preview-card');
+    if (card2) card2.style.display = 'none';
+  }
+}
+
+function dmsStartQueuePreview() {
+  dmsRefreshQueuePreview();
+  if (dmsQueuePreviewIv) clearInterval(dmsQueuePreviewIv);
+  dmsQueuePreviewIv = setInterval(dmsRefreshQueuePreview, 4000);
+}
+
+function dmsStopQueuePreview() {
+  if (dmsQueuePreviewIv) { clearInterval(dmsQueuePreviewIv); dmsQueuePreviewIv = null; }
+  var card = document.getElementById('dms-queue-preview-card');
+  if (card) card.style.display = 'none';
+}
+
+// ── Pipeline highlight ──
+function dmsRenderPipeline(active) {
+  for (var i = 0; i < 4; i++) {
+    var el = document.getElementById('dms-ps' + i);
+    if (!el) continue;
+    el.classList.remove('active-step', 'done-step');
+    if (i < active) el.classList.add('done-step');
+    else if (i === active) el.classList.add('active-step');
+  }
+}
+
+// ── Steps visual ──
+function dmsRenderSteps(ai) {
+  var el = document.getElementById('dms-prog-steps');
+  if (!el) return;
+  el.innerHTML = DMS_STEPS.map(function(s, i) {
+    var c = i < ai ? 'done' : i === ai ? 'act' : '';
+    var d = i < ai ? '&#x2713;' : '';
+    return '<div class="ps ' + c + '"><div class="ps-dot">' + d + '</div><span>' + s + '</span></div>';
+  }).join('');
+}
+
+// ── Queue render ──
+async function dmsFetchAndRenderQueue(myStatus) {
+  var bmap = {
+    processing: '<span class="stbadge sp"><span class="sd"></span>Sedang Diproses</span>',
+    waiting:    '<span class="stbadge sw"><span class="sd"></span>Menunggu</span>',
+    completed:  '<span class="stbadge sk"><span class="sd"></span>Selesai</span>',
+    error:      '<span class="stbadge se"><span class="sd"></span>Gagal</span>',
+  };
+
+  var data = null;
+  try {
+    var url = dmsJobId ? dmsApi('/queue?job_id=' + encodeURIComponent(dmsJobId)) : dmsApi('/queue');
+    var res = await fetch(url);
+    data = await res.json();
+  } catch(_) { return; }
+  if (!data) return;
+
+  var activeJobs = data.active_jobs || [];
+  var activeCount = (data.waiting || 0) + (data.processing || 0);
+  var qBadge = document.getElementById('dms-q-badge');
+  if (qBadge) qBadge.textContent = activeCount + ' file';
+
+  var myJobMap = {};
+  dmsUploadedJobs.forEach(function(j) { myJobMap[j.job_id] = j.filename; });
+
+  var rows = [];
+  activeJobs.forEach(function(job, idx) {
+    var isMine = !!(job.is_current_user === true || myJobMap[job.job_id]);
+    var isProc = job.status === 'processing';
+    var pos = isProc ? null : job.queue_position;
+    var posLabel = isProc ? '▶' : ('#' + pos);
+    var numClass = isProc ? 'q-num proc' : (isMine ? 'q-num me' : 'q-num');
+    var displayName = isMine ? (myJobMap[job.job_id] || job.filename || 'File Anda') : 'File User Lain';
+    var sizeMb = (typeof job.file_size_mb === 'number') ? job.file_size_mb.toFixed(2) + ' MB' : '';
+    var meTag = isMine ? '<span class="q-me-tag">&#9654; Milikmu</span>' : '';
+    rows.push(
+      '<div class="q-row' + (isMine ? ' mine' : '') + '">' +
+        '<div class="' + numClass + '">' + posLabel + '</div>' +
+        '<div class="q-inf">' +
+          '<div class="q-name-row"><span class="q-name">' + dmsEscHtml(displayName) + '</span>' + meTag + '</div>' +
+          '<div class="q-meta">' + sizeMb + '</div>' +
+        '</div>' +
+        (bmap[job.status] || '') +
+        (isMine && (job.status === 'waiting' || job.status === 'processing')
+          ? '<button class="btn-cancel-row" data-jobid="' + dmsEscHtml(job.job_id) + '" ' +
+              'onclick="dmsCancelQueueRow(this)" title="Batalkan file ini">' +
+              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:10px;height:10px">' +
+                '<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>' +
+              '</svg> Batalkan</button>' : '') +
+      '</div>'
+    );
+  });
+
+  if (activeJobs.length === 0) {
+    rows.push('<div style="padding:20px;text-align:center;font-size:13px;color:#94A8BD">Antrian kosong</div>');
+  }
+
+  var qList = document.getElementById('dms-q-list');
+  if (qList) qList.innerHTML = rows.join('');
+}
+
+// ── handleStatusOnce ──
+function dmsHandleStatusOnce(status) {
+  if (status === dmsLastStatus) return;
+  dmsLastStatus = status;
+  if (status === 'waiting') {
+    dmsAddLog('[INFO] File berhasil diupload', 'i');
+    dmsAddLog('[INFO] Job ID diterima: ' + dmsJobId, 'i');
+    dmsAddLog('[INFO] Menunggu dalam antrian…', 'i');
+    dmsRenderSteps(0); dmsRenderPipeline(0);
+  } else if (status === 'processing') {
+    dmsAddLog('[INFO] Worker mulai memproses', 'i');
+    dmsRenderPipeline(1);
+  } else if (status === 'completed') {
+    dmsAddLog('[SUCCESS] Proses selesai ✅', 'ok');
+    dmsRenderSteps(DMS_STEPS.length); dmsRenderPipeline(4);
+  } else if (status === 'error') {
+    dmsAddLog('[ERROR] Terjadi kesalahan saat memproses file', 'e');
+    dmsRenderPipeline(-1);
+  }
+}
+
+// ── applyBackendData ──
+function dmsApplyBackendData(data) {
+  var status = data.status;
+  var progress = (typeof data.progress === 'number') ? data.progress : null;
+  var stage = data.stage || null;
+
+  if (progress !== null) {
+    var compressStages = ['Memeriksa ukuran PDF', 'Kompres PDF otomatis', 'Kompres selesai'];
+    var isCompress = stage && compressStages.indexOf(stage) !== -1;
+    var label = stage ? (isCompress ? '🗜️ ' + stage : stage) : (
+      status === 'waiting' ? 'Menunggu dalam antrian…' :
+      status === 'processing' ? 'Sedang memproses…' :
+      status === 'completed' ? 'Selesai!' :
+      status === 'error' ? 'Gagal' : 'Memproses…'
+    );
+    dmsSetProgress(progress, label);
+  } else {
+    if (stage) {
+      var compressStages2 = ['Memeriksa ukuran PDF', 'Kompres PDF otomatis', 'Kompres selesai'];
+      var isCompress2 = compressStages2.indexOf(stage) !== -1;
+      var progLabel = document.getElementById('dms-prog-label');
+      if (progLabel) progLabel.textContent = isCompress2 ? '🗜️ ' + stage : stage;
+    }
+  }
+
+  if (stage && stage !== dmsLastStage) {
+    dmsLastStage = stage;
+    if (stage === 'Memeriksa ukuran PDF') {
+      dmsAddLog('[KOMPRES] 🔍 ' + stage, 'c');
+      if (typeof data.original_size_mb === 'number') dmsAddLog('[KOMPRES] Ukuran asli: ' + data.original_size_mb.toFixed(2) + ' MB', 'c');
+    } else if (stage === 'Kompres PDF otomatis') {
+      dmsAddLog('[KOMPRES] 🗜️ ' + stage, 'c');
+      if (typeof data.compress_attempt === 'number') dmsAddLog('[KOMPRES] Percobaan ke-' + data.compress_attempt, 'c');
+    } else if (stage === 'Kompres selesai') {
+      dmsAddLog('[KOMPRES] ✅ ' + stage, 'c');
+      if (typeof data.compressed_size_mb === 'number') dmsAddLog('[KOMPRES] Ukuran hasil: ' + data.compressed_size_mb.toFixed(2) + ' MB', 'c');
+    } else {
+      dmsAddLog('[INFO] ' + stage, 'i');
+    }
+  }
+
+  if (status === 'processing' && progress !== null) {
+    if (progress < 30) dmsRenderPipeline(0);
+    else if (progress < 55) dmsRenderPipeline(1);
+    else if (progress < 80) dmsRenderPipeline(2);
+    else dmsRenderPipeline(3);
+    var si = Math.min(Math.floor(progress / (100 / DMS_STEPS.length)), DMS_STEPS.length - 1);
+    dmsRenderSteps(si);
+  }
+}
+
+// ── Cancel button state ──
+function dmsInitCancelButton(jid) {
+  var btn = document.getElementById('dms-btn-cancel');
+  if (!btn) return;
+  btn.disabled = false;
+  btn.setAttribute('data-jobid', jid || '');
+}
+
+// ── Polling ──
+function dmsStartPolling() {
+  if (dmsPollIv) clearInterval(dmsPollIv);
+  var pollingForJobId = dmsJobId;
+  dmsPollIv = setInterval(async function() {
+    if (dmsJobId !== pollingForJobId) { clearInterval(dmsPollIv); dmsPollIv = null; return; }
+    if (dmsCancelRequested === pollingForJobId) return;
+    try {
+      var res = await fetch(dmsApi('/status/' + pollingForJobId));
+      var data = await res.json();
+      if (dmsJobId !== pollingForJobId || dmsCancelRequested === pollingForJobId) return;
+
+      dmsApplyBackendData(data);
+      dmsHandleStatusOnce(data.status);
+      dmsSaveSession();
+
+      if (data.status === 'waiting' || data.status === 'processing') {
+        dmsFetchAndRenderQueue(data.status);
+        // Update cancel button state
+        var btn = document.getElementById('dms-btn-cancel');
+        if (btn) btn.disabled = false;
+      } else if (data.status === 'completed') {
+        dmsFetchAndRenderQueue('completed');
+        dmsStopPolling();
+        setTimeout(dmsShowResult, 700);
+      } else if (data.status === 'error') {
+        dmsFetchAndRenderQueue('error');
+        dmsStopPolling();
+        dmsSaveSession();
+      }
+    } catch(_) {}
+  }, 2000);
+}
+
+function dmsStopPolling() {
+  if (dmsPollIv) { clearInterval(dmsPollIv); dmsPollIv = null; }
+}
+
+// ── Elapsed timer ──
+function dmsStartElapsed() {
+  if (dmsElapsedIv) clearInterval(dmsElapsedIv);
+  dmsElapsedIv = setInterval(function() {
+    var el = document.getElementById('dms-log-elapsed');
+    if (el) el.textContent = ((Date.now() - dmsT0) / 1000).toFixed(1) + ' s';
+  }, 100);
+}
+
+function dmsStopElapsed() {
+  if (dmsElapsedIv) { clearInterval(dmsElapsedIv); dmsElapsedIv = null; }
+}
+
+// ── Session ──
+function dmsSaveSession() {
+  try {
+    sessionStorage.setItem(DMS_SESSION_KEY, JSON.stringify({
+      jobId: dmsJobId,
+      uploadedJobs: dmsUploadedJobs,
+      completedJobIds: dmsCompletedJobIds,
+      t0: dmsT0
+    }));
+  } catch(_) {}
+}
+
+function dmsClearSession() {
+  try { sessionStorage.removeItem(DMS_SESSION_KEY); } catch(_) {}
+}
+
+function dmsLoadSession() {
+  try {
+    var raw = sessionStorage.getItem(DMS_SESSION_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch(_) { return null; }
+}
+
+// ── Start Process ──
+async function dmsStartProcess() {
+  if (dmsSelFiles.length === 0) return;
+  dmsStopQueuePreview();
+
+  var btn = document.getElementById('dms-btn-main');
+  var svgIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>';
+  if (btn) { btn.disabled = true; btn.innerHTML = svgIcon + ' Mengupload…'; }
+
+  var filesToUpload = dmsSelFiles.slice();
+  var successJobs = [], failedFiles = [];
+
+  for (var i = 0; i < filesToUpload.length; i++) {
+    var f = filesToUpload[i];
+    if (btn) btn.innerHTML = svgIcon + ' Upload ' + (i+1) + '/' + filesToUpload.length + '…';
+    var form = new FormData();
+    form.append('file', f);
+    form.append('area_source_mode', dmsAreaSourceMode);
+    try {
+      var res = await fetch(dmsApi('/upload'), { method: 'POST', body: form });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      var data = await res.json();
+      if (!data.success) throw new Error(data.message || 'Upload gagal');
+      successJobs.push({ job_id: data.job_id, filename: f.name, status: data.status || 'waiting' });
+    } catch(err) {
+      failedFiles.push({ name: f.name, reason: err.message });
+    }
+  }
+
+  if (successJobs.length === 0) {
+    if (btn) { btn.disabled = false; btn.innerHTML = svgIcon + ' Proses File'; }
+    dmsRenderFileErrors(failedFiles);
+    return;
+  }
+
+  dmsUploadedJobs = successJobs;
+  dmsJobId = successJobs[0].job_id;
+  dmsCompletedJobIds = [];
+  dmsT0 = Date.now();
+  dmsLastStatus = null;
+  dmsLastStage = null;
+  dmsCancelRequested = null;
+
+  var uploadSec = document.getElementById('dms-upload-section');
+  if (uploadSec) uploadSec.style.display = 'none';
+  ['dms-prog-card', 'dms-queue-card', 'dms-log-card'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.classList.add('show');
+  });
+
+  var logBody = document.getElementById('dms-log-body');
+  if (logBody) logBody.innerHTML = '';
+  dmsSetProgress(0, 'File masuk antrian…');
+  dmsRenderSteps(-1);
+  dmsRenderPipeline(0);
+  dmsStartElapsed();
+  dmsInitCancelButton(dmsJobId);
+
+  dmsAddLog('[INFO] ' + successJobs.length + ' file berhasil diupload ke antrian', 'ok');
+  dmsAddLog('[INFO] Mode parsing area: ' + (dmsAreaSourceMode === 'first' ? 'Bagian Pertama' : 'Bagian Kedua'), 'i');
+  if (failedFiles.length > 0) failedFiles.forEach(function(e) { dmsAddLog('[WARN] Gagal: ' + e.name + ' - ' + e.reason, 'w'); });
+  successJobs.forEach(function(j, idx) { dmsAddLog('[INFO] Job #' + (idx+1) + ': ' + j.filename + ' → ' + j.job_id, 'i'); });
+  dmsAddLog('[INFO] Memantau job pertama: ' + successJobs[0].filename, 'i');
+
+  dmsApplyBackendData({ status: successJobs[0].status || 'waiting', progress: 0, stage: null });
+  dmsHandleStatusOnce(successJobs[0].status || 'waiting');
+  dmsSaveSession();
+  dmsStartPolling();
+}
+
+// ── Cancel ──
+async function dmsCancelProcess() {
+  var btn = document.getElementById('dms-btn-cancel');
+  var forJobId = (btn && btn.getAttribute('data-jobid')) || dmsJobId;
+  if (!forJobId) return;
+  if (dmsCancelRequested !== null) return;
+  dmsCancelRequested = forJobId;
+  if (btn) btn.disabled = true;
+
+  dmsStopPolling();
+  dmsStopElapsed();
+  dmsAddLog('[WARN] Pembatalan diminta untuk: ' + forJobId, 'w');
+  dmsSetProgress(dmsCurrentProgress, 'Membatalkan…');
+
+  try {
+    var res = await fetch(dmsApi('/job/' + encodeURIComponent(forJobId)), { method: 'DELETE', signal: AbortSignal.timeout(5000) });
+    if (!res.ok) await fetch(dmsApi('/cancel/' + encodeURIComponent(forJobId)), { method: 'POST', signal: AbortSignal.timeout(5000) });
+  } catch(_) {}
+
+  var FINAL = new Set(['cancelled', 'error', 'completed']);
+  var confirmed = false, finalStatus = null;
+  for (var i = 0; i < 10; i++) {
+    await new Promise(function(r) { setTimeout(r, 1500); });
+    if (dmsCancelRequested !== forJobId) return;
+    try {
+      var r2 = await fetch(dmsApi('/status/' + encodeURIComponent(forJobId)), { signal: AbortSignal.timeout(4000) });
+      var d2 = await r2.json();
+      if (FINAL.has(d2.status)) { confirmed = true; finalStatus = d2.status; break; }
+    } catch(_) {}
+  }
+
+  if (dmsCancelRequested !== forJobId) return;
+
+  if (finalStatus === 'completed') {
+    dmsAddLog('[INFO] Job sudah selesai sebelum dibatalkan', 'i');
+    if (!dmsCompletedJobIds.includes(forJobId)) dmsCompletedJobIds.push(forJobId);
+    dmsCancelRequested = null;
+    dmsSaveSession();
+    setTimeout(dmsShowResult, 300);
+    return;
+  }
+
+  dmsUploadedJobs = dmsUploadedJobs.filter(function(j) { return j.job_id !== forJobId; });
+  dmsCompletedJobIds = dmsCompletedJobIds.filter(function(id) { return id !== forJobId; });
+  dmsCancelRequested = null;
+  dmsAddLog('[WARN] File dibatalkan' + (confirmed ? ' ✓' : ' (timeout)'), 'w');
+  dmsSaveSession();
+
+  var pending = dmsUploadedJobs.filter(function(j) { return !dmsCompletedJobIds.includes(j.job_id); });
+  if (pending.length === 0) { dmsClearSession(); dmsReset(); return; }
+
+  var nextJob = pending[0];
+  dmsJobId = nextJob.job_id;
+  dmsLastStatus = null; dmsLastStage = null;
+  dmsT0 = Date.now();
+  var logBody2 = document.getElementById('dms-log-body');
+  if (logBody2) logBody2.innerHTML = '';
+  dmsSetProgress(0, 'Melanjutkan ke file berikutnya…');
+  dmsRenderSteps(-1); dmsRenderPipeline(0);
+  dmsStartElapsed();
+  dmsInitCancelButton(dmsJobId);
+  dmsAddLog('[INFO] Melanjutkan ke file: ' + nextJob.filename, 'i');
+  dmsSaveSession();
+  dmsStartPolling();
+}
+
+async function dmsCancelQueueRow(btn) {
+  var targetJobId = btn.getAttribute('data-jobid');
+  if (!targetJobId) return;
+  if (targetJobId === dmsJobId) { dmsCancelProcess(); return; }
+  if (dmsCancelRequested !== null) return;
+  var isMyJob = dmsUploadedJobs.some(function(j) { return j.job_id === targetJobId; });
+  if (!isMyJob) return;
+  btn.disabled = true;
+  try {
+    var res = await fetch(dmsApi('/job/' + encodeURIComponent(targetJobId)), { method: 'DELETE', signal: AbortSignal.timeout(6000) });
+    if (!res.ok) await fetch(dmsApi('/cancel/' + encodeURIComponent(targetJobId)), { method: 'POST', signal: AbortSignal.timeout(6000) });
+  } catch(_) {}
+  dmsUploadedJobs = dmsUploadedJobs.filter(function(j) { return j.job_id !== targetJobId; });
+  dmsCompletedJobIds = dmsCompletedJobIds.filter(function(id) { return id !== targetJobId; });
+  dmsSaveSession();
+  dmsAddLog('[WARN] File dibatalkan dari antrian: ' + targetJobId, 'w');
+  dmsFetchAndRenderQueue(dmsLastStatus || 'waiting');
+}
+
+// ── Result ──
+function dmsShowResult() {
+  dmsStopElapsed();
+  var progCard = document.getElementById('dms-prog-card');
+  if (progCard) progCard.classList.remove('show');
+
+  if (dmsJobId && !dmsCompletedJobIds.includes(dmsJobId)) dmsCompletedJobIds.push(dmsJobId);
+  dmsSaveSession();
+
+  var pending = dmsUploadedJobs.filter(function(j) { return !dmsCompletedJobIds.includes(j.job_id); });
+  dmsRenderResultList();
+
+  var resultCard = document.getElementById('dms-result-card');
+  if (resultCard) resultCard.classList.add('show');
+
+  if (pending.length > 0) {
+    var titleEl = document.getElementById('dms-result-title');
+    var subEl = document.getElementById('dms-result-sub');
+    if (titleEl) titleEl.textContent = dmsCompletedJobIds.length + ' File Selesai - ' + pending.length + ' File Tersisa';
+    if (subEl) subEl.textContent = 'File berikutnya sedang diproses. Tombol unduh akan muncul seiring selesainya tiap file.';
+
+    var nextJob = pending[0];
+    setTimeout(function() {
+      dmsJobId = nextJob.job_id;
+      dmsT0 = Date.now();
+      dmsLastStatus = null; dmsLastStage = null; dmsCancelRequested = null;
+      dmsStartElapsed();
+      var logBody3 = document.getElementById('dms-log-body');
+      if (logBody3) logBody3.innerHTML = '';
+      dmsSetProgress(0, 'File berikutnya masuk antrian…');
+      dmsRenderSteps(-1); dmsRenderPipeline(0);
+      if (progCard) progCard.classList.add('show');
+      dmsAddLog('[INFO] Melanjutkan ke file: ' + nextJob.filename, 'i');
+      dmsInitCancelButton(dmsJobId);
+      dmsSaveSession();
+      dmsStartPolling();
+    }, 800);
+  } else {
+    var titleEl2 = document.getElementById('dms-result-title');
+    var subEl2 = document.getElementById('dms-result-sub');
+    if (titleEl2) titleEl2.textContent = dmsUploadedJobs.length > 1 ? 'Semua File Selesai! ✅' : 'Konversi Selesai! ✅';
+    if (subEl2) subEl2.textContent = dmsUploadedJobs.length > 1
+      ? dmsUploadedJobs.length + ' file Excel hasil DMS Alam Sutera siap diunduh.'
+      : 'File Excel hasil DMS Alam Sutera siap diunduh langsung dari halaman ini.';
+  }
+}
+
+function dmsRenderResultList() {
+  var list = document.getElementById('dms-result-files-list');
+  if (!list) return;
+  var doneJobs = dmsUploadedJobs.filter(function(j) { return dmsCompletedJobIds.includes(j.job_id); });
+  list.innerHTML = doneJobs.map(function(j) {
+    var outName = j.filename.replace(/\.pdf$/i, '') + '_Result.xlsx';
+    return '<div class="result-file" style="margin-bottom:10px;text-align:left">' +
+      '<div class="result-file-ico">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>' +
+      '</div>' +
+      '<div style="flex:1;min-width:0">' +
+        '<div class="result-fname">' + dmsEscHtml(outName) + '</div>' +
+        '<div class="result-fmeta">Excel · Data DMS Alam Sutera · Siap diunduh</div>' +
+      '</div>' +
+      '<button class="btn-dl" onclick="dmsDoDlJob(\'' + dmsEscHtml(j.job_id) + '\', this)" ' +
+        'style="padding:10px 20px;font-size:13px;margin-bottom:0;flex-shrink:0">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="width:15px;height:15px"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="15" x2="12" y2="4"/></svg>' +
+        ' Unduh' +
+      '</button>' +
+      '</div>';
+  }).join('');
+}
+
+function dmsDoDlJob(jid, btn) {
+  if (!jid) return;
+  var origHtml = btn.innerHTML;
+  btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="width:15px;height:15px"><polyline points="20 6 9 17 4 12"/></svg> Mengunduh…';
+  btn.style.opacity = '.75';
+  window.location = dmsApi('/download/' + jid);
+  setTimeout(function() {
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="width:15px;height:15px"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="15" x2="12" y2="4"/></svg> Unduh Lagi';
+    btn.style.opacity = '1';
+  }, 1500);
+}
+
+// ── Reset ──
+function dmsReset() {
+  dmsStopPolling();
+  dmsStopElapsed();
+  dmsSelFiles = [];
+  dmsUploadedJobs = [];
+  dmsJobId = null;
+  dmsLastStatus = null; dmsLastStage = null;
+  dmsCurrentProgress = 0;
+  dmsCompletedJobIds = [];
+  dmsCancelRequested = null;
+  dmsClearSession();
+
+  var fi = document.getElementById('dms-file-input');
+  if (fi) fi.value = '';
+  dmsRenderFileList();
+  var errWrap = document.getElementById('dms-file-errors-wrap');
+  if (errWrap) { errWrap.style.display = 'none'; errWrap.innerHTML = ''; }
+
+  var svgIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>';
+  var btn = document.getElementById('dms-btn-main');
+  if (btn) { btn.disabled = true; btn.innerHTML = svgIcon + ' Proses File'; }
+
+  ['dms-prog-card','dms-queue-card','dms-log-card','dms-result-card'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.classList.remove('show');
+  });
+
+  var uploadSec = document.getElementById('dms-upload-section');
+  if (uploadSec) uploadSec.style.display = '';
+  var progBar = document.getElementById('dms-prog-bar');
+  if (progBar) progBar.style.width = '0%';
+  var progPct = document.getElementById('dms-prog-pct');
+  if (progPct) progPct.textContent = '0%';
+  var logBody4 = document.getElementById('dms-log-body');
+  if (logBody4) logBody4.innerHTML = '';
+  var elapsed4 = document.getElementById('dms-log-elapsed');
+  if (elapsed4) elapsed4.textContent = '0.0 s';
+  var progSteps4 = document.getElementById('dms-prog-steps');
+  if (progSteps4) progSteps4.innerHTML = '';
+  dmsRenderPipeline(-1);
+  dmsStartQueuePreview();
+}
+
+// ── Init DMS ──
+(async function dmsInit() {
+  // Check backend status
+  await w3_checkBackendStatus();
+  // Also check periodically
+  setInterval(w3_checkBackendStatus, 30000);
+
+  // Try session recovery
+  var session = dmsLoadSession();
+  if (session && session.uploadedJobs && session.uploadedJobs.length > 0 && session.jobId) {
+    var jobs2 = session.uploadedJobs;
+    var done2 = session.completedJobIds || [];
+    var anyActive = false;
+    var liveStatuses = {};
+
+    await Promise.all(jobs2.map(async function(j) {
+      try {
+        var r = await fetch(dmsApi('/status/' + encodeURIComponent(j.job_id)), { signal: AbortSignal.timeout(5000) });
+        var d = await r.json();
+        liveStatuses[j.job_id] = d.status || 'unknown';
+        if (d.status === 'waiting' || d.status === 'processing') anyActive = true;
+      } catch(_) { liveStatuses[j.job_id] = 'unknown'; }
+    }));
+
+    var allFinal = jobs2.every(function(j) {
+      var st = liveStatuses[j.job_id];
+      return st === 'error' || st === 'cancelled' || st === 'unknown' ||
+             (st === 'completed' && done2.includes(j.job_id));
+    });
+
+    if (allFinal && !anyActive) { dmsClearSession(); dmsStartQueuePreview(); return; }
+
+    dmsUploadedJobs = jobs2;
+    dmsCompletedJobIds = done2;
+    dmsT0 = session.t0 || Date.now();
+    dmsCancelRequested = null; dmsLastStatus = null; dmsLastStage = null;
+
+    var activeJob2 = jobs2.find(function(j) { return liveStatuses[j.job_id] === 'waiting' || liveStatuses[j.job_id] === 'processing'; });
+    var pendingJob2 = jobs2.find(function(j) { return !done2.includes(j.job_id); });
+    var recoveredJob = activeJob2 || pendingJob2;
+
+    if (!recoveredJob) {
+      dmsJobId = jobs2[jobs2.length - 1].job_id;
+      var uploadSec2 = document.getElementById('dms-upload-section');
+      if (uploadSec2) uploadSec2.style.display = 'none';
+      ['dms-queue-card','dms-log-card'].forEach(function(id) { var el = document.getElementById(id); if(el) el.classList.add('show'); });
+      dmsAddLog('[INFO] Session dipulihkan setelah refresh', 'i');
+      dmsShowResult();
+      return;
+    }
+
+    dmsJobId = recoveredJob.job_id;
+    var uploadSec3 = document.getElementById('dms-upload-section');
+    if (uploadSec3) uploadSec3.style.display = 'none';
+    ['dms-prog-card','dms-queue-card','dms-log-card'].forEach(function(id) { var el = document.getElementById(id); if(el) el.classList.add('show'); });
+
+    if (done2.length > 0) {
+      dmsRenderResultList();
+      var rc = document.getElementById('dms-result-card');
+      if (rc) rc.classList.add('show');
+    }
+
+    var liveStatus2 = liveStatuses[dmsJobId] || 'waiting';
+    dmsSetProgress(0, liveStatus2 === 'processing' ? 'Sedang diproses…' : 'Menunggu dalam antrian…');
+    dmsRenderSteps(0); dmsRenderPipeline(liveStatus2 === 'processing' ? 1 : 0);
+    dmsAddLog('[INFO] ↩ Session dipulihkan setelah refresh', 'i');
+    dmsAddLog('[INFO] Memantau job: ' + recoveredJob.filename + ' (' + liveStatus2 + ')', 'i');
+    dmsStartElapsed();
+    dmsApplyBackendData({ status: liveStatus2, progress: liveStatus2 === 'processing' ? 10 : 0, stage: null });
+    dmsHandleStatusOnce(liveStatus2);
+    dmsInitCancelButton(dmsJobId);
+    dmsStartPolling();
+    return;
+  }
+
+  dmsStartQueuePreview();
+})();
 </script>
 
 </body>
