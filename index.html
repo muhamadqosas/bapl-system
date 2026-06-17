@@ -771,9 +771,313 @@ html, body { background: var(--bg); font-family: 'Segoe UI', system-ui, -apple-s
     }
   </style>
 </style>
+
+<!-- ═══ DASHBOARD (HOME) CSS — scoped to #page-home ═══ -->
+<style>
+#page-home {
+  display: flex; flex-direction: column; min-height: 100vh;
+  background: #F0F5FB;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+#page-home.dash-hidden { display: none; }
+
+#page-home .dash-header {
+  position: sticky; top: 0; z-index: 1200;
+  background: linear-gradient(135deg, #0a3460 0%, #0F4C81 50%, #1565C0 100%);
+  box-shadow: 0 2px 24px rgba(10,52,96,0.36);
+  padding: 0 24px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+#page-home .dash-header-inner {
+  max-width: 1100px; margin: 0 auto;
+  display: flex; align-items: center; height: 64px; gap: 14px;
+}
+#page-home .dash-logomark {
+  width: 56px; height: 44px; border-radius: 10px;
+  background: rgba(255,255,255,0.95);
+  padding: 6px 8px; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+#page-home .dash-logomark img { width: 150%; height: 150%; object-fit: cover; object-position: center center; }
+#page-home .dash-text { flex: 1; min-width: 0; }
+#page-home .dash-text h1 {
+  color: #fff; font-size: 15px; font-weight: 800;
+  letter-spacing: 0.1px; line-height: 1.2;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  margin: 0;
+}
+#page-home .dash-text p { color: rgba(255,255,255,0.6); font-size: 10.5px; margin-top: 2px; }
+#page-home .dash-pill {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: rgba(255,255,255,0.13); border: 1px solid rgba(255,255,255,0.22);
+  border-radius: 24px; padding: 5px 14px;
+  font-size: 11px; font-weight: 700; color: #fff;
+  white-space: nowrap; flex-shrink: 0; letter-spacing: 0.3px;
+}
+#page-home .dash-dot {
+  width: 7px; height: 7px; border-radius: 50%; background: #4ade80;
+  animation: dash-pulse-dot 2.2s infinite;
+}
+@keyframes dash-pulse-dot {
+  0%,100% { box-shadow: 0 0 0 0 rgba(74,222,128,0.55); }
+  50%      { box-shadow: 0 0 0 5px rgba(74,222,128,0); }
+}
+@media (min-width: 768px) {
+  #page-home .dash-header { padding: 0 32px; }
+  #page-home .dash-header-inner { height: 68px; }
+  #page-home .dash-logomark { width: 64px; height: 50px; }
+  #page-home .dash-text h1 { font-size: 16px; }
+}
+
+#page-home .dash-body {
+  flex: 1; max-width: 1100px; width: 100%;
+  margin: 0 auto; padding: 32px 20px 80px;
+}
+
+/* Identity block */
+#page-home .dash-identity-block {
+  display: flex; align-items: flex-start; gap: 0;
+  margin-bottom: 36px;
+  background: #FFFFFF;
+  border: 1px solid #D6E4F2;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 22px rgba(15,76,129,0.13);
+}
+#page-home .dash-identity-accent {
+  width: 6px; flex-shrink: 0;
+  background: linear-gradient(180deg, #0F4C81 0%, #1E6FB9 50%, #42a5f5 100%);
+  min-height: 100%;
+}
+#page-home .dash-identity-content {
+  flex: 1; padding: 22px 22px 20px 20px;
+  display: flex; align-items: center; justify-content: space-between; gap: 20px;
+  flex-wrap: wrap;
+}
+#page-home .dash-identity-eyebrow {
+  font-size: 10.5px; font-weight: 700; letter-spacing: 1.2px;
+  text-transform: uppercase; color: #1E6FB9;
+  margin-bottom: 5px; display: flex; align-items: center; gap: 6px;
+}
+#page-home .dash-identity-eyebrow::before {
+  content: ''; display: inline-block;
+  width: 18px; height: 2px;
+  background: #1E6FB9; border-radius: 2px;
+}
+#page-home .dash-identity-name {
+  font-size: 22px; font-weight: 900; color: #0F4C81;
+  letter-spacing: -0.3px; line-height: 1.15;
+}
+#page-home .dash-identity-name span {
+  display: block; font-size: 12px; font-weight: 500;
+  color: #6B7280; margin-top: 4px; letter-spacing: 0;
+}
+@media (max-width: 480px) {
+  #page-home .dash-identity-name { font-size: 18px; }
+}
+
+/* Section heading */
+#page-home .dash-section-heading {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 18px;
+}
+#page-home .dash-section-heading h2 {
+  font-size: 12px; font-weight: 800; color: #6B7280;
+  letter-spacing: 1.1px; text-transform: uppercase; white-space: nowrap;
+  margin: 0;
+}
+#page-home .dash-section-heading-rule {
+  flex: 1; height: 1px;
+  background: linear-gradient(90deg, #D6E4F2 0%, transparent 100%);
+}
+
+/* Tools grid */
+#page-home .dash-tools-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+@media (min-width: 540px) { #page-home .dash-tools-grid { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 900px) { #page-home .dash-tools-grid { grid-template-columns: 1fr 1fr 1fr; } }
+
+/* Tool card */
+#page-home .dash-tool-card {
+  background: #FFFFFF;
+  border: 1px solid #D6E4F2;
+  border-radius: 14px;
+  box-shadow: 0 2px 14px rgba(15,76,129,0.09);
+  cursor: pointer;
+  transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1),
+              box-shadow 0.22s ease, border-color 0.18s;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+  position: relative;
+}
+#page-home .dash-tool-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 36px rgba(15,76,129,0.18);
+  border-color: rgba(30,111,185,0.35);
+}
+#page-home .dash-tool-card:active { transform: scale(0.975); box-shadow: 0 2px 14px rgba(15,76,129,0.09); }
+#page-home .dash-tc-bar { height: 4px; background: linear-gradient(90deg, var(--dca), var(--dcb)); }
+#page-home .dash-tc-body { padding: 18px 18px 14px; flex: 1; display: flex; flex-direction: column; gap: 11px; }
+#page-home .dash-tc-top { display: flex; align-items: flex-start; gap: 13px; }
+#page-home .dash-tc-icon {
+  width: 46px; height: 46px; border-radius: 11px; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--dca), var(--dcb));
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.15);
+}
+#page-home .dash-tc-icon i { color: #fff; font-size: 21px; }
+#page-home .dash-tc-meta { flex: 1; min-width: 0; }
+#page-home .dash-tc-name {
+  font-size: 14px; font-weight: 800; color: #1F2937;
+  line-height: 1.25; margin-bottom: 5px;
+}
+#page-home .dash-tc-badges { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+#page-home .dash-tc-badge {
+  font-size: 9.5px; font-weight: 700; border-radius: 6px;
+  padding: 2px 7px; letter-spacing: 0.3px; text-transform: uppercase;
+}
+#page-home .dash-badge-cat { background: #F0F5FB; color: #6B7280; border: 1px solid #D6E4F2; }
+
+/* Status badge on card — reuses same online/offline/checking states */
+#page-home .dash-tc-status {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 2px 9px; border-radius: 20px;
+  font-size: 9.5px; font-weight: 700; white-space: nowrap;
+  text-transform: uppercase; letter-spacing: 0.3px;
+  transition: all 0.4s ease; border: 1px solid transparent;
+}
+#page-home .dash-tc-status .dash-tc-status-dot {
+  width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; display: inline-block;
+}
+#page-home .dash-tc-status.dash-status-online { background: #dcfce7; color: #15803d; border-color: #bbf7d0; }
+#page-home .dash-tc-status.dash-status-online .dash-tc-status-dot { background: #16A34A; animation: dash-pulse-live 2s infinite; }
+#page-home .dash-tc-status.dash-status-offline { background: #fff1f1; color: #DC2626; border-color: #fca5a5; }
+#page-home .dash-tc-status.dash-status-offline .dash-tc-status-dot { background: #DC2626; animation: none; }
+#page-home .dash-tc-status.dash-status-checking { background: #F0F5FB; color: #6B7280; border-color: #D6E4F2; }
+#page-home .dash-tc-status.dash-status-checking .dash-tc-status-dot { background: #9CA3AF; animation: dash-pulse-live 1s infinite; }
+@keyframes dash-pulse-live { 0%,100% { box-shadow: 0 0 0 0 rgba(22,163,74,0.35); } 50% { box-shadow: 0 0 0 4px rgba(22,163,74,0); } }
+
+#page-home .dash-tc-desc { font-size: 12.5px; color: #6B7280; line-height: 1.6; flex: 1; margin: 0; }
+#page-home .dash-tc-footer {
+  padding: 10px 18px 14px;
+  display: flex; align-items: center; justify-content: space-between;
+  border-top: 1px solid #D6E4F2;
+}
+#page-home .dash-tc-cta {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 700;
+  color: #0F4C81;
+  background: #EAF4FF; border: 1px solid #c5d9f0;
+  border-radius: 8px; padding: 5px 13px;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+#page-home .dash-tool-card:hover .dash-tc-cta { background: #0F4C81; color: #fff; border-color: #0F4C81; }
+#page-home .dash-tc-chevron { color: #D6E4F2; font-size: 14px; transition: transform 0.2s ease, color 0.2s; }
+#page-home .dash-tool-card:hover .dash-tc-chevron { transform: translateX(3px); color: #1E6FB9; }
+
+/* Footer note */
+#page-home .dash-footer {
+  margin-top: 36px;
+  padding: 15px 18px;
+  background: #FFFFFF; border: 1px solid #D6E4F2;
+  border-radius: 12px; box-shadow: 0 2px 14px rgba(15,76,129,0.09);
+  display: flex; align-items: flex-start; gap: 11px;
+  font-size: 12px; color: #6B7280; line-height: 1.65;
+}
+#page-home .dash-footer i { font-size: 15px; color: #1E6FB9; flex-shrink: 0; margin-top: 1px; }
+
+/* Back-to-dashboard button placed in unified header of tool pages */
+.btn-back-dash {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 20px; padding: 5px 13px; min-height: 26px;
+  font-size: 11.5px; font-weight: 700; color: #fff;
+  white-space: nowrap; flex-shrink: 0; cursor: pointer;
+  font-family: inherit; transition: background 0.15s;
+}
+.btn-back-dash:hover { background: rgba(255,255,255,0.26); }
+.btn-back-dash i { font-size: 13px; }
+@media (max-width: 420px) {
+  .btn-back-dash span.btn-back-dash-label { display: none; }
+  .btn-back-dash { padding: 6px 9px; }
+}
+
+/* Hide dashboard when not in dash-mode (a tool is open) */
+body:not(.dash-mode) #page-home {
+  display: none !important;
+}
+
+/* Hide tool app shell while dashboard is showing */
+body.dash-mode .unified-header,
+body.dash-mode #section-outstanding,
+body.dash-mode #section-bapl,
+body.dash-mode #section-dms,
+body.dash-mode .pill-switcher,
+body.dash-mode #toast-container-outstanding,
+body.dash-mode #toast-container-bapl,
+body.dash-mode #toast-container-dms {
+  display: none !important;
+}
+/* Pill switcher removed from view permanently (per request) even outside dash-mode */
+.pill-switcher { display: none !important; }
+</style>
 </head>
 
-<body>
+<body class="dash-mode">
+
+<!-- ══════════════════════════════════════
+     HOME DASHBOARD
+══════════════════════════════════════ -->
+<div id="page-home">
+
+  <header class="dash-header">
+    <div class="dash-header-inner">
+      <div class="dash-logomark">
+        <img src="https://raw.githubusercontent.com/muhamadqosas/bapl-system/refs/heads/main/nusa_raya_cipta_pt_nrca__logo-removebg-preview.png" alt="NRC Logo" />
+      </div>
+      <div class="dash-text">
+        <h1>PT Nusa Raya Cipta</h1>
+        <p>Elevee Penthouse · Alam Sutera — Sistem Operasional Internal</p>
+      </div>
+    </div>
+  </header>
+
+  <div class="dash-body">
+
+    <!-- Identity Block -->
+    <div class="dash-identity-block">
+      <div class="dash-identity-accent"></div>
+      <div class="dash-identity-content">
+        <div class="dash-identity-left">
+          <div class="dash-identity-eyebrow">Platform Internal NRC</div>
+          <div class="dash-identity-name">
+            Tools Operasional
+            <span>Kelola dokumen, laporan, dan data proyek Elevee Penthouse dalam satu platform</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tools -->
+    <div class="dash-section-heading">
+      <h2>Tools Tersedia</h2>
+      <div class="dash-section-heading-rule"></div>
+    </div>
+
+    <div class="dash-tools-grid" id="dash-tools-grid"></div>
+
+    <div class="dash-footer">
+      <i class="bi bi-shield-lock-fill"></i>
+      <span>Platform ini digunakan secara internal oleh tim PT Nusa Raya Cipta untuk operasional proyek Elevee Penthouse Alam Sutera. Akses hanya untuk personel yang berwenang. Hubungi administrator sistem jika mengalami kendala teknis.</span>
+    </div>
+
+  </div>
+</div>
 
 <!-- UNIFIED HEADER -->
 <header class="unified-header">
@@ -785,6 +1089,9 @@ html, body { background: var(--bg); font-family: 'Segoe UI', system-ui, -apple-s
       <h1 id="u-page-title">Outstanding Unit Report</h1>
       <p>PT Nusa Raya Cipta — Elevee Penthouse Alam Sutera</p>
     </div>
+    <button class="btn-back-dash" onclick="goToDashboard()" type="button">
+      <i class="bi bi-house-door-fill"></i><span class="btn-back-dash-label"> Beranda</span>
+    </button>
     <!-- STATUS BADGES — shown per active tab -->
     <div class="u-status-wrap">
       <!-- Outstanding status (web1) -->
@@ -1740,6 +2047,129 @@ html, body { background: var(--bg); font-family: 'Segoe UI', system-ui, -apple-s
     var labels = { online: 'ONLINE', offline: 'Offline', checking: 'Checking...' };
     text.textContent = labels[state] || state;
   };
+})();
+</script>
+
+<!-- ═══ DASHBOARD (HOME) LOGIC — additive only, does not modify switchTo/setUnifiedStatus ═══ -->
+<script>
+(function() {
+  'use strict';
+
+  var DASH_TOOLS = [
+    {
+      id: 'outstanding',
+      name: 'Outstanding Pekerjaan',
+      desc: 'Kelola daftar item outstanding pekerjaan per unit, mapping dan generate secara cepat sesuai standar NRC.',
+      icon: 'bi-clipboard2-check-fill',
+      ca: '#0F4C81', cb: '#1E6FB9',
+      badge: 'Operasional'
+    },
+    {
+      id: 'bapl',
+      name: 'BAPL',
+      fullName: 'Berita Acara Pekerjaan Lapangan',
+      desc: 'Buat dan kelola Berita Acara Pekerjaan Lapangan dengan template standar NRC.',
+      icon: 'bi-file-earmark-text-fill',
+      ca: '#1565C0', cb: '#0288D1',
+      badge: 'Dokumen'
+    },
+    {
+      id: 'dms',
+      name: 'DMS Alam Sutera → Excel',
+      desc: 'Konversi laporan PDF dari sistem DMS Alam Sutera menjadi file Excel standar NRC.',
+      icon: 'bi-file-earmark-spreadsheet-fill',
+      ca: '#1B5E20', cb: '#388E3C',
+      badge: 'Konversi Data'
+    }
+  ];
+
+  function renderDashCards() {
+    var grid = document.getElementById('dash-tools-grid');
+    if (!grid) return;
+    grid.innerHTML = DASH_TOOLS.map(function(t) {
+      return (
+        '<div class="dash-tool-card" style="--dca:' + t.ca + ';--dcb:' + t.cb + '" ' +
+             'onclick="openToolFromDashboard(\'' + t.id + '\')" role="button" tabindex="0" ' +
+             'onkeydown="if(event.key===\'Enter\')openToolFromDashboard(\'' + t.id + '\')">' +
+          '<div class="dash-tc-bar"></div>' +
+          '<div class="dash-tc-body">' +
+            '<div class="dash-tc-top">' +
+              '<div class="dash-tc-icon"><i class="bi ' + t.icon + '"></i></div>' +
+              '<div class="dash-tc-meta">' +
+                '<div class="dash-tc-name">' + t.name +
+                  (t.fullName ? '<div style="font-size:10.5px;font-weight:500;color:#6B7280;margin-top:2px">' + t.fullName + '</div>' : '') +
+                '</div>' +
+                '<div class="dash-tc-badges">' +
+                  '<span class="dash-tc-status dash-status-checking" id="dash-status-' + t.id + '">' +
+                    '<span class="dash-tc-status-dot"></span>' +
+                    '<span id="dash-status-text-' + t.id + '">Checking...</span>' +
+                  '</span>' +
+                  '<span class="dash-tc-badge dash-badge-cat">' + t.badge + '</span>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+            '<p class="dash-tc-desc">' + t.desc + '</p>' +
+          '</div>' +
+          '<div class="dash-tc-footer">' +
+            '<span class="dash-tc-cta"><i class="bi bi-arrow-up-right-circle-fill"></i> Buka Tool</span>' +
+            '<i class="bi bi-chevron-right dash-tc-chevron"></i>' +
+          '</div>' +
+        '</div>'
+      );
+    }).join('');
+  }
+
+  // Open a tool from the dashboard: hide dashboard, show app shell, switch to the tab
+  window.openToolFromDashboard = function(id) {
+    document.body.classList.remove('dash-mode');
+    if (typeof window.switchTo === 'function') window.switchTo(id);
+    try { sessionStorage.setItem('nrc_dash_mode', '0'); } catch(e) {}
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Return to dashboard from any tool page
+  window.goToDashboard = function() {
+    document.body.classList.add('dash-mode');
+    try { sessionStorage.setItem('nrc_dash_mode', '1'); } catch(e) {}
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Mirror the existing unified status badges onto the dashboard cards,
+  // without touching the original setUnifiedStatus function.
+  function mirrorStatusToDashboard(which) {
+    var srcBadge = document.getElementById('u-status-' + which);
+    var srcText  = document.getElementById('u-status-text-' + which);
+    var dstBadge = document.getElementById('dash-status-' + which);
+    var dstText  = document.getElementById('dash-status-text-' + which);
+    if (!srcBadge || !dstBadge) return;
+    var state = 'checking';
+    if (srcBadge.classList.contains('u-status-online')) state = 'online';
+    else if (srcBadge.classList.contains('u-status-offline')) state = 'offline';
+    dstBadge.className = 'dash-tc-status dash-status-' + state;
+    if (dstText && srcText) dstText.textContent = srcText.textContent;
+  }
+
+  function startStatusMirror() {
+    ['outstanding', 'bapl', 'dms'].forEach(mirrorStatusToDashboard);
+    setInterval(function() {
+      ['outstanding', 'bapl', 'dms'].forEach(mirrorStatusToDashboard);
+    }, 700);
+  }
+
+  renderDashCards();
+  startStatusMirror();
+
+  // Restore dashboard/tool mode on load (defaults to dashboard)
+  try {
+    var dashMode = sessionStorage.getItem('nrc_dash_mode');
+    if (dashMode === '0') {
+      document.body.classList.remove('dash-mode');
+    } else {
+      document.body.classList.add('dash-mode');
+    }
+  } catch(e) {
+    document.body.classList.add('dash-mode');
+  }
 })();
 </script>
 
